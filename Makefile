@@ -24,6 +24,9 @@ server_src =			\
 	server.c			\
 	initialize.c		\
 	runnin.c			\
+	add_users.c			\
+	receive.c			\
+	send.c				\
 	error.c				\
 	error_functions.c	\
 	logger.c			\

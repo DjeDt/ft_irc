@@ -16,10 +16,6 @@
 # include <sys/select.h>
 # include <netinet/in.h>
 
-// DEBUG
-# include <arpa/inet.h>
-
-
 /*
 ** Defines
 */
@@ -33,43 +29,73 @@
 # define SCS			0
 
 # define MAX_QUEUE		5
+# define MAX_PSEUDO_LEN	16
+# define MAX_INPUT_LEN	512
+
+# define GUEST			0
+# define LOGGED			1
 
 /*
 ** Typedef
 */
 typedef void	(*t_error) (const char *err);
 
-typedef struct s_client
+typedef struct			s_single
 {
-	fd_set		master;
-	fd_set		backup;
-	int			fd_max;
-}				t_client;
+	int					new;
+	socklen_t			len;
+	struct sockaddr_in	addr;
+}						t_single;
 
-typedef struct	s_server
+typedef struct			s_users
 {
-	int			port;
-	int			socket;
-}				t_server;
+	int					fd;
+	int					id;
+	int					statut;
+	char				pseudo[MAX_PSEUDO_LEN];
+	struct s_users		*next;
+}						t_users;
+
+typedef struct			s_client
+{
+	fd_set				master;
+	fd_set				backup;
+	int					fd_max;
+	t_single			single;
+}						t_client;
+
+typedef struct			s_server
+{
+	int					port;
+	int					socket;
+}						t_server;
 
 /*
 ** Functions
 */
 
 /* core */
-bool			initialize(t_server *server, const char *str);
-bool			running(t_server *server);
+bool					initialize(t_server *server, const char *str);
+bool					running(t_server *server);
+
+bool					receive_data(t_server *server, t_client *client, int count);
+bool					send_data(int fd, char *data, int size, int flag);
+
+void					add_users(t_users **users, t_single single);
+void					remove_user(t_users **users, int id);
 
 /* lib */
-ssize_t			_strlen(const char *str);
-void			*_memset(void *data, char c, size_t size);
-void			logger(const char *log, FILE *fd);
+ssize_t					_strlen(const char *str);
+char					*_strchr(const char *str, char c);
+void					*_memset(void *data, char c, size_t size);
+void					*_memcpy(void *dst, void *src, size_t n);
+void					logger(const char *log, FILE *fd);
 
 /* error handler */
-void			error(int num, const char *err);
-void			missing_arg(const char *str);
-void			invalid_port(const char *str);
-void			invalid_socket(const char *str);
-void			invalid_bind(const char *err);
+void					error(int num, const char *err);
+void					missing_arg(const char *str);
+void					invalid_port(const char *str);
+void					invalid_socket(const char *str);
+void					invalid_bind(const char *err);
 
 #endif

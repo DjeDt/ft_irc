@@ -25,3 +25,37 @@ void	*_memset(void *data, char c, size_t size)
 		str[count++] = c;
 	return (data);
 }
+
+void	*_memcpy(void *dst, void *src, size_t n)
+{
+	uint8_t	*s1;
+	uint8_t	*s2;
+	size_t	i;
+
+	i = 0;
+	s1 = (uint8_t*)dst;
+	s2 = (uint8_t*)src;
+	while (i < n)
+	{
+		s1[i] = s2[i];
+		i++;
+	}
+	return (s1);
+}
+
+char	*_strchr(const char *str, char c)
+{
+	char *ret;
+
+	if (str != NULL)
+	{
+		ret = (char*)str;
+		while (*ret)
+		{
+			if (*ret == c)
+				return (ret);
+			ret++;
+		}
+	}
+	return (NULL);
+}
