@@ -39,9 +39,9 @@ bool	running(t_server *server)
 	while (true)
 	{
 		client.backup = client.master;
-        if (select(client.fd_max + 1, &client.backup, NULL, NULL, NULL) < 0)
+		if (select(client.fd_max + 1, &client.backup, NULL, NULL, NULL) < 0)
 		{
-            perror("select");
+			perror("select");
 			return (false);
 		}
 		count = 0;
