@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   server.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/05/20 13:19:18 by ddinaut           #+#    #+#             */
+/*   Updated: 2019/05/21 17:03:32 by ddinaut          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef SERVER_H
 # define SERVER_H
 
@@ -29,7 +41,7 @@
 # define SCS			0
 
 # define MAX_QUEUE		5
-# define MAX_PSEUDO_LEN	16
+# define MAX_NICK_LEN	16
 # define MAX_INPUT_LEN	512
 
 # define GUEST			0
@@ -38,37 +50,46 @@
 /*
 ** Typedef
 */
-typedef void	(*t_error) (const char *err);
 
-typedef struct			s_single
+typedef struct			s_command
 {
-	int					new;
-	socklen_t			len;
-	struct sockaddr_in	addr;
-}						t_single;
+	char				name[16];
+	void				*func;
+}						t_command;
 
-typedef struct			s_users
+typedef struct			s_data
 {
-	int					fd;
-	int					id;
-	int					statut;
-	char				pseudo[MAX_PSEUDO_LEN];
-	struct s_users		*next;
-}						t_users;
+	int					len;
+	char				data[MAX_INPUT_LEN];
+}						t_data;
 
 typedef struct			s_client
 {
-	fd_set				master;
-	fd_set				backup;
+	int					new;
 	int					fd_max;
-	t_single			single;
+	fd_set				master;
+	fd_set				read;
+	fd_set				write;
 }						t_client;
+
+typedef struct			s_users
+{
+	int					socket; // also used as an id
+	int					statut; // loged or not
+	char				nick[MAX_NICK_LEN];
+	struct s_users		*next;
+}						t_users;
 
 typedef struct			s_server
 {
 	int					port;
 	int					socket;
+	t_client			client;
+	t_users				*users;
 }						t_server;
+
+typedef void (*t_error) (const char *err);
+typedef void (t_func) (t_server *server, char **command, int off);
 
 /*
 ** Functions
@@ -77,19 +98,27 @@ typedef struct			s_server
 /* core */
 bool					initialize(t_server *server, const char *str);
 bool					running(t_server *server);
+bool					interpreter();
 
-bool					receive_data(t_server *server, t_client *client, int count);
+bool					receive_data(t_server *server, int off);
+
+bool					send_to_all(t_server *server, t_client *client, t_data data, int count);
 bool					send_data(int fd, char *data, int size, int flag);
 
-void					add_users(t_users **users, t_single single);
+void					add_users(t_users **users, int socket);
 void					remove_user(t_users **users, int id);
+t_users					*search_user(t_users **users, int id);
 
 /* lib */
 ssize_t					_strlen(const char *str);
+int						arrlen(char **arr);
 char					*_strchr(const char *str, char c);
 void					*_memset(void *data, char c, size_t size);
 void					*_memcpy(void *dst, void *src, size_t n);
 void					logger(const char *log, FILE *fd);
+char					**_strtok(const char *str, const char *delim);
+int						_memcmp(const void *s1, const void *s2, size_t n);
+void					_itoa(char *str, int n);
 
 /* error handler */
 void					error(int num, const char *err);

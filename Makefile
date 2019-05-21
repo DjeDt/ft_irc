@@ -6,7 +6,7 @@
 #    By: pguillie <pguillie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/22 18:46:54 by pguillie          #+#    #+#              #
-#    Updated: 2019/04/22 20:53:51 by pguillie         ###   ########.fr        #
+#    Updated: 2019/05/21 10:33:49 by ddinaut          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -15,25 +15,34 @@ CLIENT	= client
 
 CC		= gcc
 CFLAGS	= -Wall -Werror -Wextra -I$(incdir)
+EFLAGS	= #-g3 -fsanitize=address
 
 incdir	= ./incs/
 srcdir	= ./srcs/
 objdir	= .obj
 
-server_src =			\
-	server.c			\
-	initialize.c		\
-	runnin.c			\
-	add_users.c			\
-	receive.c			\
-	send.c				\
-	error.c				\
-	error_functions.c	\
-	logger.c			\
-	lib.c
+# subdir
+libdir		= lib/
+clientdir	= client/
+serverdir	= server/
+
+server_src =						\
+	$(serverdir)/server.c			\
+	$(serverdir)/initialize.c		\
+	$(serverdir)/runnin.c			\
+	$(serverdir)/add_users.c		\
+	$(serverdir)/receive.c			\
+	$(serverdir)/interpreter.c		\
+	$(serverdir)/send.c				\
+	$(serverdir)/error.c			\
+	$(serverdir)/error_functions.c	\
+	\
+	$(libdir)/logger.c				\
+	$(libdir)/lib.c					\
+	$(libdir)/strtok.c
 
 client_src = \
-	client.c
+	$(clientdir)/client.c
 
 server_obj = $(addprefix $(srcdir), $(server_src:%.c=%.o))
 client_obj = $(addprefix $(srcdir), $(client_src:%.c=%.o))
@@ -43,9 +52,9 @@ client_obj = $(addprefix $(srcdir), $(client_src:%.c=%.o))
 all: $(SERVER) $(CLIENT)
 
 $(SERVER): $(server_obj)
-	$(CC) -o $@ $^
+	$(CC) $(EFLAGS) -o $@ $^
 $(CLIENT): $(client_obj)
-	$(CC) -o $@ $^
+	$(CC) $(EFLAGS) -o $@ $^
 
 $(server_obj) $(client_obj): $(include) Makefile
 
