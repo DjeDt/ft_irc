@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   server.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/05/23 10:53:03 by ddinaut           #+#    #+#             */
+/*   Updated: 2019/05/24 17:12:57 by ddinaut          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "server.h"
 
 static bool	is_valid_argument(const char *str)
@@ -14,7 +26,7 @@ static bool	is_valid_argument(const char *str)
 	return (true);
 }
 
-int main(int ac, char **av)
+int			main(int ac, char **av)
 {
 	t_server server;
 
@@ -23,6 +35,7 @@ int main(int ac, char **av)
 		error(MISSING_ARG, av[0]);
 		return (ERR);
 	}
+
 	if (is_valid_argument(av[1]) != true)
 	{
 		error(INVALID_PORT, av[1]);

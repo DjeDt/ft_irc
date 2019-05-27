@@ -6,11 +6,16 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 17:15:40 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/21 12:30:33 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/05/26 22:04:22 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
+
+int		intcmp(int x, int y)
+{
+	return ((x > y) - (x < y));
+}
 
 ssize_t	_strlen(const char *str)
 {

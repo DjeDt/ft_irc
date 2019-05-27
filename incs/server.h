@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:19:18 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/21 17:03:32 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/05/26 22:13:44 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # include <sys/socket.h>
 # include <sys/select.h>
 # include <netinet/in.h>
+# include <arpa/inet.h>
 
 /*
 ** Defines
@@ -50,7 +51,6 @@
 /*
 ** Typedef
 */
-
 typedef struct			s_command
 {
 	char				name[16];
@@ -72,20 +72,28 @@ typedef struct			s_client
 	fd_set				write;
 }						t_client;
 
-typedef struct			s_users
+typedef struct			s_user
 {
-	int					socket; // also used as an id
-	int					statut; // loged or not
+	int					socket;
+	int					statut;
 	char				nick[MAX_NICK_LEN];
-	struct s_users		*next;
-}						t_users;
+	struct sockaddr_in	addr;
+}						t_user;
+
+typedef struct			s_btree
+{
+	t_user				data;
+	struct s_btree		*root;
+	struct s_btree		*left;
+	struct s_btree		*right;
+}						t_btree;
 
 typedef struct			s_server
 {
 	int					port;
 	int					socket;
 	t_client			client;
-	t_users				*users;
+	t_btree				*users;
 }						t_server;
 
 typedef void (*t_error) (const char *err);
@@ -100,14 +108,14 @@ bool					initialize(t_server *server, const char *str);
 bool					running(t_server *server);
 bool					interpreter();
 
-bool					receive_data(t_server *server, int off);
+bool					receive_data(t_server *server, t_data *data, int off);
 
 bool					send_to_all(t_server *server, t_client *client, t_data data, int count);
 bool					send_data(int fd, char *data, int size, int flag);
 
-void					add_users(t_users **users, int socket);
-void					remove_user(t_users **users, int id);
-t_users					*search_user(t_users **users, int id);
+/* void					add_users(t_users **users, int socket); */
+/* void					remove_user(t_users **users, int id); */
+/* t_users					*search_user(t_users **users, int id); */
 
 /* lib */
 ssize_t					_strlen(const char *str);
@@ -118,7 +126,19 @@ void					*_memcpy(void *dst, void *src, size_t n);
 void					logger(const char *log, FILE *fd);
 char					**_strtok(const char *str, const char *delim);
 int						_memcmp(const void *s1, const void *s2, size_t n);
+int		intcmp(int x, int y);
 void					_itoa(char *str, int n);
+
+/* tree */
+int						btree_find_min(t_btree *node);
+void					btree_delete_node_int(t_btree **root, int key);
+t_btree					*btree_create_node(t_user data);
+void					btree_insert_data_int(t_btree **root, t_user data, int (*func)(int, int));
+void					btree_insert_data_char(t_btree **root, t_user data, int (*func)(char*, char*));
+t_btree					*btree_search_item_int(t_btree *root, int ref, int (*func)(int, int));
+t_btree					*btree_search_item_char(t_btree *root, char *ref, int (*func)(char *, char *));
+
+
 
 /* error handler */
 void					error(int num, const char *err);

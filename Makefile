@@ -6,7 +6,7 @@
 #    By: pguillie <pguillie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/22 18:46:54 by pguillie          #+#    #+#              #
-#    Updated: 2019/05/21 10:33:49 by ddinaut          ###   ########.fr        #
+#    Updated: 2019/05/26 22:07:31 by ddinaut          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -25,6 +25,7 @@ objdir	= .obj
 libdir		= lib/
 clientdir	= client/
 serverdir	= server/
+rbtreedir	= rbtree/
 
 server_src =						\
 	$(serverdir)/server.c			\
@@ -39,10 +40,20 @@ server_src =						\
 	\
 	$(libdir)/logger.c				\
 	$(libdir)/lib.c					\
-	$(libdir)/strtok.c
+	$(libdir)/strtok.c				\
+	$(libdir)/tree.c				\
 
-client_src = \
-	$(clientdir)/client.c
+client_src = 					\
+	$(clientdir)/client.c		\
+	$(clientdir)/running.c		\
+	$(clientdir)/interpreter.c	\
+	$(clientdir)/receive.c		\
+	$(clientdir)/connect.c		\
+	$(clientdir)/error.c		\
+	\
+	$(libdir)/logger.c			\
+	$(libdir)/lib.c				\
+	$(libdir)/strtok.c
 
 server_obj = $(addprefix $(srcdir), $(server_src:%.c=%.o))
 client_obj = $(addprefix $(srcdir), $(client_src:%.c=%.o))

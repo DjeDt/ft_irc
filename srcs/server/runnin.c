@@ -6,11 +6,21 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/21 16:19:23 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/05/26 22:35:40 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
+
+void	btree_apply_infix(t_btree *root, void (*applyf)(void *))
+{
+	if (root != NULL)
+	{
+		btree_apply_infix(root->left, applyf);
+		applyf(root->data.nick);
+		btree_apply_infix(root->right, applyf);
+	}
+}
 
 void	init_client_list(t_client *client, int socket)
 {
@@ -23,30 +33,37 @@ void	init_client_list(t_client *client, int socket)
 
 bool	accept_connection(t_server *server, t_client *client)
 {
-	socklen_t			addr_len;
-	struct sockaddr_in	addr;
+	t_user		user;
+	socklen_t	addr_len;
 
-	addr_len = sizeof(addr);
-	client->new = accept(server->socket, (struct sockaddr*)&addr, &addr_len);
-	if (client->new < 0)
+	addr_len = sizeof(user.addr);
+	user.socket = accept(server->socket, (struct sockaddr*)&user.addr, &addr_len);
+	if (user.socket < 0)
 	{
 		perror("accept");
 		return (false);
 	}
 	else
 	{
-		printf("[+] new connection from socket %d\n", client->new);
-		FD_SET(client->new, &client->master);	// push client fd into our master list
-		if (client->new > client->fd_max)				// track max connected client
-			client->fd_max = client->new;
-		add_users(&server->users, client->new);
+		printf("[+] new connection from '%s' set to socket %d\n", inet_ntoa(user.addr.sin_addr), user.socket);
+		FD_SET(user.socket, &client->master);
+		if (user.socket > client->fd_max)
+			client->fd_max = user.socket;
+		btree_insert_data_int(&server->users, user, intcmp);
+//		btree_apply_infix(server->users, (void*)&puts);
 	}
 	return (true);
 }
 
+void	print_int(int *data)
+{
+	printf("deleted socket %d\n", *data);
+}
+
 bool	processing(t_server *server)
 {
-	int	off;
+	int		off;
+	t_data	data;
 
 	off = 0;
 	while (off <= server->client.fd_max)
@@ -56,11 +73,15 @@ bool	processing(t_server *server)
 			if (off == server->socket)
 			{
 				accept_connection(server, &server->client);
+				// check is false
 			}
 			else
 			{
-				if (receive_data(server, off) != true)
-					remove_user(&server->users, off);
+				if (receive_data(server, &data, off) != true)
+					btree_delete_node_int(&server->users, off);
+				btree_apply_infix(server->users, (void*)&print_int);
+
+					//remove_user(&server->users, off);
 			}
 		}
 		off++;
@@ -70,7 +91,6 @@ bool	processing(t_server *server)
 
 bool	running(t_server *server)
 {
-
 	init_client_list(&server->client, server->socket);
 	puts("waiting for connection ...");
 	while (true)

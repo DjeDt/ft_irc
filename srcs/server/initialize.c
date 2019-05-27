@@ -39,7 +39,7 @@ static bool	init_socket_ipv4(t_server *server, struct sockaddr_in addr)
 		error(INVALID_BIND, "can't bind socket to address using ipv4");
 		return (false);
 	}
-	logger("socket correctly setup using ipv4", stdout);
+	printf("socket [%d] correctly setup using ipv4\n", server->socket);
 	return (true);
 }
 
@@ -53,6 +53,7 @@ bool	initialize(t_server *server, const char *port)
 	_memset(&addr, 0x0, len);
 	_memset(server, 0x0, sizeof(*server));
 	server->port = atoi(port);
+
 	if (server->port < 1)
 	{
 		error(INVALID_PORT, port);
