@@ -6,7 +6,7 @@
 #    By: pguillie <pguillie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/22 18:46:54 by pguillie          #+#    #+#              #
-#    Updated: 2019/05/21 10:33:49 by ddinaut          ###   ########.fr        #
+#    Updated: 2019/05/27 21:35:49 by ddinaut          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -66,8 +66,9 @@ all: $(SERVER) $(CLIENT)
 
 $(SERVER): $(server_obj)
 	$(CC) $(EFLAGS) -o $@ $^
+
 $(CLIENT): $(client_obj)
-	$(CC) $(EFLAGS) -o $@ $^
+	$(CC) $(EFLAGS) -lncurses -o $@ $^
 
 $(server_obj) $(client_obj): $(include) Makefile
 
