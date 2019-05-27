@@ -14,33 +14,43 @@
 
 void	generate_guest_pseudo(char *pseudo, int id)
 {
-	char	tmp[10] = {0};
+	char	tmp[10];
 
-	// _memset(tmp, 0, 16);
+	_memset(tmp, 0x0, 10);
 	_itoa(tmp, id);
 	_memcpy(pseudo, "Guest_", 6);
 	_memcpy(&pseudo[6], tmp, 9);
 }
 
-t_users	*create_new_user(int socket)
+t_list_user	*create_new_user(int socket)
 {
-	t_users *new;
+	t_list_user *new;
 
 	if ((new = malloc(sizeof(*new))) == NULL)
 		return (NULL);
 	_memset(new, 0x0, sizeof(*new));
 	new->socket = socket;
-	new->statut = GUEST;
-	generate_guest_pseudo(new->nick, socket);
-
-	// debug
-	printf("[+] ADD user: (id=%d, pseudo=%s, status=%d)\n", new->socket, new->nick, new->statut);
 	return (new);
 }
 
-void	add_users(t_users **users, int socket)
+void	push_new_user(t_list_user **users, t_list_user *chunk)
 {
-	t_users *tmp;
+	t_list_user *tmp;
+
+	if (*users == NULL)
+		(*users) = chunk;
+	else
+	{
+		tmp = (*users);
+		while (tmp->next != NULL)
+			tmp = tmp->next;
+		tmp->next = chunk;
+	}
+}
+
+void	add_users(t_list_user **users, int socket)
+{
+	t_list_user *tmp;
 
 	if (*users == NULL)
 		(*users) = create_new_user(socket);
@@ -53,13 +63,14 @@ void	add_users(t_users **users, int socket)
 	}
 }
 
-t_users 	*search_user(t_users **users, int id)
+t_list_user		*search_user(t_list_user *users, int id)
 {
-	t_users *tmp;
+	t_list_user *tmp;
 
-	if (*users != NULL)
+	if (users != NULL)
 	{
-		tmp = *users;
+		tmp = users;
+		printf("TMP user =  %s - socket = %d\n", tmp->nick, tmp->socket);
 		while (tmp != NULL)
 		{
 			if (tmp->socket == id)
@@ -70,10 +81,10 @@ t_users 	*search_user(t_users **users, int id)
 	return (NULL);
 }
 
-void	remove_user(t_users **users, int id)
+void	remove_user(t_list_user **users, int id)
 {
-	t_users *tmp;
-	t_users *prev;
+	t_list_user *tmp;
+	t_list_user *prev;
 
 	prev = NULL;
 	tmp = (*users);

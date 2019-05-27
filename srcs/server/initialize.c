@@ -51,7 +51,7 @@ bool	initialize(t_server *server, const char *port)
 
 	len = sizeof(addr);
 	_memset(&addr, 0x0, len);
-	_memset(server, 0x0, sizeof(*server));
+	_memset(server, 0x0, sizeof(t_server));
 	server->port = atoi(port);
 	if (server->port < 1)
 	{

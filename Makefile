@@ -25,23 +25,36 @@ objdir	= .obj
 libdir		= lib/
 clientdir	= client/
 serverdir	= server/
+cmddir		= command/
 
-server_src =						\
-	$(serverdir)/server.c			\
-	$(serverdir)/initialize.c		\
-	$(serverdir)/runnin.c			\
-	$(serverdir)/add_users.c		\
-	$(serverdir)/receive.c			\
-	$(serverdir)/interpreter.c		\
-	$(serverdir)/send.c				\
-	$(serverdir)/error.c			\
-	$(serverdir)/error_functions.c	\
+server_src =							\
+	$(serverdir)/server.c				\
+	$(serverdir)/initialize.c			\
+	$(serverdir)/runnin.c				\
+	$(serverdir)/add_users.c			\
+	$(serverdir)/channel.c				\
+	$(serverdir)/receive.c				\
+	$(serverdir)/interpreter.c			\
+	$(serverdir)/send.c					\
+	$(serverdir)/error.c				\
+	$(serverdir)/error_functions.c		\
+	$(serverdir)/$(cmddir)/list.c		\
+	$(serverdir)/$(cmddir)/join.c		\
+	$(serverdir)/$(cmddir)/leave.c		\
+	$(serverdir)/$(cmddir)/nick.c		\
+	$(serverdir)/$(cmddir)/who.c		\
+	$(serverdir)/$(cmddir)/msg.c		\
+	$(serverdir)/$(cmddir)/quit.c		\
+	$(serverdir)/$(cmddir)/connect.c	\
+	$(serverdir)/$(cmddir)/quit.c		\
+	$(serverdir)/$(cmddir)/shutdw.c		\
 	\
-	$(libdir)/logger.c				\
-	$(libdir)/lib.c					\
+	$(libdir)/logger.c					\
+	$(libdir)/lib.c						\
 	$(libdir)/strtok.c
 
-client_src = \
+
+client_src = 				\
 	$(clientdir)/client.c
 
 server_obj = $(addprefix $(srcdir), $(server_src:%.c=%.o))

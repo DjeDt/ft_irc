@@ -21,67 +21,80 @@ void	init_client_list(t_client *client, int socket)
 	client->fd_max = socket;
 }
 
-bool	accept_connection(t_server *server, t_client *client)
+bool	accept_connection(t_server *server)
 {
-	socklen_t			addr_len;
-	struct sockaddr_in	addr;
+	socklen_t	len;
+	t_list_user *user;
 
-	addr_len = sizeof(addr);
-	client->new = accept(server->socket, (struct sockaddr*)&addr, &addr_len);
-	if (client->new < 0)
+	if (!(user = create_new_user(0)))
+		return (false);
+	len = sizeof(user->addr);
+	user->socket = accept(server->socket, (struct sockaddr*)&user->addr, &len);
+	if (user->socket < 0)
 	{
 		perror("accept");
+		free(user);
 		return (false);
 	}
-	else
-	{
-		printf("[+] new connection from socket %d\n", client->new);
-		FD_SET(client->new, &client->master);	// push client fd into our master list
-		if (client->new > client->fd_max)				// track max connected client
-			client->fd_max = client->new;
-		add_users(&server->users, client->new);
-	}
+	FD_SET(user->socket, &server->client.master);
+	if (user->socket > server->client.fd_max)
+		server->client.fd_max = user->socket;
+	generate_guest_pseudo(user->nick, user->socket);
+
+	// debug
+	printf("[+] new connection from '%s' using socket '%d'\n", inet_ntoa(user->addr.sin_addr), user->socket);
+	printf("\tgenerated nickname: '%s'\n", user->nick);
+
+	push_new_user(&server->users, user);
 	return (true);
 }
 
-bool	processing(t_server *server)
+void	close_connection(t_server *server, int off)
 {
-	int	off;
+	close(off);
+	FD_CLR(off, &server->client.master);
+	if (off == server->client.fd_max)
+		server->client.fd_max -= 1;
+	remove_user(&server->users, off);
+}
 
-	off = 0;
-	while (off <= server->client.fd_max)
+bool	processing(t_server *server, int off)
+{
+	t_data	data;
+
+	if (off == server->socket)
 	{
-		if (FD_ISSET(off, &server->client.read))
-		{
-			if (off == server->socket)
-			{
-				accept_connection(server, &server->client);
-			}
-			else
-			{
-				if (receive_data(server, off) != true)
-					remove_user(&server->users, off);
-			}
-		}
-		off++;
+		if (accept_connection(server) == true)
+			send_welcome(off + 1);
+	}
+	else
+	{
+		_memset(&data, 0x0, sizeof(data));
+		if (receive_data(off, &data, MAX_INPUT_LEN, 0) != true)
+			close_connection(server, off);
+		else
+			interpreter(server, data, off);
 	}
 	return (true);
 }
 
 bool	running(t_server *server)
 {
+	int off;
 
 	init_client_list(&server->client, server->socket);
-	puts("waiting for connection ...");
 	while (true)
 	{
 		server->client.read = server->client.master;
 		if (select(server->client.fd_max + 1, &server->client.read, &server->client.write, NULL, NULL) < 0)
-		{
-			perror("select");
 			return (false);
+		off = 0;
+		while (off <= server->client.fd_max)
+		{
+			if (FD_ISSET(off, &server->client.read))
+				processing(server, off);
+			off++;
 		}
-		processing(server);
 	}
 	return (true);
 }

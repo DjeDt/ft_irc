@@ -27,6 +27,26 @@
 # include <sys/socket.h>
 # include <sys/select.h>
 # include <netinet/in.h>
+# include <arpa/inet.h>
+
+
+/*
+** Enum
+*/
+
+enum e_error
+{
+	MISSING_ARG,
+	INVALID_PORT,
+	INVALID_SCKT,
+	INVALID_BIND
+};
+
+enum e_statut
+{
+	GUEST,
+	LOGGED
+};
 
 /*
 ** Defines
@@ -42,6 +62,7 @@
 
 # define MAX_QUEUE		5
 # define MAX_NICK_LEN	16
+# define MAX_CHAN_LEN	50
 # define MAX_INPUT_LEN	512
 
 # define GUEST			0
@@ -72,20 +93,30 @@ typedef struct			s_client
 	fd_set				write;
 }						t_client;
 
-typedef struct			s_users
+typedef struct			s_list_user
 {
-	int					socket; // also used as an id
-	int					statut; // loged or not
+	int					socket;
+	int					statut;
 	char				nick[MAX_NICK_LEN];
-	struct s_users		*next;
-}						t_users;
+	struct sockaddr_in	addr;
+	struct s_list_user	*next;
+}						t_list_user;
+
+typedef struct			s_channel
+{
+	int					num;
+	fd_set				connected;
+	char				name[MAX_CHAN_LEN];
+	struct s_channel	*next;
+}						t_channel;
 
 typedef struct			s_server
 {
 	int					port;
 	int					socket;
 	t_client			client;
-	t_users				*users;
+	t_channel			*chan;
+	t_list_user			*users;
 }						t_server;
 
 typedef void (*t_error) (const char *err);
@@ -98,16 +129,40 @@ typedef void (t_func) (t_server *server, char **command, int off);
 /* core */
 bool					initialize(t_server *server, const char *str);
 bool					running(t_server *server);
-bool					interpreter();
+void					interpreter(t_server *server, t_data data, int off);
 
-bool					receive_data(t_server *server, int off);
+bool					receive_data(int off, t_data *data, size_t size, int flag);
 
+void					send_welcome(int off);
 bool					send_to_all(t_server *server, t_client *client, t_data data, int count);
 bool					send_data(int fd, char *data, int size, int flag);
 
-void					add_users(t_users **users, int socket);
-void					remove_user(t_users **users, int id);
-t_users					*search_user(t_users **users, int id);
+/* users */
+void					generate_guest_pseudo(char *pseudo, int id);
+t_list_user				*create_new_user(int socket);
+void					push_new_user(t_list_user **users, t_list_user *chunk);
+void					add_users(t_list_user **users, int socket);
+void					remove_user(t_list_user **users, int id);
+t_list_user				*search_user(t_list_user *users, int id);
+
+/* channels */
+void					print_chan(t_channel*chan);
+t_channel				*create_channel(char *name);
+t_channel				*add_channel(t_channel **chan, char *name);
+t_channel				*search_channel(t_channel *chan, char *name);
+void					delete_channel(t_channel **channel, char *name);
+
+/* commands */
+//void					irc_help(t_server *server, char **command, int off);
+void					irc_nick(t_server *server, char **command, int off);
+void					irc_list(t_server *server, char **command, int off);
+void					irc_join(t_server *server, char **command, int off);
+void					irc_leave(t_server *server, char **command, int off);
+void					irc_who(t_server *server, char **command, int off);
+void					irc_msg(t_server *server, char **command, int off);
+void					irc_connect(t_server *server, char **command, int off);
+void					irc_quit(t_server *server, char **command, int off);
+void					irc_shutdown(t_server *server, char **command, int off);
 
 /* lib */
 ssize_t					_strlen(const char *str);

@@ -12,48 +12,26 @@
 
 #include "server.h"
 
-int		receive_full(int off, char *data, size_t size, int flag)
+bool	receive_data(int off, t_data *data, size_t size, int flag)
 {
-	int	tmp;
-	int	received;
+	int tmp;
 
 	tmp = 0;
-	received = 0;
 	while (size > 0)
 	{
-		tmp = recv(off, data + received, size, flag);
+		tmp = recv(off, data->data + data->len, size, flag);
+		// if 0 : user closed the connection
+		// if -1: recv error
 		if (tmp < 1)
 		{
 			printf("[-] Can't read from %d socket. Closing it\n", off);
-			return (-1);
+			return (false);
 		}
-		received += tmp;
+		data->len += tmp;
 		size -= tmp;
-		if (_strchr(data, '\n') != NULL)
-			return (MAX_INPUT_LEN - size);
+		if (_strchr(data->data, '\n') != NULL)
+			break ;
 	}
-	return (received);
-}
-
-bool	receive_data(t_server *server, int off)
-{
-	t_data data;
-
-	_memset(&data, 0x0, sizeof(data));
-	data.len = receive_full(off, data.data, MAX_INPUT_LEN, 0);
-	if (data.len > 0)
-	{
-
-		printf("received %d data from socket %d\n", data.len, off);
-
-		if (data.data[0] == '/')
-			interpreter(server, data, off);
-		/* else */
-		/* 	send_to_all(server, client, data, off); */
-
-		return (true);
-	}
-	close(off);
-	FD_CLR(off, &server->client.master);
-	return (false);
+	printf("received %d data from socket %d\n", data->len, off);
+	return (true);
 }
