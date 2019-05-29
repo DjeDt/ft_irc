@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/21 16:19:23 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/05/29 14:31:17 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ bool	accept_connection(t_server *server)
 
 	if (!(user = create_new_user(0)))
 		return (false);
+
 	len = sizeof(user->addr);
 	user->socket = accept(server->socket, (struct sockaddr*)&user->addr, &len);
 	if (user->socket < 0)
@@ -36,16 +37,20 @@ bool	accept_connection(t_server *server)
 		free(user);
 		return (false);
 	}
+
 	FD_SET(user->socket, &server->client.master);
 	if (user->socket > server->client.fd_max)
 		server->client.fd_max = user->socket;
 	generate_guest_pseudo(user->nick, user->socket);
+	server->client.fd_max = user->socket;
 
 	// debug
 	printf("[+] new connection from '%s' using socket '%d'\n", inet_ntoa(user->addr.sin_addr), user->socket);
 	printf("\tgenerated nickname: '%s'\n", user->nick);
 
 	push_new_user(&server->users, user);
+	send_welcome(user->socket);
+
 	return (true);
 }
 
@@ -64,11 +69,12 @@ bool	processing(t_server *server, int off)
 
 	if (off == server->socket)
 	{
-		if (accept_connection(server) == true)
-			send_welcome(off + 1);
+		// new user
+		accept_connection(server);
 	}
 	else
 	{
+		// received data
 		_memset(&data, 0x0, sizeof(data));
 		if (receive_data(off, &data, MAX_INPUT_LEN, 0) != true)
 			close_connection(server, off);
@@ -89,6 +95,7 @@ bool	running(t_server *server)
 		if (select(server->client.fd_max + 1, &server->client.read, &server->client.write, NULL, NULL) < 0)
 			return (false);
 		off = 0;
+		printf("DEBUG :: maxfd = %d\n", server->client.fd_max);
 		while (off <= server->client.fd_max)
 		{
 			if (FD_ISSET(off, &server->client.read))

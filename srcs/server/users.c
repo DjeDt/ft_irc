@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   add_users.c                                        :+:      :+:    :+:   */
+/*   users.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/21 15:37:45 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/21 15:37:46 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/05/29 14:42:39 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	push_new_user(t_list_user **users, t_list_user *chunk)
 			tmp = tmp->next;
 		tmp->next = chunk;
 	}
+	puts("toto");
 }
 
 void	add_users(t_list_user **users, int socket)
@@ -63,17 +64,41 @@ void	add_users(t_list_user **users, int socket)
 	}
 }
 
-t_list_user		*search_user(t_list_user *users, int id)
+t_list_user		*search_user_by_id(t_list_user *users, int id)
 {
 	t_list_user *tmp;
 
 	if (users != NULL)
 	{
 		tmp = users;
+
+		// debug
 		printf("TMP user =  %s - socket = %d\n", tmp->nick, tmp->socket);
 		while (tmp != NULL)
 		{
 			if (tmp->socket == id)
+				return (tmp);
+			tmp = tmp->next;
+		}
+	}
+	return (NULL);
+}
+
+t_list_user		*search_user_by_name(t_list_user *users, const char *name)
+{
+	int			len;
+	t_list_user	*tmp;
+
+	if (users != NULL)
+	{
+		tmp = users;
+		len = _strlen(name);
+
+		//debug
+//		printf("TMP user =  %s - socket = %d\n", tmp->nick, tmp->socket);
+		while (tmp != NULL)
+		{
+			if (_memcmp(name, tmp->nick, len) == 0)
 				return (tmp);
 			tmp = tmp->next;
 		}
@@ -92,6 +117,7 @@ void	remove_user(t_list_user **users, int id)
 	{
 		if (tmp->socket == id)
 		{
+			// debug
 			printf("[-] REMOVE user: id=%d, pseudo=%s, status=%d\n", tmp->socket, tmp->nick, tmp->statut);
 			if (prev == NULL)
 			{

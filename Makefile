@@ -6,7 +6,7 @@
 #    By: pguillie <pguillie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/22 18:46:54 by pguillie          #+#    #+#              #
-#    Updated: 2019/05/27 21:35:49 by ddinaut          ###   ########.fr        #
+#    Updated: 2019/05/29 14:42:11 by ddinaut          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -31,7 +31,7 @@ server_src =							\
 	$(serverdir)/server.c				\
 	$(serverdir)/initialize.c			\
 	$(serverdir)/runnin.c				\
-	$(serverdir)/add_users.c			\
+	$(serverdir)/users.c				\
 	$(serverdir)/channel.c				\
 	$(serverdir)/receive.c				\
 	$(serverdir)/interpreter.c			\
@@ -54,8 +54,19 @@ server_src =							\
 	$(libdir)/strtok.c
 
 
-client_src = 				\
-	$(clientdir)/client.c
+client_src = 							\
+	$(clientdir)/client.c				\
+	$(clientdir)/interpreter.c			\
+	$(clientdir)/connect.c				\
+	$(clientdir)/running.c				\
+	$(clientdir)/key.c					\
+	$(clientdir)/receive.c				\
+	$(clientdir)/interface.c			\
+\
+	$(libdir)/logger.c					\
+	$(libdir)/lib.c						\
+	$(libdir)/strtok.c
+
 
 server_obj = $(addprefix $(srcdir), $(server_src:%.c=%.o))
 client_obj = $(addprefix $(srcdir), $(client_src:%.c=%.o))

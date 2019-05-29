@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   list.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/05/29 17:10:24 by ddinaut           #+#    #+#             */
+/*   Updated: 2019/05/29 17:17:24 by ddinaut          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "server.h"
 
 void	irc_list(t_server *server, char **command, int off)
@@ -11,11 +23,14 @@ void	irc_list(t_server *server, char **command, int off)
 		tmp = server->chan;
 		while (tmp != NULL)
 		{
-			data.len = sprintf(data.data, "%s: %d users.\n", tmp->name, tmp->num);
+			data.len = snprintf(data.data, MAX_INPUT_LEN, "'%s': %d users connected.", tmp->name, tmp->num);
 			send_data(off, data.data, data.len, 0);
 			tmp = tmp->next;
 		}
 	}
 	else
-		send_data(off, "No channel here!\n", 17, 0);
+	{
+		data.len = snprintf(data.data, MAX_INPUT_LEN, "There isn't any channel.");
+		send_data(off, data.data, data.len, 0);
+	}
 }

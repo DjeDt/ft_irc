@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:19:18 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/21 17:03:32 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/05/29 15:45:27 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,8 @@ t_list_user				*create_new_user(int socket);
 void					push_new_user(t_list_user **users, t_list_user *chunk);
 void					add_users(t_list_user **users, int socket);
 void					remove_user(t_list_user **users, int id);
-t_list_user				*search_user(t_list_user *users, int id);
+t_list_user				*search_user_by_id(t_list_user *users, int id);
+t_list_user				*search_user_by_name(t_list_user *users, const char *name);
 
 /* channels */
 void					print_chan(t_channel*chan);
@@ -174,6 +175,9 @@ void					logger(const char *log, FILE *fd);
 char					**_strtok(const char *str, const char *delim);
 int						_memcmp(const void *s1, const void *s2, size_t n);
 void					_itoa(char *str, int n);
+int						_isspace(char c);
+char					*_strndup(const char *src, size_t n);
+
 
 /* error handler */
 void					error(int num, const char *err);
