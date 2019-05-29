@@ -6,32 +6,11 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 15:03:26 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/20 17:12:58 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/05/29 15:45:50 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
-
-char	*_strndup(const char *src, size_t n)
-{
-	size_t	count;
-	char	*ret;
-
-
-	count = 0;
-	if (_strlen(src) < (ssize_t)n)
-		n = _strlen(src);
-	ret = malloc(sizeof(char) * n + 1);
-	if (!ret)
-		return (NULL);
-	_memset(ret, 0, n + 1);
-	while (src[count] != '\0' && count < n)
-	{
-		ret[count] = src[count];
-		count++;
-	}
-	return (ret);
-}
 
 static int	found_one(char c, const char *delim)
 {

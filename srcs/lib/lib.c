@@ -6,11 +6,19 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 17:15:40 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/21 12:30:33 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/05/29 15:45:18 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
+
+
+int		_isspace(char c)
+{
+	if (c == ' ' || c == '\t' || c == '\r' || c == '\v' || c == '\n')
+		return (0);
+	return (1);
+}
 
 ssize_t	_strlen(const char *str)
 {
@@ -122,4 +130,25 @@ void		_itoa(char *str, int n)
 		str[count] = (num % 10) + '0';
 		num /= 10;
 	}
+}
+
+char	*_strndup(const char *src, size_t n)
+{
+	size_t	count;
+	char	*ret;
+
+
+	count = 0;
+	if (_strlen(src) < (ssize_t)n)
+		n = _strlen(src);
+	ret = malloc(sizeof(char) * n + 1);
+	if (!ret)
+		return (NULL);
+	_memset(ret, 0, n + 1);
+	while (src[count] != '\0' && count < n)
+	{
+		ret[count] = src[count];
+		count++;
+	}
+	return (ret);
 }
