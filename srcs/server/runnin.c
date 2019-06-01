@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/29 14:31:17 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/05/31 09:05:09 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,6 @@ bool	running(t_server *server)
 		if (select(server->client.fd_max + 1, &server->client.read, &server->client.write, NULL, NULL) < 0)
 			return (false);
 		off = 0;
-		printf("DEBUG :: maxfd = %d\n", server->client.fd_max);
 		while (off <= server->client.fd_max)
 		{
 			if (FD_ISSET(off, &server->client.read))
