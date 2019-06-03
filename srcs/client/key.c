@@ -56,8 +56,7 @@ bool	insert_char(t_interface *inter, char *input, int c)
 	{
 		inter->curmax++;
 		inter->cursor++;
-		input[inter->off] = c;
-		inter->off++;
+		input[inter->off++] = c;
 		refresh_bot_interface(inter, input);
 		return (true);
 	}
@@ -66,4 +65,22 @@ bool	insert_char(t_interface *inter, char *input, int c)
 		refresh_bot_interface(inter, "max input lenght reached.");
 		return (false);
 	}
+}
+
+
+#include <string.h>
+bool	delete_char(t_interface *inter, char *input)
+{
+	if (inter->off > 0)
+	{
+		inter->off--;
+		inter->curmax--;
+		inter->cursor--;
+
+		_memcpy(input + inter->off, input + inter->off + 1, inter->curmax);
+		input[inter->curmax] = '\0';
+		refresh_bot_interface(inter, input);
+		return (true);
+	}
+	return (false);
 }

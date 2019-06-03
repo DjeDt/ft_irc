@@ -17,7 +17,7 @@ void	irc_msg(t_server *server, char **command, int off)
 	t_list_user *src;
 	t_list_user *dst;
 
-	if (command[1] != NULLL && command[2] != NULL)
+	if (command[1] != NULL && command[2] != NULL)
 	{
 		src = search_user_by_id(server->users, off);
 		if (!src)

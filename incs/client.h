@@ -21,6 +21,7 @@
 # include <limits.h>
 # include <time.h>
 # include <unistd.h>
+# include <wchar.h>
 
 # include <sys/types.h>
 # include <sys/socket.h>
@@ -79,6 +80,8 @@ typedef struct			s_list_user
 	struct sockaddr_in	addr;
 }						t_list_user;
 
+typedef void (t_func) (t_interface *inter, t_list_user *user, char **command);
+
 /*
 ** Core
 */
@@ -100,17 +103,19 @@ bool					do_key_right(t_interface *inter, char *input);
 bool					do_key_up(t_interface *inter, char *input);
 bool					do_key_down(t_interface *inter, char *input);
 bool					insert_char(t_interface *inter, char *input, int c);
+bool					delete_char(t_interface *inter, char *input);
 
 /* lib */
-ssize_t					_strlen(const char *str);
-int						arrlen(char **arr);
-char					*_strchr(const char *str, char c);
-void					*_memset(void *data, char c, size_t size);
-void					*_memcpy(void *dst, void *src, size_t n);
-void					logger(const char *log, FILE *fd);
-char					**_strtok(const char *str, const char *delim);
-int						_memcmp(const void *s1, const void *s2, size_t n);
-void					_itoa(char *str, int n);
-
+ssize_t                 _strlen(const char *str);
+int                     arrlen(char **arr);
+char                    *_strchr(const char *str, char c);
+void                    *_memset(void *data, char c, size_t size);
+void                    *_memcpy(void *dst, void *src, size_t n);
+void                    logger(const char *log, FILE *fd);
+char                    **_strtok(const char *str, const char *delim);
+int                     _memcmp(const void *s1, const void *s2, size_t n);
+void                    _itoa(char *str, int n);
+int                     _isspace(char c);
+char                    *_strndup(const char *src, size_t n);
 
 #endif

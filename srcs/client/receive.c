@@ -19,7 +19,7 @@ bool    receive_data(int off, t_data *data, size_t size, int flag)
 	tmp = 0;
 	while (size > 0)
 	{
-		tmp = recv(off, data->data + data->len, size, flag);
+		tmp = recv(off, data->data + data->len, size - data->len, flag);
 		// if 0 : user closed the connection
 		// if -1: recv error
 		if (tmp < 1)
@@ -27,7 +27,7 @@ bool    receive_data(int off, t_data *data, size_t size, int flag)
 		data->len += tmp;
 		size -= tmp;
 		if (_strchr(data->data, '\n') != NULL)
-			break ;
+			return (true);
 	}
 	return (true);
 }

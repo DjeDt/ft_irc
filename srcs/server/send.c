@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "server.h"
+#include <string.h>
 
 bool	send_data(int fd, char *data, int size, int flag)
 {
@@ -18,6 +19,7 @@ bool	send_data(int fd, char *data, int size, int flag)
 	int sent;
 
 	sent = 0;
+	strncat(data, "\r\n", 2);
 	while (sent < size)
 	{
 		tmp = send(fd, data + sent, size, flag);
@@ -29,27 +31,15 @@ bool	send_data(int fd, char *data, int size, int flag)
 		}
 		sent += tmp;
 	}
-	send(fd, "\n", 1, flag);
+//	send(fd, "\n", 1, flag);
 	printf("send %d data to %d socket\n", sent, fd);
 	return (true);
 }
 
-#define WELCOME_SIZE 374
 void	send_welcome(int off)
 {
-	char welcome[] =									\
-		"######## ########   #### ########   ######\n"
-		"##          ##       ##  ##     ## ##    ##\n"
-		"##          ##       ##  ##     ## ##\n"
-		"######      ##       ##  ########  ##\n"
-		"##          ##       ##  ##   ##   ##\n"
-		"##          ##       ##  ##    ##  ##    ##\n"
-		"##          ##      #### ##     ##  ######\n\n"
-		"\t******\n"
-		"\tWelcome here. type '/help' to get help or '/join general' to begin!\n"
-		"\t******\n";
-
-	send_data(off, welcome, WELCOME_SIZE, 0);
+	char welcome[] = "Welcome here. type '/help' to get help or '/join general' to begin!";
+	send_data(off, welcome, _strlen(welcome), 0);
 }
 
 bool	send_to_all(t_server *server, t_client *client, t_data data, int count)

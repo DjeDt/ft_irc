@@ -93,9 +93,6 @@ t_list_user		*search_user_by_name(t_list_user *users, const char *name)
 	{
 		tmp = users;
 		len = _strlen(name);
-
-		//debug
-//		printf("TMP user =  %s - socket = %d\n", tmp->nick, tmp->socket);
 		while (tmp != NULL)
 		{
 			if (_memcmp(name, tmp->nick, len) == 0)
@@ -122,15 +119,10 @@ void	remove_user(t_list_user **users, int id)
 			if (prev == NULL)
 			{
 				if (tmp->next != NULL)
-				{
 					*users = tmp->next;
-					free(tmp);
-				}
 				else
-				{
-					free(tmp);
 					*users = NULL;
-				}
+				free(tmp);
 			}
 			else
 			{

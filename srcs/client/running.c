@@ -15,9 +15,10 @@
 void	init_fd(t_list_user *user)
 {
 	FD_ZERO(&user->client.read);
+	FD_ZERO(&user->client.write);
 	FD_SET(STDIN_FILENO, &user->client.read);
 	user->client.fd_max = STDIN_FILENO;
-	if (user->socket)
+	if (user->socket > 0)
 	{
 		FD_SET(user->socket, &user->client.read);
 		user->client.fd_max = user->socket;
@@ -31,14 +32,16 @@ void	reset_data(t_interface *inter, char *input)
 	inter->curmax = 0;
 	inter->cursor = 3;
 	wclear(inter->bot);
-	refresh_bot_interface(inter, "");
+	refresh_bot_interface(inter, input);
 }
 
 void	dispatch_key(t_interface *inter, char *input)
 {
-	int c;
+	wint_t c;
 
 	c = wgetch(inter->bot);
+//	c = getch();
+//	read(1, &c, 1);
 	if (c == KEY_LEFT)
 		do_key_left(inter, input);
 	else if (c == KEY_RIGHT)
@@ -47,6 +50,10 @@ void	dispatch_key(t_interface *inter, char *input)
 		do_key_up(inter, input);
 	else if (c == KEY_DOWN)
 		do_key_down(inter, input);
+	else if (c == 127) // delete macro doesn't works
+		delete_char(inter, input);
+	else if (c == '\n')
+		input[inter->curmax] = c;
 	else
 		insert_char(inter, input, c);
 }
@@ -62,12 +69,27 @@ void	processing(t_interface *inter, t_list_user *user)
 		if (FD_ISSET(off, &user->client.read))
 		{
 			if (off == STDIN_FILENO)
-				dispatch_key(inter, user->input);
-			else
 			{
-				// received data from server
+				dispatch_key(inter, user->input);
+				if (user->input[inter->curmax] == '\n')
+				{
+					interpreter(inter, user);
+					reset_data(inter, user->input);
+				}
+			}
+
+			if (user->socket > 0 && off == user->socket)
+			{
 				_memset(&data, 0x0, sizeof(data));
-				receive_data(off, &data, MAX_INPUT_LEN, 0);
+				data.len = recv(user->socket, data.data, MAX_INPUT_LEN, 0);
+				if (data.len < 1)
+				{
+					close(user->socket);
+					exit(0);
+//					user->state = NOCONNECT;
+				}
+				data.data[data.len] = '\0';
+
 				refresh_top_interface(inter, data.data);
 				refresh_bot_interface(inter, user->input);
 			}
@@ -78,16 +100,35 @@ void	processing(t_interface *inter, t_list_user *user)
 
 void	running(t_interface *inter, t_list_user *user)
 {
-	init_fd(user);
+	t_data	data; (void)data;
+
 	while (true)
 	{
+		init_fd(user);
+
 		if (select(user->client.fd_max + 1, &user->client.read, &user->client.write, NULL, NULL) < 0)
 			return ;
+
 		processing(inter, user);
-		if (_strchr(user->input, '\n'))
-		{
-			interpreter(inter, user);
-			reset_data(inter, user->input);
-		}
+
+		/* if (FD_ISSET(0, &user->client.read)) */
+		/* { */
+		/* 	dispatch_key(inter, user->input); */
+		/* 	if (user->input[inter->curmax] == '\n') */
+		/* 	{ */
+		/* 		interpreter(inter, user); */
+		/* 		reset_data(inter, user->input); */
+		/* 	} */
+		/* } */
+
+		/* if (FD_ISSET(user->socket, &user->client.read)) */
+		/* { */
+		/* 	_memset(&data, 0x0, sizeof(data)); */
+		/* 	data.len = recv(user->socket, data.data, MAX_INPUT_LEN, 0); */
+		/* 	data.data[data.len] = '\0'; */
+		/* 	refresh_top_interface(inter, data.data); */
+		/* 	refresh_bot_interface(inter, user->input); */
+
+		/* } */
 	}
 }

@@ -35,7 +35,7 @@ int		main(int ac, char **av)
 		}
 	}
 	else
-		refresh_top_interface(&inter, "USAGE: ./client <ip> <port>'.");
+		refresh_top_interface(&inter, "USAGE: ./client <ip> <port>.");
 	running(&inter, &user);
 	endwin();
 	return (0);

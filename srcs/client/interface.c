@@ -22,18 +22,17 @@ bool	init_interface(t_interface *inter)
     initscr();
 	noecho();
 	cbreak();
-
 	inter->top = subwin(stdscr, LINES - BOX_INPUT_LEN, COLS, 0, 0);
 	inter->bot = subwin(stdscr, BOX_INPUT_LEN, COLS, LINES - BOX_INPUT_LEN, 0);
 
 	if (!inter->top || !inter->bot)
 		return (false);
 
-	nodelay(stdscr, TRUE);
+	scrollok(inter->top, TRUE);
 	keypad(inter->bot, TRUE);
 
-	refresh_top_interface(inter, "");
-	refresh_bot_interface(inter, "");
+	wrefresh(inter->top);
+	wrefresh(inter->bot);
 	return (true);
 }
 

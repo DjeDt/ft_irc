@@ -79,7 +79,10 @@ bool	processing(t_server *server, int off)
 		if (receive_data(off, &data, MAX_INPUT_LEN, 0) != true)
 			close_connection(server, off);
 		else
+		{
+			printf("received '%s'\n", data.data);
 			interpreter(server, data, off);
+		}
 	}
 	return (true);
 }
