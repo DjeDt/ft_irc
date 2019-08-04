@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/21 15:37:45 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/29 14:42:39 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/08/04 20:35:33 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,20 +22,21 @@ void	generate_guest_pseudo(char *pseudo, int id)
 	_memcpy(&pseudo[6], tmp, 9);
 }
 
-t_list_user	*create_new_user(int socket)
+t_users	*user_create(int socket)
 {
-	t_list_user *new;
+	t_users *new;
 
 	if ((new = malloc(sizeof(*new))) == NULL)
 		return (NULL);
 	_memset(new, 0x0, sizeof(*new));
+	generate_guest_pseudo(new->nick, socket);
 	new->socket = socket;
 	return (new);
 }
 
-void	push_new_user(t_list_user **users, t_list_user *chunk)
+void	user_push(t_users **users, t_users *chunk)
 {
-	t_list_user *tmp;
+	t_users *tmp;
 
 	if (*users == NULL)
 		(*users) = chunk;
@@ -46,34 +47,30 @@ void	push_new_user(t_list_user **users, t_list_user *chunk)
 			tmp = tmp->next;
 		tmp->next = chunk;
 	}
-	puts("toto");
 }
 
-void	add_users(t_list_user **users, int socket)
+void	user_add(t_users **users, int socket)
 {
-	t_list_user *tmp;
+	t_users *tmp;
 
 	if (*users == NULL)
-		(*users) = create_new_user(socket);
+		(*users) = user_create(socket);
 	else
 	{
 		tmp = (*users);
 		while (tmp->next != NULL)
 			tmp = tmp->next;
-		tmp->next = create_new_user(socket);
+		tmp->next = user_create(socket);
 	}
 }
 
-t_list_user		*search_user_by_id(t_list_user *users, int id)
+t_users		*user_search_by_id(t_users *users, int id)
 {
-	t_list_user *tmp;
+	t_users *tmp;
 
 	if (users != NULL)
 	{
 		tmp = users;
-
-		// debug
-		printf("TMP user =  %s - socket = %d\n", tmp->nick, tmp->socket);
 		while (tmp != NULL)
 		{
 			if (tmp->socket == id)
@@ -84,10 +81,10 @@ t_list_user		*search_user_by_id(t_list_user *users, int id)
 	return (NULL);
 }
 
-t_list_user		*search_user_by_name(t_list_user *users, const char *name)
+t_users		*user_search_by_name(t_users *users, const char *name)
 {
 	int			len;
-	t_list_user	*tmp;
+	t_users	*tmp;
 
 	if (users != NULL)
 	{
@@ -103,10 +100,10 @@ t_list_user		*search_user_by_name(t_list_user *users, const char *name)
 	return (NULL);
 }
 
-void	remove_user(t_list_user **users, int id)
+void	user_remove(t_users **users, int id)
 {
-	t_list_user *tmp;
-	t_list_user *prev;
+	t_users *tmp;
+	t_users *prev;
 
 	prev = NULL;
 	tmp = (*users);
@@ -114,8 +111,6 @@ void	remove_user(t_list_user **users, int id)
 	{
 		if (tmp->socket == id)
 		{
-			// debug
-			printf("[-] REMOVE user: id=%d, pseudo=%s, status=%d\n", tmp->socket, tmp->nick, tmp->statut);
 			if (prev == NULL)
 			{
 				if (tmp->next != NULL)

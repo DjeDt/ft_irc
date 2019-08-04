@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:01:51 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/28 15:02:45 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/06/05 16:13:37 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 bool	do_key_left(t_interface *inter, char *input)
 {
-	if  (inter->off > 0 && inter->cursor > CURSOR_START)
+	if  (inter->off > 0)
 	{
 		inter->off--;
 		inter->cursor--;
@@ -26,7 +26,7 @@ bool	do_key_left(t_interface *inter, char *input)
 
 bool	do_key_right(t_interface *inter, char *input)
 {
-	if (inter->off < inter->curmax && (inter->cursor - CURSOR_START) < inter->curmax)
+	if (inter->off < inter->curmax && inter->off < inter->curmax)
 	{
 		inter->off++;
 		inter->cursor++;
@@ -52,11 +52,14 @@ bool	do_key_down(t_interface *inter, char *input)
 
 bool	insert_char(t_interface *inter, char *input, int c)
 {
-	if (inter->off < MAX_INPUT_LEN && inter->curmax < MAX_INPUT_LEN)
+	if (inter->off < MAX_INPUT_LEN)
 	{
+		if (inter->off < inter->curmax)
+			memmove(input + (inter->off + 1), input + inter->off, _strlen(input + inter->off));
+		input[inter->off] = c;
+		inter->off++;
 		inter->curmax++;
 		inter->cursor++;
-		input[inter->off++] = c;
 		refresh_bot_interface(inter, input);
 		return (true);
 	}
@@ -67,8 +70,6 @@ bool	insert_char(t_interface *inter, char *input, int c)
 	}
 }
 
-
-#include <string.h>
 bool	delete_char(t_interface *inter, char *input)
 {
 	if (inter->off > 0)
@@ -77,7 +78,7 @@ bool	delete_char(t_interface *inter, char *input)
 		inter->curmax--;
 		inter->cursor--;
 
-		_memcpy(input + inter->off, input + inter->off + 1, inter->curmax);
+		memmove(input + inter->off, input + inter->off + 1, inter->curmax - inter->off);
 		input[inter->curmax] = '\0';
 		refresh_bot_interface(inter, input);
 		return (true);

@@ -6,83 +6,75 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/31 09:05:09 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/08/04 19:11:42 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
 
-void	init_client_list(t_client *client, int socket)
+void	init_client_list(t_fd *info, int socket)
 {
-	FD_ZERO(&client->master);
-	FD_ZERO(&client->read);
-	FD_ZERO(&client->write);
-	FD_SET(socket, &client->master);
-	client->fd_max = socket;
+	FD_ZERO(&info->master);
+	FD_ZERO(&info->read);
+	FD_ZERO(&info->write);
+	FD_SET(socket, &info->master);
+	info->fd_max = socket;
 }
 
 bool	accept_connection(t_server *server)
 {
-	socklen_t	len;
-	t_list_user *user;
+	socklen_t			len;
+	t_users				*user;
+	struct sockaddr_in	addr;
 
-	if (!(user = create_new_user(0)))
+	if (!(user = user_create(0)))
 		return (false);
-
-	len = sizeof(user->addr);
-	user->socket = accept(server->socket, (struct sockaddr*)&user->addr, &len);
+	len = sizeof(addr);
+	user->socket = accept(server->sock, (struct sockaddr*)&addr, &len);
 	if (user->socket < 0)
 	{
 		perror("accept");
-		free(user);
+		user_remove(&server->users, user->socket);
 		return (false);
 	}
-
-	FD_SET(user->socket, &server->client.master);
-	if (user->socket > server->client.fd_max)
-		server->client.fd_max = user->socket;
+	FD_SET(user->socket, &server->info.master);
 	generate_guest_pseudo(user->nick, user->socket);
-	server->client.fd_max = user->socket;
-
-	// debug
-	printf("[+] new connection from '%s' using socket '%d'\n", inet_ntoa(user->addr.sin_addr), user->socket);
-	printf("\tgenerated nickname: '%s'\n", user->nick);
-
-	push_new_user(&server->users, user);
-	send_welcome(user->socket);
-
+	if (user->socket > server->info.fd_max)
+		server->info.fd_max = user->socket;
+	user_push(&server->users, user);
+	printf("[+] new user : '%s'\n", user->nick);
 	return (true);
 }
 
 void	close_connection(t_server *server, int off)
 {
-	close(off);
-	FD_CLR(off, &server->client.master);
-	if (off == server->client.fd_max)
-		server->client.fd_max -= 1;
-	remove_user(&server->users, off);
+	t_users		*user;
+
+	user = user_search_by_id(server->users, off);
+	if (user == NULL)
+		return ;
+	close(user->socket);
+	FD_CLR(off, &server->info.master);
+	if (off == server->info.fd_max)
+		server->info.fd_max -= 1;
+	printf("remove user '%s'\n", user->nick);
+	channel_user_remove_full(server->channel, user);
+	user_remove(&server->users, off);
 }
 
 bool	processing(t_server *server, int off)
 {
 	t_data	data;
 
-	if (off == server->socket)
-	{
-		// new user
+	if (off == server->sock) /* new user */
 		accept_connection(server);
-	}
-	else
+	else /* user sending data */
 	{
-		// received data
 		_memset(&data, 0x0, sizeof(data));
 		if (receive_data(off, &data, MAX_INPUT_LEN, 0) != true)
 			close_connection(server, off);
 		else
-		{
-			printf("received '%s'\n", data.data);
 			interpreter(server, data, off);
-		}
 	}
 	return (true);
 }
@@ -91,16 +83,17 @@ bool	running(t_server *server)
 {
 	int off;
 
-	init_client_list(&server->client, server->socket);
+	init_client_list(&server->info, server->sock);
 	while (true)
 	{
-		server->client.read = server->client.master;
-		if (select(server->client.fd_max + 1, &server->client.read, &server->client.write, NULL, NULL) < 0)
-			return (false);
 		off = 0;
-		while (off <= server->client.fd_max)
+		server->info.read = server->info.master;
+		server->info.write = server->info.master;
+		if (select(server->info.fd_max + 1, &server->info.read, &server->info.write, NULL, NULL) < 0)
+			return (false);
+		while (off <= server->info.fd_max)
 		{
-			if (FD_ISSET(off, &server->client.read))
+			if (FD_ISSET(off, &server->info.read))
 				processing(server, off);
 			off++;
 		}

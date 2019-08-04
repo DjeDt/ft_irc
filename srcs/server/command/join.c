@@ -6,35 +6,78 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:17:35 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/29 17:45:39 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/08/04 21:13:58 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
 
-void	irc_join(t_server *server, char **command, int off)
+static void	already_in_chan(t_users *user)
 {
 	t_data		data;
 	t_channel	*chan;
 
+	chan = (t_channel*)user->chan;
+	data.len = snprintf(data.data, MAX_INPUT_LEN, "Already connected to '%s'.\n", chan->name);
+	send_data_to_single(user->socket, data.data, data.len);
+}
+
+static void	accept_user(t_channel *channel, t_users *user)
+{
+	t_data			data;
+	t_channel_user	*tmp;
+
+	if (user->chan == NULL)
+	{
+		channel->num += 1;
+		user->chan = channel;
+		channel_user_add(&channel->users, user);
+		data.len = snprintf(data.data, MAX_INPUT_LEN, "'%s' joined.\n", user->nick);
+		tmp = channel->users;
+		while (tmp != NULL)
+		{
+			if (user->socket != tmp->user->socket)
+				send_data_to_single(tmp->user->socket, data.data, data.len);
+			tmp = tmp->next;
+		}
+	}
+}
+
+static void	init_channel(t_server *server, t_users *user, char *chan_name)
+{
+	t_data		data;
+	t_channel	*chan;
+
+	chan = channel_add(&server->channel, chan_name);
+	if (chan == NULL)
+		return ;
+	chan->num += 1;
+	user->chan = chan;
+	channel_user_add(&chan->users, user);
+	data.len = snprintf(data.data, MAX_INPUT_LEN, "you joined '%s' channel.\n", chan_name);
+	send_data_to_single(user->socket, data.data, data.len);
+}
+
+void	irc_join(t_server *server, char **command, int off)
+{
+	t_users		*user;
+	t_channel	*channel;
+
 	if (command[1] != NULL)
 	{
-		chan = search_channel(server->chan, command[1]);
-		if (chan == NULL)
+		user = user_search_by_id(server->users, off);
+		if (user == NULL)
+			return ;
+		if (user->chan != NULL)
 		{
-			chan = add_channel(&server->chan, command[1]);
-			chan->num += 1;
-			FD_SET(off, &chan->connected);
-			data.len = snprintf(data.data, MAX_INPUT_LEN, "'%s' joined.", command[1]);
+			already_in_chan(user);
+			return ;
 		}
-		else if (!FD_ISSET(off, &chan->connected))
-		{
-			chan->num += 1;
-			FD_SET(off, &chan->connected);
-			data.len = snprintf(data.data, MAX_INPUT_LEN, "'%s' joined.", command[1]);
-		}
+
+		channel = channel_search(server->channel, command[1]);
+		if (channel == NULL)
+			init_channel(server, user, command[1]);
 		else
-			data.len = snprintf(data.data, MAX_INPUT_LEN, "Already connected to '%s'.", command[1]);
-		send_data(off, data.data, data.len, 0);
+			accept_user(channel, user);
 	}
 }

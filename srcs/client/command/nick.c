@@ -1,33 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   receive.c                                          :+:      :+:    :+:   */
+/*   nick.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/28 15:24:36 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/06/06 10:07:26 by ddinaut          ###   ########.fr       */
+/*   Created: 2019/06/13 09:55:48 by ddinaut           #+#    #+#             */
+/*   Updated: 2019/06/13 10:25:39 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "client.h"
 
-bool    receive_data(int off, t_data *data, size_t size, int flag)
+bool	irc_nick(t_interface *inter, t_list_user *user, char **command)
 {
-	int tmp;
-
-	tmp = 0;
-	while (size > 0)
+	if (user->connected == true)
 	{
-		tmp = recv(off, data->data + data->len, size - data->len, flag);
-		// if 0 : user closed the connection
-		// if -1: recv error
-		if (tmp < 1)
-			return (false);
-		data->len += tmp;
-		size -= tmp;
-		if (_strchr(data->data, '\n') != NULL)
-			return (true);
+		if (command[1] != NULL)
+		{
+			if (_strlen(command[1]) < MAX_NICK_LEN)
+			{
+				if (send_data(inter, user) == true)
+				{
+					_memcpy(user->nick, command[1], MAX_NICK_LEN);
+					return (true);
+				}
+			}
+		}
 	}
-	return (true);
+	else
+		refresh_top_interface(inter, "you are not connected. use '/connect'");
+	return (false);
 }

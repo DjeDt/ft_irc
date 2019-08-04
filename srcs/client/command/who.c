@@ -1,22 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   connect.c                                          :+:      :+:    :+:   */
+/*   who.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/31 09:04:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/06/05 13:49:47 by ddinaut          ###   ########.fr       */
+/*   Created: 2019/07/29 15:08:40 by ddinaut           #+#    #+#             */
+/*   Updated: 2019/07/29 15:12:34 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "client.h"
 
-// client side
-void	irc_connect(t_server *server, char **command, int off)
+void	irc_who(t_interface *inter, t_list_user *user, char **command)
 {
-	(void)server;
 	(void)command;
-	(void)off;
-	printf("[%s] CONNECT\n", command[0]);
+	if (user->connected == true)
+		send_data(inter, user);
+	else
+		refresh_top_interface(inter, "you are not connected. use '/connect'");
 }

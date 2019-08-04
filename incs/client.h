@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 14:24:19 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/28 15:56:06 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/07/29 15:11:04 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <time.h>
 # include <unistd.h>
 # include <wchar.h>
+# include <errno.h>
 
 # include <sys/types.h>
 # include <sys/socket.h>
@@ -32,9 +33,9 @@
 /*
 ** Defines
 */
+# define DEFAULT_PORT	"1234"
 
 # define CURSOR_START	3
-
 # define BOX_INPUT_LEN	3
 # define MAX_INPUT_LEN	512
 # define MAX_NICK_LEN	16
@@ -44,10 +45,10 @@ typedef struct			s_interface
 {
 	WINDOW				*top;
 	WINDOW				*bot;
-	int					off;
-	int					line;
-	int					cursor;
-	int					curmax;
+	int					off;	// cursor offset in str
+	int					line;	// printable line for top
+	int					cursor;	// where is the visible cursor
+	int					curmax;	// max visible cursor
 }						t_interface;
 
 typedef struct			s_command
@@ -64,7 +65,6 @@ typedef struct			s_data
 
 typedef struct			s_client
 {
-	int					new;
 	int					fd_max;
 	fd_set				read;
 	fd_set				write;
@@ -73,11 +73,11 @@ typedef struct			s_client
 typedef struct			s_list_user
 {
 	int					socket;
-	int					statut;
-	char				nick[MAX_NICK_LEN];
-	char				input[MAX_INPUT_LEN];
+	bool				running;
+	bool				connected;
+	char				nick[MAX_NICK_LEN + 1];
+	char				input[MAX_INPUT_LEN + 1];
 	t_client			client;
-	struct sockaddr_in	addr;
 }						t_list_user;
 
 typedef void (t_func) (t_interface *inter, t_list_user *user, char **command);
@@ -88,13 +88,24 @@ typedef void (t_func) (t_interface *inter, t_list_user *user, char **command);
 void					running(t_interface *inter, t_list_user *user);
 void					interpreter(t_interface *inter, t_list_user *user);
 
-bool    receive_data(int off, t_data *data, size_t size, int flag);
+bool				    receive_data(int off, t_data *data, size_t size, int flag);
+bool					send_data(t_interface *inter, t_list_user *user);
+
 /* command */
-bool					connect_to_server(t_list_user *user, const char *s_ip, const char *s_port);
+void					irc_msg(t_interface *inter, t_list_user *user, char **command);
+void					irc_who(t_interface *inter, t_list_user *user, char **command);
+void					irc_help(t_interface *inter, t_list_user *user, char **command);
+void					irc_list(t_interface *inter, t_list_user *user, char **command);
+void					irc_quit(t_interface *inter, t_list_user *user, char **command);
+bool					irc_nick(t_interface *inter, t_list_user *user, char **command);
+void					irc_join(t_interface *inter, t_list_user *user, char **command);
+void					irc_leave(t_interface *inter, t_list_user *user, char **command);
+void					wrapper_connect(t_interface *inter, t_list_user *user, char **command);
+bool					irc_connect(t_interface *inter, t_list_user *user, const char *s_ip, const char *s_port);
 
 /* interface */
 bool					init_interface(t_interface *inter);
-void					refresh_top_interface(t_interface *inter, char *input);
+void					refresh_top_interface(t_interface *inter, char *input, ...);
 void					refresh_bot_interface(t_interface *inter, char *input);
 
 /* readline */

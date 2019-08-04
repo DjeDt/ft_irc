@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:28 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/21 17:12:26 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/08/04 19:12:46 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,12 @@
 
 bool	receive_data(int off, t_data *data, size_t size, int flag)
 {
-	int tmp;
 
-	tmp = 0;
-	while (size > 0)
+	if ((data->len = recv(off, data->data, size, flag)) < 1)
 	{
-		tmp = recv(off, data->data + data->len, size, flag);
-		// if 0 : user closed the connection
-		// if -1: recv error
-		if (tmp < 1)
-		{
-			printf("[-] Can't read from %d socket. Closing it\n", off);
-			return (false);
-		}
-		data->len += tmp;
-		size -= tmp;
-		if (_strchr(data->data, '\n') != NULL)
-			break ;
+		perror("recv");
+		return (false);
 	}
-	printf("received %d data from socket %d\n", data->len, off);
+	printf("received %d octets from %d -> [%s]\n", data->len, off, data->data);
 	return (true);
 }

@@ -1,39 +1,60 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   channel.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/06/06 09:39:16 by ddinaut           #+#    #+#             */
+/*   Updated: 2019/08/04 20:51:22 by ddinaut          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "server.h"
 
-t_channel	*create_channel(char *name)
+t_channel	*channel_create(char *name)
 {
-	t_channel *new;
+	int			len;
+	t_channel	*new;
 
+	puts("Create channel");
 	if (!(new = malloc(sizeof(t_channel))))
 		return (NULL);
-	new->num = 0;
-	FD_ZERO(&new->connected);
-	_memset(new->name, 0x0, MAX_CHAN_LEN);
-	_memcpy(new->name, name, _strlen(name));
+	_memset(new, 0x0, sizeof(*new));
+ 	len = _strlen(name);
+	if (len > MAX_NICK_LEN)
+		_memcpy(new->name, name, MAX_NICK_LEN);
+	else
+		_memcpy(new->name, name, len);
 	new->next = NULL;
 
 	// debug
-	printf("[+] CHANNEL create '%s'\n", new->name);
+	printf("[+] channel created '%s'\n", new->name);
 	return (new);
 }
 
-t_channel	*add_channel(t_channel **chan, char *name)
+t_channel	*channel_add(t_channel **chan, char *name)
 {
 	t_channel *tmp;
 
+	puts("Add channel");
 	if (*chan == NULL)
 	{
-		*chan = create_channel(name);
+		*chan = channel_create(name);
 		return (*chan);
 	}
-	tmp = (*chan);
-	while (tmp->next != NULL)
-		tmp = tmp->next;
-	tmp->next = create_channel(name);
-	return (tmp->next);
+	else
+	{
+		tmp = (*chan);
+		while (tmp->next != NULL)
+			tmp = tmp->next;
+		tmp->next = channel_create(name);
+		return (tmp->next);
+	}
+	return (NULL);
 }
 
-t_channel	*search_channel(t_channel *chan, char *name)
+t_channel	*channel_search(t_channel *chan, char *name)
 {
 	int			len;
 	t_channel	*ret;
@@ -49,7 +70,7 @@ t_channel	*search_channel(t_channel *chan, char *name)
 	return (NULL);
 }
 
-void	delete_channel(t_channel **channel, char *name)
+void	channel_delete(t_channel **channel, char *name)
 {
 	int			len;
 	t_channel	*tmp;
@@ -63,19 +84,22 @@ void	delete_channel(t_channel **channel, char *name)
 		if (_memcmp(tmp->name, name, len) == 0)
 		{
 			// debug
-			printf("[-] REMOVE channel '%s'\n", tmp->name);
-
+			printf("[-] remove channel '%s'\n", tmp->name);
 			if (prev == NULL)
 			{
 				if (tmp->next != NULL)
 				{
+					puts("ret1");
 					*channel = tmp->next;
 					free(tmp);
+					return ;
 				}
 				else
 				{
+					puts("ret2");
 					free(tmp);
 					*channel = NULL;
+					return ;
 				}
 			}
 			else

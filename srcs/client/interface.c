@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:04:28 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/28 17:30:29 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/07/29 15:54:30 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ bool	init_interface(t_interface *inter)
     initscr();
 	noecho();
 	cbreak();
+
 	inter->top = subwin(stdscr, LINES - BOX_INPUT_LEN, COLS, 0, 0);
 	inter->bot = subwin(stdscr, BOX_INPUT_LEN, COLS, LINES - BOX_INPUT_LEN, 0);
 
@@ -31,24 +32,48 @@ bool	init_interface(t_interface *inter)
 	scrollok(inter->top, TRUE);
 	keypad(inter->bot, TRUE);
 
-	wrefresh(inter->top);
-	wrefresh(inter->bot);
+	// draw interface
+	box(inter->top, ACS_VLINE, ACS_HLINE);
+	box(inter->bot, ACS_VLINE, ACS_HLINE);
+
+	// move the cursor to the input box
+	wprintw(inter->top, "\n");
+	mvwprintw(inter->bot, 1, 1, "> ");
+	wmove(inter->bot, 1, inter->cursor);
+
+	// refresh term
+	wnoutrefresh(inter->top);
+	wnoutrefresh(inter->bot);
+
+	doupdate();
+
 	return (true);
 }
 
-void	refresh_top_interface(t_interface *inter, char *input)
+void	refresh_top_interface(t_interface *inter, char *input, ...)
 {
+	va_list	arglist;
+	char	data[MAX_INPUT_LEN];
+
+	va_start(arglist, input);
+	vsnprintf(data, MAX_INPUT_LEN, input, arglist);
+	va_end(arglist);
+
+	wprintw(inter->top, " %s\n", data);
 	box(inter->top, ACS_VLINE, ACS_HLINE);
-	mvwprintw(inter->top, inter->line, 1, "%s", input);
-	inter->line++;
-	wrefresh(inter->top);
+	wmove(inter->bot, 1, inter->cursor);
+	wnoutrefresh(inter->top);
+	wnoutrefresh(inter->bot);
+	doupdate();
 }
 
 void	refresh_bot_interface(t_interface *inter, char *input)
 {
 	wclear(inter->bot);
+
 	box(inter->bot, ACS_VLINE, ACS_HLINE);
 	mvwprintw(inter->bot, 1, 1, "> %s", input);
 	wmove(inter->bot, 1, inter->cursor);
-	wrefresh(inter->bot);
+	wnoutrefresh(inter->bot);
+	doupdate();
 }

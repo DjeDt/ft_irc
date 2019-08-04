@@ -1,33 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   receive.c                                          :+:      :+:    :+:   */
+/*   send.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/28 15:24:36 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/06/06 10:07:26 by ddinaut          ###   ########.fr       */
+/*   Created: 2019/06/05 15:10:56 by ddinaut           #+#    #+#             */
+/*   Updated: 2019/07/31 14:09:24 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "client.h"
 
-bool    receive_data(int off, t_data *data, size_t size, int flag)
+bool	send_data(t_interface *inter, t_list_user *user)
 {
-	int tmp;
-
-	tmp = 0;
-	while (size > 0)
+	if (user->input != NULL && inter->curmax > 0)
 	{
-		tmp = recv(off, data->data + data->len, size - data->len, flag);
-		// if 0 : user closed the connection
-		// if -1: recv error
-		if (tmp < 1)
-			return (false);
-		data->len += tmp;
-		size -= tmp;
-		if (_strchr(data->data, '\n') != NULL)
-			return (true);
+		// debug
+//		refresh_top_interface(inter, "send : %s", user->input);
+
+		if (FD_ISSET(user->socket, &user->client.write))
+		{
+			if (send(user->socket, user->input, inter->curmax, 0) < 0)
+				refresh_top_interface(inter, "error send : %s", strerror(errno));
+			else
+				return (true);
+		}
 	}
-	return (true);
+	return (false);
 }

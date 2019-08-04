@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:10:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/29 17:17:24 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/08/02 14:53:17 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,20 @@ void	irc_list(t_server *server, char **command, int off)
 	t_data		data;
 
 	(void)command;
-	if (server->chan != NULL)
+	if (server->channel != NULL)
 	{
-		tmp = server->chan;
+		tmp = server->channel;
+		data.len = snprintf(data.data, MAX_INPUT_LEN, "Current channel:\n.");
 		while (tmp != NULL)
 		{
-			data.len = snprintf(data.data, MAX_INPUT_LEN, "'%s': %d users connected.", tmp->name, tmp->num);
-			send_data(off, data.data, data.len, 0);
+			data.len = snprintf(data.data, MAX_INPUT_LEN, "channel:\t'%s'.\n", tmp->name);
+			send_data_to_single(off, data.data, data.len);
 			tmp = tmp->next;
 		}
 	}
 	else
 	{
-		data.len = snprintf(data.data, MAX_INPUT_LEN, "There isn't any channel.");
-		send_data(off, data.data, data.len, 0);
+		data.len = snprintf(data.data, MAX_INPUT_LEN, "There isn't any channel.\n");
+		send_data_to_single(off, data.data, data.len);
 	}
 }

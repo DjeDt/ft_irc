@@ -6,7 +6,7 @@
 #    By: pguillie <pguillie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/22 18:46:54 by pguillie          #+#    #+#              #
-#    Updated: 2019/05/29 14:42:11 by ddinaut          ###   ########.fr        #
+#    Updated: 2019/08/04 19:32:58 by ddinaut          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -15,7 +15,7 @@ CLIENT	= client
 
 CC		= gcc
 CFLAGS	= -Wall -Werror -Wextra -I$(incdir)
-EFLAGS	= #-g3 -fsanitize=address
+EFLAGS	= -g3 #-fsanitize=address
 
 incdir	= ./incs/
 srcdir	= ./srcs/
@@ -33,11 +33,14 @@ server_src =							\
 	$(serverdir)/runnin.c				\
 	$(serverdir)/users.c				\
 	$(serverdir)/channel.c				\
+	$(serverdir)/channel_users.c		\
 	$(serverdir)/receive.c				\
 	$(serverdir)/interpreter.c			\
 	$(serverdir)/send.c					\
 	$(serverdir)/error.c				\
 	$(serverdir)/error_functions.c		\
+\
+	$(serverdir)/$(cmddir)/help.c		\
 	$(serverdir)/$(cmddir)/list.c		\
 	$(serverdir)/$(cmddir)/join.c		\
 	$(serverdir)/$(cmddir)/leave.c		\
@@ -56,12 +59,22 @@ server_src =							\
 
 client_src = 							\
 	$(clientdir)/client.c				\
-	$(clientdir)/interpreter.c			\
-	$(clientdir)/connect.c				\
-	$(clientdir)/running.c				\
-	$(clientdir)/key.c					\
-	$(clientdir)/receive.c				\
 	$(clientdir)/interface.c			\
+	$(clientdir)/running.c				\
+	$(clientdir)/interpreter.c			\
+	$(clientdir)/key.c					\
+	$(clientdir)/send.c					\
+	$(clientdir)/receive.c				\
+\
+	$(clientdir)/$(cmddir)/connect.c	\
+	$(clientdir)/$(cmddir)/msg.c		\
+	$(clientdir)/$(cmddir)/who.c		\
+	$(clientdir)/$(cmddir)/list.c		\
+	$(clientdir)/$(cmddir)/nick.c		\
+	$(clientdir)/$(cmddir)/help.c		\
+	$(clientdir)/$(cmddir)/quit.c		\
+	$(clientdir)/$(cmddir)/join.c		\
+	$(clientdir)/$(cmddir)/leave.c		\
 \
 	$(libdir)/logger.c					\
 	$(libdir)/lib.c						\

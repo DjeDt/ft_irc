@@ -6,58 +6,61 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/21 10:55:17 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/29 11:25:09 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/08/04 16:21:02 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
-#include <string.h>
 
-bool	send_data(int fd, char *data, int size, int flag)
+bool	send_data_to_single(int fd, char *data, size_t size)
 {
-	int tmp;
-	int sent;
-
-	sent = 0;
-	strncat(data, "\r\n", 2);
-	while (sent < size)
+	if (send(fd, data, size, 0) < 1)
 	{
-		tmp = send(fd, data + sent, size, flag);
-		if (tmp <= 0)
-		{
-			if (tmp < 0)
-				perror("send");
-			return (false);
-		}
-		sent += tmp;
+		perror("send");
+		return (false);
 	}
-//	send(fd, "\n", 1, flag);
-	printf("send %d data to %d socket\n", sent, fd);
+	else
+		printf("send %ld to %d\n", _strlen(data), fd);
 	return (true);
 }
 
-void	send_welcome(int off)
+bool	send_data_to_spec_chan(t_channel *chan, t_data data, char *nick)
 {
-	char welcome[] = "Welcome here. type '/help' to get help or '/join general' to begin!";
-	send_data(off, welcome, _strlen(welcome), 0);
+	t_channel_user *tmp;
+
+	if (chan != NULL && nick != NULL)
+	{
+		tmp = chan->users;
+		data.len = snprintf(data.data, MAX_INPUT_LEN, "'%s' leaved channel.\n", nick);
+		while (tmp != NULL)
+		{
+			send_data_to_single(tmp->user->socket, data.data, data.len);
+			tmp = tmp->next;
+		}
+		return (true);
+	}
+	return (false);
 }
 
-bool	send_to_all(t_server *server, t_client *client, t_data data, int count)
+bool	send_data_to_channel(t_channel *chan, t_data data, char *name, char *nick)
 {
-	int curr;
+	t_data		new;
+	t_channel	*tmp_chan;
+	t_channel_user	*tmp_chan_usr;
 
-	curr = 0;
-	while (curr <= client->fd_max)
+	tmp_chan = channel_search(chan, name);
+	if (tmp_chan != NULL)
 	{
-		if (FD_ISSET(curr, &client->master))
+		tmp_chan_usr = tmp_chan->users;
+		new.len = snprintf(new.data, MAX_INPUT_LEN, "[%s]: <%s> %s", name, nick, data.data);
+		while (tmp_chan_usr != NULL)
 		{
-			if (curr != server->socket && curr != count)
-			{
-				send_data(curr, data.data, data.len, 0);
-				// if == false -> log error
-			}
+			printf("send '%s' to '%s' channel\n", data.data, tmp_chan_usr->user->nick);
+			if (tmp_chan_usr->user != NULL)
+				send_data_to_single(tmp_chan_usr->user->socket, new.data, new.len);
+			tmp_chan_usr = tmp_chan_usr->next;
 		}
-		curr++;
+		return (true);
 	}
-	return (true);
+	return (false);
 }
