@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:19:18 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/08/04 20:36:54 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/08/04 21:44:12 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,7 @@ void					irc_quit(t_server *server, char **command, int off);
 void					irc_shutdown(t_server *server, char **command, int off);
 
 /* lib */
+void					get_date(char *buf);
 ssize_t					_strlen(const char *str);
 int						arrlen(char **arr);
 char					*_strchr(const char *str, char c);

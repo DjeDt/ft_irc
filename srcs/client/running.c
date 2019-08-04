@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:00:32 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/07/29 14:37:00 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/08/04 21:51:09 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static void	read_from_user(t_interface *inter, t_list_user *user)
 		do_key_up(inter, user->input);
 	else if (key == KEY_DOWN)
 		do_key_down(inter, user->input);
-	else if (key == 127) // delete macro doesn't works
+	else if (key == 127)
 		delete_char(inter, user->input);
 	else if (key == '\n')
 	{
@@ -65,7 +65,7 @@ static void	read_from_server(t_interface *inter, t_list_user *user)
 	_memset(&data, 0x0, sizeof(data));
 	if (recv(user->socket, data, MAX_INPUT_LEN, 0) < 1)
 	{
-		refresh_top_interface(inter, "Disconnected from server :_: : %s", strerror(errno));
+		refresh_top_interface(inter, "Disconnected from server :_:");
 		close(user->socket);
 		user->connected = false;
 		return ;
@@ -80,15 +80,10 @@ void	running(t_interface *inter, t_list_user *user)
 	{
 		init_fd(user);
 
-		// socket == 0 if not connected or + if connected, and 0 == stdin
 		if (select(user->socket + 1, &user->client.read, &user->client.write, NULL, NULL) < 0)
 			return ;
-
-		// receive data from stdin
 		if (FD_ISSET(STDIN_FILENO, &user->client.read))
 			read_from_user(inter, user);
-
-		// reveive data from server
 		if (user->connected == true)
 		{
 			if (FD_ISSET(user->socket, &user->client.read))

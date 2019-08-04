@@ -6,12 +6,11 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 17:15:40 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/05/29 15:45:18 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/08/04 21:53:05 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
-
 
 int		_isspace(char c)
 {

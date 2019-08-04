@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/07 14:09:28 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/08/04 20:38:02 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/08/04 21:49:37 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ bool			channel_user_remove(t_channel_user **chan, t_users *user)
 	{
 		if (curr->user != NULL)
 		{
-			printf("curr->user = %d | user_>socket = %d\n", curr->user->socket, user->socket);
 			if (curr->user->socket == user->socket)
 			{
 				if (prev == NULL)

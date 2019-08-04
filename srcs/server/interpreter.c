@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:26:02 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/08/04 20:05:42 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/08/04 21:51:14 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,9 @@ bool	handle_command(t_server *server, char **command, int off)
 	return (false);
 }
 
-void	handle_message(t_server *server, t_data data, int off)
+void	handle_message(t_server *server, t_data d, int off)
 {
+	t_data			data;
 	t_users			*user;
 	t_channel_user	*usr_list;
 
@@ -110,6 +111,8 @@ void	handle_message(t_server *server, t_data data, int off)
 	if (user->chan == NULL)
 		return ;
 	usr_list = ((t_channel*)user->chan)->users;
+
+	data.len = snprintf(data.data, MAX_INPUT_LEN, "[%s]> %s", user->nick, d.data);
 	while (usr_list != NULL)
 	{
 		if (FD_ISSET(usr_list->user->socket, &server->info.write))
