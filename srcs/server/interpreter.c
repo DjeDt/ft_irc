@@ -127,6 +127,7 @@ void	interpreter(t_server *server, t_data data, int off)
 
 	if (data.data[0] == '/')
 	{
+		_memset(&command, 0x0, sizeof(command));
 		if (split_command(command, data.data) != true)
 			return ;
 		handle_command(server, command, off);
