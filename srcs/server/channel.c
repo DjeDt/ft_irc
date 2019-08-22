@@ -17,7 +17,6 @@ t_channel	*channel_create(char *name)
 	int			len;
 	t_channel	*new;
 
-	puts("Create channel");
 	if (!(new = malloc(sizeof(t_channel))))
 		return (NULL);
 	_memset(new, 0x0, sizeof(*new));
@@ -27,8 +26,6 @@ t_channel	*channel_create(char *name)
 	else
 		_memcpy(new->name, name, len);
 	new->next = NULL;
-
-	// debug
 	printf("[+] channel created '%s'\n", new->name);
 	return (new);
 }
@@ -37,7 +34,7 @@ t_channel	*channel_add(t_channel **chan, char *name)
 {
 	t_channel *tmp;
 
-	puts("Add channel");
+	printf("[+] channel add:");
 	if (*chan == NULL)
 	{
 		*chan = channel_create(name);
@@ -83,20 +80,22 @@ void	channel_delete(t_channel **channel, char *name)
 	{
 		if (_memcmp(tmp->name, name, len) == 0)
 		{
+
 			// debug
 			printf("[-] remove channel '%s'\n", tmp->name);
+
 			if (prev == NULL)
 			{
 				if (tmp->next != NULL)
 				{
-					puts("ret1");
 					*channel = tmp->next;
+					if (tmp->users != NULL)
+						channel_user_remove_all(tmp->users);
 					free(tmp);
 					return ;
 				}
 				else
 				{
-					puts("ret2");
 					free(tmp);
 					*channel = NULL;
 					return ;

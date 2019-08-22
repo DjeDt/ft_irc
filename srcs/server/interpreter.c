@@ -101,6 +101,7 @@ bool	handle_command(t_server *server, char **command, int off)
 	return (false);
 }
 
+
 void	handle_message(t_server *server, t_data d, int off)
 {
 	t_data			data;
@@ -111,8 +112,7 @@ void	handle_message(t_server *server, t_data d, int off)
 	if (user->chan == NULL)
 		return ;
 	usr_list = ((t_channel*)user->chan)->users;
-
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "[%s]> %s", user->nick, d.data);
+	data.len = snprintf(data.data, MAX_INPUT_LEN, "[%s] [%s]> %s", ((t_channel*)user->chan)->name, user->nick, d.data);
 	while (usr_list != NULL)
 	{
 		if (FD_ISSET(usr_list->user->socket, &server->info.write))

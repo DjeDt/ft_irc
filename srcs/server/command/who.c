@@ -12,32 +12,71 @@
 
 #include "server.h"
 
-void	irc_who(t_server *server, char **command, int off)
+static void	clear_buffer(t_data *data, int off)
 {
-	int		count;
-	t_data	data;
-	t_users *user;
+	send_data_to_single(off, data->data, data->len);
+	_memset(data, 0x0, sizeof(t_data));
+}
 
-	if (command[0] != NULL)
+static void	send_spec_list(t_channel *chan, t_data *data, int off)
+{
+	t_channel_user *tmp;
+
+	memset(data, 0x0, sizeof(t_data));
+	tmp = chan->users;
+	while (tmp != NULL)
 	{
-		count = 0;
-		if (server->users != NULL)
+		tmp = tmp->next;
+	}
+	(void)off;
+}
+
+static void	send_full_list(t_users *users, t_data *data, int off)
+{
+	int		size;
+	t_users	*tmp;
+
+	tmp = users;
+	memset(data, 0x0, sizeof(t_data));
+	memcpy(data->data, "Connected user:\n", 15);
+	data->len = 15;
+	strncat(data->data, "\n", 1);
+	data->len++;
+	while (tmp != NULL)
+	{
+		size = _strlen(tmp->nick);
+		if (data->len + (size + 1) >= MAX_INPUT_LEN)
+			clear_buffer(data, off);
+		memcpy(data->data + data->len, tmp->nick, size);
+		data->len += size;
+		memcpy(data->data + data->len, "\n", 1);
+		data->len += 1;
+
+//		strncat(data->data, tmp->nick, size);
+//		strncat(data->data + data->len, "\n", 1);
+//		data->len += (size + 1);
+
+		tmp = tmp->next;
+	}
+	send_data_to_single(off, data->data, data->len);
+}
+
+void		irc_who(t_server *server, char **command, int off)
+{
+	t_data		data;
+	t_channel	*chan;
+
+	if (command[1] != NULL)
+	{
+		chan = channel_search(server->channel, command[1]);
+		if (chan != NULL)
+			send_spec_list(chan, &data, off);
+		else
 		{
-			user = server->users;
-			while (user != NULL)
-			{
-				if (off != user->socket)
-				{
-					count++;
-					send_data_to_single(off, user->nick, _strlen(user->nick));
-				}
-				user = user->next;
-			}
-		}
-		if (count < 1)
-		{
-			data.len = snprintf(data.data, MAX_INPUT_LEN, "there is no user connected :(.\n");
+			data.len = snprintf(data.data, MAX_INPUT_LEN, "channel '%s' doesn't exist.", command[1]);
 			send_data_to_single(off, data.data, data.len);
 		}
 	}
+	else
+		send_full_list(server->users, &data, off);
 }

@@ -17,9 +17,13 @@ static void	already_in_chan(t_users *user)
 	t_data		data;
 	t_channel	*chan;
 
+	puts("A");
 	chan = (t_channel*)user->chan;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "Already connected to '%s'.\n", chan->name);
+	puts("B");
+	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server] : Already connected to '%s' channel.", chan->name);
+	puts("C");
 	send_data_to_single(user->socket, data.data, data.len);
+	puts("D");
 }
 
 static void	accept_user(t_channel *channel, t_users *user)
@@ -32,7 +36,7 @@ static void	accept_user(t_channel *channel, t_users *user)
 		channel->num += 1;
 		user->chan = channel;
 		channel_user_add(&channel->users, user);
-		data.len = snprintf(data.data, MAX_INPUT_LEN, "'%s' joined.\n", user->nick);
+		data.len = snprintf(data.data, MAX_INPUT_LEN, "[server] : '%s' joined.", user->nick);
 		tmp = channel->users;
 		while (tmp != NULL)
 		{
@@ -54,7 +58,7 @@ static void	init_channel(t_server *server, t_users *user, char *chan_name)
 	chan->num += 1;
 	user->chan = chan;
 	channel_user_add(&chan->users, user);
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "you joined '%s' channel.\n", chan_name);
+	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server] : you joined '%s' channel.\n", chan_name);
 	send_data_to_single(user->socket, data.data, data.len);
 }
 
@@ -73,7 +77,6 @@ void	irc_join(t_server *server, char **command, int off)
 			already_in_chan(user);
 			return ;
 		}
-
 		channel = channel_search(server->channel, command[1]);
 		if (channel == NULL)
 			init_channel(server, user, command[1]);

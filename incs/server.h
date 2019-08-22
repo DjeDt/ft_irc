@@ -68,6 +68,7 @@ enum e_statut
 /* fixed value */
 # define MAX_QUEUE		5
 # define MAX_NICK_LEN	16
+
 # define MAX_CHAN_LEN	50
 # define MAX_INPUT_LEN	512
 
@@ -168,6 +169,7 @@ t_channel_user			*channel_user_create(t_users *usr);
 t_channel_user			*channel_user_search(t_channel_user *chus, int off);
 bool					channel_user_add(t_channel_user **chan, t_users *user);
 bool					channel_user_remove(t_channel_user **chan, t_users *user);
+void					channel_user_remove_all(t_channel_user *user_list);
 void					channel_user_remove_full(t_channel *chan, t_users *users);
 
 /* commands */

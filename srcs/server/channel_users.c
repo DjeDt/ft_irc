@@ -114,6 +114,20 @@ bool			channel_user_remove(t_channel_user **chan, t_users *user)
 	return (false);
 }
 
+void			channel_user_remove_all(t_channel_user *user_list)
+{
+	t_channel_user *tmp;
+	t_channel_user *tmp2;
+
+	tmp = user_list;
+	while (tmp != NULL)
+	{
+		tmp2 = tmp;
+		free(tmp);
+		tmp = tmp2->next;
+	}
+}
+
 void			channel_user_remove_full(t_channel *channel, t_users *user)
 {
 	t_channel *tmp;

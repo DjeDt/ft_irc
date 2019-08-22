@@ -15,7 +15,7 @@ CLIENT	= client
 
 CC		= gcc
 CFLAGS	= -Wall -Werror -Wextra -I$(incdir)
-EFLAGS	= -g3 #-fsanitize=address
+EFLAGS	= -g3 -fsanitize=address
 
 incdir	= ./incs/
 srcdir	= ./srcs/

@@ -77,23 +77,22 @@ int		main(int ac, char **av)
 
 	if (ac == 1)
 	{
+		printf("No port porovided, using default '%s'\n", DEFAULT_PORT);
 		if (initialize(&server, DEFAULT_PORT) != true)
 			return (ERR);
 	}
 	else if (ac == 2)
 	{
-		if (is_valid_argument(av[1]) != true)
-			return (ERR);
-		if (initialize(&server, av[1]) != true)
-			return (ERR);
+
+		if (is_valid_argument(av[1]) == true && initialize(&server, av[1]) == true)
+			if (running(&server) == true)
+				return (SCS);
+		return (ERR);
 	}
 	else
 	{
 		error(INVALID_ARG, av[0]);
 		return (ERR);
 	}
-
-	if (running(&server) != true)
-		return (ERR);
 	return (SCS);
 }
