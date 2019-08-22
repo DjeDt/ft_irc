@@ -14,7 +14,7 @@
 
 bool	send_data(t_interface *inter, t_list_user *user)
 {
-	if (user->input != NULL && inter->curmax > 0)
+	if (_strlen(user->input) > 0 && inter->curmax > 0)
 	{
 		// debug
 //		refresh_top_interface(inter, "send : %s", user->input);
