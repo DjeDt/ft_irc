@@ -116,6 +116,7 @@ typedef struct				s_channel_user
 typedef struct			s_channel
 {
 	int					num;		// number of users
+	int					name_len;
 	char				name[MAX_CHAN_LEN + 1];
 	t_channel_user		*users;		// list of connected users
 	struct s_channel	*next;		// next channel
@@ -129,6 +130,8 @@ typedef struct			s_server
 	t_users				*users;
 	t_channel			*channel;
 }						t_server;
+
+// server -> channel -> channel_user -> user;
 
 typedef void (*t_error) (const char *err);
 typedef void (t_func) (t_server *server, char **command, int off);
@@ -157,19 +160,17 @@ t_users					*user_search_by_id(t_users *users, int id);
 t_users					*user_search_by_name(t_users *users, const char *name);
 
 /* channels */
-//void					print_chan(t_channel*chan);
 t_channel				*channel_create(char *name);
 t_channel				*channel_add(t_channel **chan, char *name);
 t_channel				*channel_search(t_channel *chan, char *name);
 void					channel_delete(t_channel **channel, char *name);
 
 /* channel users */
-void print_channel_user(t_channel_user *chan);
 t_channel_user			*channel_user_create(t_users *usr);
 t_channel_user			*channel_user_search(t_channel_user *chus, int off);
 bool					channel_user_add(t_channel_user **chan, t_users *user);
 bool					channel_user_remove(t_channel_user **chan, t_users *user);
-void					channel_user_remove_all(t_channel_user *user_list);
+void					channel_user_remove_all(t_channel_user **user_list);
 void					channel_user_remove_full(t_channel *chan, t_users *users);
 
 /* commands */

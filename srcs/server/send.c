@@ -16,11 +16,11 @@ bool	send_data_to_single(int fd, char *data, size_t size)
 {
 	if (send(fd, data, size, 0) < 1)
 	{
-		perror("send");
+//		perror("send");
 		return (false);
 	}
-	else
-		printf("send %ld to %d\n", _strlen(data), fd);
+	/* else */
+	/* 	printf("send %ld to %d\n", _strlen(data), fd); */
 	return (true);
 }
 

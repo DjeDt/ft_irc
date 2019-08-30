@@ -52,13 +52,24 @@ static void	_remove_user_from_channel(t_channel *chan, t_users *user, const char
 		if (channel_user_remove(&chan->users, user) != true)
 			return ;
 		chan->num -= 1;
+		printf("sjdfksdjhf ======= chan addr = %p\n", &chan);
+		printf("leave users : %d\n", chan->num);
+
 		user->chan = NULL;
+
 		data.len = snprintf(data.data, MAX_INPUT_LEN, "[server] : Disconnected from '%s'.", chan_name);
 		send_data_to_single(user->socket, data.data, data.len);
-		if (chan->num == 0)
-			channel_delete(&chan, chan->name);
-		else
+
+		printf("chan num = %d\n", chan->num);
+		if (chan->num > 0)
 			send_leave_notif(chan, user);
+		else
+			channel_delete(&chan, chan->name);
+	}
+	else
+	{
+		// toto better
+		puts("not in channel");
 	}
 }
 
@@ -68,22 +79,28 @@ void	irc_leave(t_server *server, char **command, int off)
 	t_users		*user;
 	t_channel	*chan;
 
+
+	puts("irc_leave");
 	if (command[1] != NULL)
 	{
 		user = user_search_by_id(server->users, off);
 		if (user == NULL)
 			return ;
+
 		if (user->chan == NULL)
 		{
 			user_not_connected(user);
 			return ;
 		}
+
 		chan = channel_search(server->channel, command[1]);
 		if (chan == NULL)
 		{
 			channel_doesnt_exist(user, command[1]);
 			return ;
 		}
+
+		// search if user is in channel provided in command[]
 		if (user->chan != NULL)
 			_remove_user_from_channel(chan, user, command[1]);
 	}

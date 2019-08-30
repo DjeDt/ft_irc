@@ -61,15 +61,14 @@ bool			channel_user_add(t_channel_user **chan, t_users *user)
 {
 	t_channel_user *tmp;
 
-	tmp = *chan;
-	if (tmp == NULL)
+	if ((*chan) == NULL)
 	{
-		*chan = channel_user_create(user);
+		(*chan) = channel_user_create(user);
 		return (true);
 	}
 	else
 	{
-		tmp = *chan;
+		tmp = (*chan);
 		while (tmp->next != NULL)
 			tmp = tmp->next;
 		tmp->next = channel_user_create(user);
@@ -93,10 +92,7 @@ bool			channel_user_remove(t_channel_user **chan, t_users *user)
 			{
 				if (prev == NULL)
 				{
-					if (curr->next != NULL)
-						*chan = curr->next;
-					else
-						*chan = NULL;
+					*chan = curr->next;
 					free(curr);
 				}
 				else
@@ -108,24 +104,26 @@ bool			channel_user_remove(t_channel_user **chan, t_users *user)
 				return (true);
 			}
 		}
+
 		prev = curr;
 		curr = curr->next;
 	}
 	return (false);
 }
 
-void			channel_user_remove_all(t_channel_user *user_list)
+void			channel_user_remove_all(t_channel_user **user_list)
 {
 	t_channel_user *tmp;
 	t_channel_user *tmp2;
 
-	tmp = user_list;
+	tmp = (*user_list);
 	while (tmp != NULL)
 	{
-		tmp2 = tmp;
+		tmp2 = tmp->next;
 		free(tmp);
-		tmp = tmp2->next;
+		tmp = tmp2;
 	}
+	(*user_list) = NULL;
 }
 
 void			channel_user_remove_full(t_channel *channel, t_users *user)

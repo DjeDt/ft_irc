@@ -32,38 +32,59 @@ static bool	is_valid_argument(const char *str)
 int test(t_server server)
 {
 
-	t_channel *chan;
-  	char *command[3] = {"/join", "toto"};
-	char *command2[3] = {"/leave", "toto"};
+//	t_channel *chan;
+	char	chan_name[] = "toto";
+  	char *cmd_join[3] = {"/join", chan_name};
+	char *cmd_leav[3] = {"/leave", chan_name};
 
-	bzero(&server, sizeof(server));
-	channel_add(&server.channel, "toto");
-	chan = channel_search(server.channel, "toto");
+	/* channel_add(&server.channel, chan_name); */
+	/* chan = channel_search(server.channel, chan_name); */
 
 	user_add(&server.users, 0);
-	user_add(&server.users, 1);
-	irc_join(&server, command, 0);
+//	user_add(&server.users, 1);
 
-	user_add(&server.users, 2);
-	user_add(&server.users, 3);
+	irc_join(&server, cmd_join, 0);
+	irc_leave(&server, cmd_leav, 0);
 
-	irc_join(&server, command, 0);
-	irc_join(&server, command, 1);
-	irc_leave(&server, command2, 1);
-	irc_join(&server, command, 1);
+	irc_join(&server, cmd_join, 0);
+	irc_leave(&server, cmd_leav, 0);
 
-	irc_join(&server, command, 2);
-	irc_join(&server, command, 3);
 
-	irc_leave(&server, command2, 1);
-	irc_leave(&server, command2, 0);
-	irc_leave(&server, command2, 2);
-	irc_leave(&server, command2, 3);
+	t_channel *chan;
 
-	if (channel_search(server.channel, "toto") == NULL)
-		puts("TOTO NULL");
-	else
-		print_channel_user(chan->users);
+	chan = server.channel;
+	int i = 0;
+	//for (i = 0; chan != NULL && i++ ; chan = chan->next)
+	while (chan != NULL)
+	{
+		printf("FOUND chan '%s'\n", chan->name);
+		chan = chan->next;
+		i++;
+	}
+	if (i == 0)
+		printf("NO CHANNEL\n");
+
+
+	/* user_add(&server.users, 2); */
+	/* user_add(&server.users, 3); */
+
+	/* irc_join(&server, command, 0); */
+	/* irc_join(&server, command, 1); */
+	/* irc_leave(&server, command2, 1); */
+	/* irc_join(&server, command, 1); */
+
+	/* irc_join(&server, command, 2); */
+	/* irc_join(&server, command, 3); */
+
+	/* irc_leave(&server, command2, 1); */
+	/* irc_leave(&server, command2, 0); */
+	/* irc_leave(&server, command2, 2); */
+	/* irc_leave(&server, command2, 3); */
+
+	/* if (channel_search(server.channel, "toto") == NULL) */
+	/* 	puts("TOTO NULL"); */
+	/* else */
+	/* 	print_channel_user(chan->users); */
 
 	return (0);
 }
@@ -72,8 +93,9 @@ int		main(int ac, char **av)
 {
 	t_server server;
 
-	/* test(server); */
-	/* return (0); */
+	bzero(&server, sizeof(server));
+	test(server);
+	return (0);
 
 	if (ac == 1)
 	{
