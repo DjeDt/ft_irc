@@ -14,12 +14,16 @@
 
 bool	receive_data(int off, t_data *data, size_t size, int flag)
 {
-
-	if ((data->len = recv(off, data->data, size, flag)) < 1)
+	// there is only client. should be enum* MESSAGE anytimes
+	if (recv(off, data, size, flag) < 1)
 	{
 		perror("recv");
 		return (false);
 	}
-	printf("received %d octets from %d -> [%s]\n", data->len, off, data->data);
+	// drop this data if not
+	if (data->type != MESSAGE_CODE)
+		return false;
+	// log
+	printf("[LOG] %d octets from %d -> [%s]\n", data->len, off, data->data);
 	return (true);
 }

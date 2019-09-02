@@ -111,6 +111,7 @@ void	handle_message(t_server *server, t_users *user, t_data d)
 	usr_list = ((t_channel*)user->chan)->users;
 	if (((t_channel*)user->chan)->users == NULL)
 		return ;
+
 	data.len = snprintf(data.data, MAX_INPUT_LEN, "[%s] [%s]> %s", ((t_channel*)user->chan)->name, user->nick, d.data);
 	while (usr_list != NULL)
 	{

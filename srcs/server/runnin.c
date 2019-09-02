@@ -33,7 +33,7 @@ bool	accept_connection(t_server *server)
 	user->socket = accept(server->sock, (struct sockaddr*)&addr, &len);
 	if (user->socket < 0)
 	{
-		puts("[~~] ERROR can't accept new user /!\\");
+		puts("[LOG !] Error : can't accept new user");
 		user_remove(&server->users, user->socket);
 		return (false);
 	}
@@ -42,7 +42,7 @@ bool	accept_connection(t_server *server)
 	if (user->socket > server->info.fd_max)
 		server->info.fd_max = user->socket;
 	user_push(&server->users, user);
-	printf("[+] new user : '%s'\n", user->nick);
+	printf("[LOG +] new user : '%s'\n", user->nick);
 	return (true);
 }
 
@@ -57,7 +57,7 @@ void	close_connection(t_server *server, int off)
 	FD_CLR(off, &server->info.master);
 	if (off == server->info.fd_max)
 		server->info.fd_max -= 1;
-	printf("remove user '%s'\n", user->nick);
+	printf("[LOG -] Remove user '%s'\n", user->nick);
 	channel_user_remove_full(server->channel, user);
 	user_remove(&server->users, off);
 }
@@ -66,11 +66,10 @@ bool	processing(t_server *server, int off)
 {
 	t_data	data;
 
-	if (off == server->sock) /* new user */
+	if (off == server->sock)
 		accept_connection(server);
 	else
 	{
-		/* user sending data */
 		_memset(&data, 0x0, sizeof(data));
 		if (receive_data(off, &data, MAX_INPUT_LEN, 0) != true)
 			close_connection(server, off);

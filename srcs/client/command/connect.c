@@ -28,11 +28,14 @@ static int			is_valid_port(const char *port)
 	return (ret);
 }
 
-static in_addr_t	is_valid_ip(const char *ip)
+static in_addr_t	is_valid_ip(const char *ip, int len)
 {
-	in_addr_t ret;
+	in_addr_t	ret;
 
-	ret = inet_addr(ip);
+	if (strncmp(ip, "localhost", len > 9 ? len : 9) == 0)
+		ret = inet_addr(LOCALHOST);
+	else
+		ret = inet_addr(ip);
 	if (ret == INADDR_NONE)
 		return (INADDR_NONE);
 	return (ret);
@@ -62,7 +65,7 @@ bool				irc_connect(t_interface *inter, t_list_user *user, const char *s_ip, con
 	int			port;
 	in_addr_t	ip;
 
-	if ((ip = is_valid_ip(s_ip)) == INADDR_NONE)
+	if ((ip = is_valid_ip(s_ip, _strlen(s_ip))) == INADDR_NONE)
 	{
 		refresh_top_interface(inter, "can't connect to '%s'.\n", s_ip);
 		return (false);
@@ -79,7 +82,6 @@ bool				irc_connect(t_interface *inter, t_list_user *user, const char *s_ip, con
 		refresh_top_interface(inter, "can't connect to '%s' using ipv4\n", s_ip);
 		return (false);
 	}
-
 	refresh_top_interface(inter, "Connected to %s/%s !\n", s_ip, s_port);
 	user->connected = true;
 	return (true);

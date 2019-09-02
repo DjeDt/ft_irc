@@ -77,7 +77,6 @@ bool	delete_char(t_interface *inter, char *input)
 		inter->off--;
 		inter->curmax--;
 		inter->cursor--;
-
 		memmove(input + inter->off, input + inter->off + 1, inter->curmax - inter->off);
 		input[inter->curmax] = '\0';
 		refresh_bot_interface(inter, input);

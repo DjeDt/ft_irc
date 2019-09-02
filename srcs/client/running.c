@@ -40,22 +40,22 @@ static void	read_from_user(t_interface *inter, t_list_user *user)
 
 	key = wgetch(inter->bot);
 	if (key == KEY_LEFT)
-		do_key_left(inter, user->input);
+		do_key_left(inter, user->data.data);
 	else if (key == KEY_RIGHT)
-		do_key_right(inter, user->input);
+		do_key_right(inter, user->data.data);
 	else if (key == KEY_UP)
-		do_key_up(inter, user->input);
+		do_key_up(inter, user->data.data);
 	else if (key == KEY_DOWN)
-		do_key_down(inter, user->input);
+		do_key_down(inter, user->data.data);
 	else if (key == 127)
-		delete_char(inter, user->input);
+		delete_char(inter, user->data.data);
 	else if (key == '\n')
 	{
 		interpreter(inter, user);
-		reset_data(inter, user->input);
+		reset_data(inter, user->data.data);
 	}
 	else
-		insert_char(inter, user->input, key);
+		insert_char(inter, user->data.data, key);
 }
 
 static void	read_from_server(t_interface *inter, t_list_user *user)
@@ -71,7 +71,7 @@ static void	read_from_server(t_interface *inter, t_list_user *user)
 		return ;
 	}
 	refresh_top_interface(inter, "%s", data);
-	refresh_bot_interface(inter, user->input);
+	refresh_bot_interface(inter, user->data.data);
 }
 
 void	running(t_interface *inter, t_list_user *user)

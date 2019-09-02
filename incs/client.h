@@ -30,10 +30,23 @@
 # include <netinet/in.h>
 # include <arpa/inet.h>
 
+
+/*
+** Enum
+*/
+
+enum	e_type
+{
+	OK_CODE,
+	ERROR_CODE,
+	MESSAGE_CODE
+};
+
 /*
 ** Defines
 */
 # define DEFAULT_PORT	"1234"
+# define LOCALHOST		"127.0.0.1"
 
 # define CURSOR_START	3
 # define BOX_INPUT_LEN	3
@@ -59,6 +72,8 @@ typedef struct			s_command
 
 typedef struct			s_data
 {
+	enum e_type			type;
+	int					tvalue;
 	int					len;
 	char				data[MAX_INPUT_LEN];
 }						t_data;
@@ -76,7 +91,8 @@ typedef struct			s_list_user
 	bool				running;
 	bool				connected;
 	char				nick[MAX_NICK_LEN + 1];
-	char				input[MAX_INPUT_LEN + 1];
+	t_data				data;
+//	char				input[MAX_INPUT_LEN + 1];
 	t_client			client;
 }						t_list_user;
 

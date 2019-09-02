@@ -38,14 +38,17 @@ enum e_error
 {
 	INVALID_ARG,
 	INVALID_PORT,
-	INVALID_SCKT,
-	INVALID_BIND
+	INVALID_SOCKET_IPV4,
+	INVALID_SOCKET_IPV6,
+	INVALID_BIND_IPV4,
+	INVALID_BIND_IPV6
 };
 
-enum e_statut
+enum e_type
 {
-	GUEST,
-	LOGGED
+	OK_CODE,
+	ERROR_CODE,
+	MESSAGE_CODE
 };
 
 /*
@@ -62,8 +65,8 @@ enum e_statut
 # define DEFAULT_PORT	"1234"
 
 /* Error/Success */
-# define ERR			-1
-# define SCS			0
+# define ERROR			-1
+# define SUCCESS		0
 
 /* fixed value */
 # define MAX_QUEUE		5
@@ -87,15 +90,17 @@ typedef struct			s_command
 
 typedef struct			s_data
 {
+	enum e_type			type; // type of data (err/message...)
+	int					tvalue; // to set specific error message
 	int					len;
 	char				data[MAX_INPUT_LEN + 1];
+
 }						t_data;
 
 typedef struct			s_fd
 {
 	int					fd_max;
 	fd_set				master;
-
 	fd_set				read;
 	fd_set				write;
 }						t_fd;

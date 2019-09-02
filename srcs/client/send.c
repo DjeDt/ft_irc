@@ -14,14 +14,15 @@
 
 bool	send_data(t_interface *inter, t_list_user *user)
 {
-	if (_strlen(user->input) > 0 && inter->curmax > 0)
-	{
-		// debug
-//		refresh_top_interface(inter, "send : %s", user->input);
+	int	len;
 
+	if (_strlen(user->data.data) > 0 && inter->curmax > 0)
+	{
 		if (FD_ISSET(user->socket, &user->client.write))
 		{
-			if (send(user->socket, user->input, inter->curmax, 0) < 0)
+			user->data.type = MESSAGE_CODE;
+			len = sizeof(t_data);
+			if (send(user->socket, (void*)&user->data, len, 0) < 0)
 				refresh_top_interface(inter, "error send : %s", strerror(errno));
 			else
 				return (true);

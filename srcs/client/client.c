@@ -30,7 +30,7 @@ int		main(int ac, char **av)
 
 	if (init_data(&inter, &user) != true)
 	{
-		printf("Can't init interface");
+		printf("Can't initialize interface, abort.");
 		return (-1);
 
 	}
