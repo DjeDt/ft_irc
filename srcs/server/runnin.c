@@ -33,7 +33,7 @@ bool	accept_connection(t_server *server)
 	user->socket = accept(server->sock, (struct sockaddr*)&addr, &len);
 	if (user->socket < 0)
 	{
-		perror("accept");
+		puts("[~~] ERROR can't accept new user /!\\");
 		user_remove(&server->users, user->socket);
 		return (false);
 	}
@@ -68,8 +68,9 @@ bool	processing(t_server *server, int off)
 
 	if (off == server->sock) /* new user */
 		accept_connection(server);
-	else /* user sending data */
+	else
 	{
+		/* user sending data */
 		_memset(&data, 0x0, sizeof(data));
 		if (receive_data(off, &data, MAX_INPUT_LEN, 0) != true)
 			close_connection(server, off);

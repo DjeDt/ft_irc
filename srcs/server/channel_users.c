@@ -17,7 +17,6 @@ void			print_channel_user(t_channel_user *chan)
 	t_channel_user *tmp;
 
 	tmp = chan;
-	puts("PRINT");
 	while (tmp != NULL)
 	{
 		printf("\tuser : %s\n", tmp->user->nick);
@@ -83,24 +82,21 @@ bool			channel_user_remove(t_channel_user **chan, t_users *user)
 	t_channel_user *prev;
 
 	prev = NULL;
-	curr = *chan;
+	curr = (*chan);
 	while (curr != NULL)
 	{
 		if (curr->user != NULL)
 		{
 			if (curr->user->socket == user->socket)
 			{
+				printf("[-] Remove user '%s' -> addr %p\n", curr->user->nick, &curr);
+
 				if (prev == NULL)
-				{
-					*chan = curr->next;
-					free(curr);
-				}
+					(*chan) = curr->next;
 				else
-				{
 					prev->next = curr->next;
-					free(curr);
-				}
-				user->chan = NULL;
+//				memset(curr, 0x0, sizeof(t_channel_user));
+				free(curr);
 				return (true);
 			}
 		}
@@ -119,10 +115,14 @@ void			channel_user_remove_all(t_channel_user **user_list)
 	tmp = (*user_list);
 	while (tmp != NULL)
 	{
+
 		tmp2 = tmp->next;
+		memset(tmp, 0x0, sizeof(t_channel_user));
 		free(tmp);
 		tmp = tmp2;
+
 	}
+	free(*user_list);
 	(*user_list) = NULL;
 }
 

@@ -13,10 +13,10 @@
 #include "server.h"
 
 // client side
-void	irc_connect(t_server *server, char **command, int off)
+void	irc_connect(t_server *server, t_users *user, char **command)
 {
 	(void)server;
 	(void)command;
-	(void)off;
+	(void)user;
 	printf("[%s] CONNECT\n", command[0]);
 }

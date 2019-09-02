@@ -12,20 +12,20 @@
 
 #include "server.h"
 
-void	irc_quit(t_server *server, char **command, int off)
+void	irc_quit(t_server *server, t_users *user, char **command)
 {
 	t_users *users;
 
 	if (server->users != NULL)
 	{
-		users = user_search_by_id(server->users, off);
+		users = user_search_by_id(server->users, user->socket);
 		if (users != NULL)
 		{
 			channel_user_remove_full(server->channel, users);
-			user_remove(&server->users, off);
-			send_data_to_single(off, "Disconnected from server.\n", 26);
-			close(off);
-			FD_CLR(off, &server->info.master);
+			user_remove(&server->users, user->socket);
+			send_data_to_single(user->socket, "Disconnected from server.\n", 26);
+			close(user->socket);
+			FD_CLR(user->socket, &server->info.master);
 		}
 	}
 	printf("[%s] QUIT\n", command[0]);

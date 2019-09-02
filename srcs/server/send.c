@@ -48,7 +48,7 @@ bool	send_data_to_channel(t_channel *chan, t_data data, char *name, char *nick)
 	t_channel	*tmp_chan;
 	t_channel_user	*tmp_chan_usr;
 
-	tmp_chan = channel_search(chan, name);
+	tmp_chan = channel_search(&chan, name);
 	if (tmp_chan != NULL)
 	{
 		tmp_chan_usr = tmp_chan->users;

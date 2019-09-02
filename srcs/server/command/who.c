@@ -18,9 +18,13 @@ static void	clear_buffer(t_data *data, int off)
 	_memset(data, 0x0, sizeof(t_data));
 }
 
-static void	send_spec_list(t_channel *chan, t_data *data, int off)
+static void	send_spec_list(t_channel *chan, t_users *user, t_data *data)
 {
 	t_channel_user *tmp;
+
+
+
+	// TODO
 
 	memset(data, 0x0, sizeof(t_data));
 	tmp = chan->users;
@@ -28,7 +32,7 @@ static void	send_spec_list(t_channel *chan, t_data *data, int off)
 	{
 		tmp = tmp->next;
 	}
-	(void)off;
+	(void)user;
 }
 
 static void	send_full_list(t_users *users, t_data *data, int off)
@@ -61,22 +65,22 @@ static void	send_full_list(t_users *users, t_data *data, int off)
 	send_data_to_single(off, data->data, data->len);
 }
 
-void		irc_who(t_server *server, char **command, int off)
+void		irc_who(t_server *server, t_users *user, char **command)
 {
 	t_data		data;
 	t_channel	*chan;
 
 	if (command[1] != NULL)
 	{
-		chan = channel_search(server->channel, command[1]);
-		if (chan != NULL)
-			send_spec_list(chan, &data, off);
-		else
+		chan = channel_search(&server->channel, command[1]);
+		if (chan == NULL)
 		{
 			data.len = snprintf(data.data, MAX_INPUT_LEN, "channel '%s' doesn't exist.", command[1]);
-			send_data_to_single(off, data.data, data.len);
+			send_data_to_single(user->socket, data.data, data.len);
 		}
+		else
+			send_spec_list(chan, user, &data);
 	}
 	else
-		send_full_list(server->users, &data, off);
+		send_full_list(server->users, &data, user->socket);
 }

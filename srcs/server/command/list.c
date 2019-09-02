@@ -12,7 +12,7 @@
 
 #include "server.h"
 
-void	irc_list(t_server *server, char **command, int off)
+void	irc_list(t_server *server, t_users *user, char **command)
 {
 	t_channel	*tmp;
 	t_data		data;
@@ -25,13 +25,13 @@ void	irc_list(t_server *server, char **command, int off)
 		while (tmp != NULL)
 		{
 			data.len = snprintf(data.data, MAX_INPUT_LEN, "channel:\t'%s'.\n", tmp->name);
-			send_data_to_single(off, data.data, data.len);
+			send_data_to_single(user->socket, data.data, data.len);
 			tmp = tmp->next;
 		}
 	}
 	else
 	{
 		data.len = snprintf(data.data, MAX_INPUT_LEN, "There isn't any channel.\n");
-		send_data_to_single(off, data.data, data.len);
+		send_data_to_single(user->socket, data.data, data.len);
 	}
 }

@@ -95,6 +95,7 @@ typedef struct			s_fd
 {
 	int					fd_max;
 	fd_set				master;
+
 	fd_set				read;
 	fd_set				write;
 }						t_fd;
@@ -102,6 +103,7 @@ typedef struct			s_fd
 typedef struct			s_users
 {
 	int					socket;
+	int					nick_len;
 	char				nick[MAX_NICK_LEN + 1];
 	void				*chan;
 	struct s_users		*next;
@@ -117,7 +119,8 @@ typedef struct			s_channel
 {
 	int					num;		// number of users
 	int					name_len;
-	char				name[MAX_CHAN_LEN + 1];
+//	char				name[MAX_CHAN_LEN + 1];
+	char				*name;
 	t_channel_user		*users;		// list of connected users
 	struct s_channel	*next;		// next channel
 }						t_channel;
@@ -134,7 +137,7 @@ typedef struct			s_server
 // server -> channel -> channel_user -> user;
 
 typedef void (*t_error) (const char *err);
-typedef void (t_func) (t_server *server, char **command, int off);
+typedef void (t_func) (t_server *server, t_users *user, char **command);
 
 /*
 ** Functions
@@ -162,7 +165,7 @@ t_users					*user_search_by_name(t_users *users, const char *name);
 /* channels */
 t_channel				*channel_create(char *name);
 t_channel				*channel_add(t_channel **chan, char *name);
-t_channel				*channel_search(t_channel *chan, char *name);
+t_channel				*channel_search(t_channel **chan, char *name);
 void					channel_delete(t_channel **channel, char *name);
 
 /* channel users */
@@ -174,16 +177,16 @@ void					channel_user_remove_all(t_channel_user **user_list);
 void					channel_user_remove_full(t_channel *chan, t_users *users);
 
 /* commands */
-void					irc_help(t_server *server, char **command, int off);
-void					irc_nick(t_server *server, char **command, int off);
-void					irc_list(t_server *server, char **command, int off);
-void					irc_join(t_server *server, char **command, int off);
-void					irc_leave(t_server *server, char **command, int off);
-void					irc_who(t_server *server, char **command, int off);
-void					irc_msg(t_server *server, char **command, int off);
-void					irc_connect(t_server *server, char **command, int off);
-void					irc_quit(t_server *server, char **command, int off);
-void					irc_shutdown(t_server *server, char **command, int off);
+void					irc_help(t_server *server, t_users *user, char **command);
+void					irc_nick(t_server *server, t_users *user, char **command);
+void					irc_list(t_server *server, t_users *user, char **command);
+void					irc_join(t_server *server, t_users *user, char **command);
+void					irc_leave(t_server *server, t_users *user, char **command);
+void					irc_who(t_server *server, t_users *user, char **command);
+void					irc_msg(t_server *server, t_users *user, char **command);
+void					irc_connect(t_server *server, t_users *user, char **command);
+void					irc_quit(t_server *server, t_users *user, char **command);
+void					irc_shutdown(t_server *server, t_users *user, char **command);
 
 /* lib */
 void					get_date(char *buf);

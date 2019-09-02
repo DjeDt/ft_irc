@@ -29,32 +29,45 @@ static bool	is_valid_argument(const char *str)
 	return (true);
 }
 
-int test(t_server server)
+void test(t_server *server)
 {
-
-//	t_channel *chan;
 	char	chan_name[] = "toto";
-  	char *cmd_join[3] = {"/join", chan_name};
-	char *cmd_leav[3] = {"/leave", chan_name};
+  	char	*cmd_join[3] = {"/join", chan_name};
+	char	*cmd_leav[3] = {"/leave", chan_name};
 
-	/* channel_add(&server.channel, chan_name); */
-	/* chan = channel_search(server.channel, chan_name); */
+	t_users *user0, *user1;
+	int		sock0 = 0, sock1 = 1;
 
-	user_add(&server.users, 0);
-//	user_add(&server.users, 1);
+	user_add(&server->users, sock0);
+	user_add(&server->users, sock1);
 
-	irc_join(&server, cmd_join, 0);
-	irc_leave(&server, cmd_leav, 0);
+	user0 = user_search_by_id(server->users, sock0);
+	user1 = user_search_by_id(server->users, sock1);
 
-	irc_join(&server, cmd_join, 0);
-	irc_leave(&server, cmd_leav, 0);
+	channel_add(&server->channel, "toto");
+	channel_add(&server->channel, "tata");
+	channel_add(&server->channel, "tutu");
+
+	channel_delete(&server->channel, "tutu");
+	channel_delete(&server->channel, "tata");
+	channel_delete(&server->channel, "toto");
+
+	irc_join(server, user0, cmd_join);
+	irc_leave(server, user0, cmd_leav);
+
+	irc_join(server, user0, cmd_join);
+	irc_join(server, user1, cmd_join);
+
+	irc_leave(server, user0, cmd_leav);
+	irc_leave(server, user1, cmd_leav);
+
+	irc_join(server, user0, cmd_join);
+	irc_leave(server, user0, cmd_leav);
 
 
-	t_channel *chan;
-
-	chan = server.channel;
 	int i = 0;
-	//for (i = 0; chan != NULL && i++ ; chan = chan->next)
+	t_channel *chan = server->channel;
+
 	while (chan != NULL)
 	{
 		printf("FOUND chan '%s'\n", chan->name);
@@ -63,45 +76,28 @@ int test(t_server server)
 	}
 	if (i == 0)
 		printf("NO CHANNEL\n");
+	else
+		puts("CHANNEL LIST NOT EMPPTY");
 
-
-	/* user_add(&server.users, 2); */
-	/* user_add(&server.users, 3); */
-
-	/* irc_join(&server, command, 0); */
-	/* irc_join(&server, command, 1); */
-	/* irc_leave(&server, command2, 1); */
-	/* irc_join(&server, command, 1); */
-
-	/* irc_join(&server, command, 2); */
-	/* irc_join(&server, command, 3); */
-
-	/* irc_leave(&server, command2, 1); */
-	/* irc_leave(&server, command2, 0); */
-	/* irc_leave(&server, command2, 2); */
-	/* irc_leave(&server, command2, 3); */
-
-	/* if (channel_search(server.channel, "toto") == NULL) */
-	/* 	puts("TOTO NULL"); */
-	/* else */
-	/* 	print_channel_user(chan->users); */
-
-	return (0);
+	return ;
 }
 
 int		main(int ac, char **av)
 {
 	t_server server;
 
-	bzero(&server, sizeof(server));
-	test(server);
-	return (0);
+	memset(&server, 0x0, sizeof(t_server));
+//	test(&server);
+//	return (0);
 
 	if (ac == 1)
 	{
-		printf("No port porovided, using default '%s'\n", DEFAULT_PORT);
-		if (initialize(&server, DEFAULT_PORT) != true)
-			return (ERR);
+		printf("No port provided, using default '%s'\n", DEFAULT_PORT);
+		if (initialize(&server, DEFAULT_PORT) == true)
+			if (running(&server) == true)
+				return (SCS);
+		return (ERR);
+
 	}
 	else if (ac == 2)
 	{

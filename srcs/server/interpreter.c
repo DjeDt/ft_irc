@@ -80,7 +80,7 @@ bool	split_command(char **command, const char *data)
 	return (false);
 }
 
-bool	handle_command(t_server *server, char **command, int off)
+bool	handle_command(t_server *server, t_users *user, char **command)
 {
 	int		count;
 	int		func_num;
@@ -91,27 +91,26 @@ bool	handle_command(t_server *server, char **command, int off)
 	{
 		if (_memcmp(g_func_ptr[count].name, command[0], _strlen(g_func_ptr[count].name)) == 0)
 		{
-			((t_func*)g_func_ptr[count].func)(server, command, off);
+			((t_func*)g_func_ptr[count].func)(server, user, command);
 			return (true);
 		}
 		count++;
 	}
-	if (FD_ISSET(off, &server->info.write))
-		send_data_to_single(off, "command not found", 17);
+	if (FD_ISSET(user->socket, &server->info.write))
+		send_data_to_single(user->socket, "command not found", 17);
 	return (false);
 }
 
-
-void	handle_message(t_server *server, t_data d, int off)
+void	handle_message(t_server *server, t_users *user, t_data d)
 {
 	t_data			data;
-	t_users			*user;
 	t_channel_user	*usr_list;
 
-	user = user_search_by_id(server->users, off);
 	if (user->chan == NULL)
 		return ;
 	usr_list = ((t_channel*)user->chan)->users;
+	if (((t_channel*)user->chan)->users == NULL)
+		return ;
 	data.len = snprintf(data.data, MAX_INPUT_LEN, "[%s] [%s]> %s", ((t_channel*)user->chan)->name, user->nick, d.data);
 	while (usr_list != NULL)
 	{
@@ -123,19 +122,22 @@ void	handle_message(t_server *server, t_data d, int off)
 
 void	interpreter(t_server *server, t_data data, int off)
 {
-	char	*command[3];
+	t_users	*user;
+	char	*cmd[3];
 
+	if ((user = user_search_by_id(server->users, off)) == NULL)
+		return ;
 	if (data.data[0] == '/')
 	{
-		_memset(&command, 0x0, sizeof(command));
-		if (split_command(command, data.data) != true)
+		_memset(&cmd, 0x0, sizeof(cmd));
+		if (split_command(cmd, data.data) != true)
 			return ;
-		handle_command(server, command, off);
-		free_command(command);
+		handle_command(server, user, cmd);
+		free_command(cmd);
 	}
 	else
 	{
 		if (FD_ISSET(off, &server->info.write))
-			handle_message(server, data, off);
+			handle_message(server, user, data);
 	}
 }

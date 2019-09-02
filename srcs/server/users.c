@@ -28,9 +28,11 @@ t_users	*user_create(int socket)
 
 	if ((new = malloc(sizeof(*new))) == NULL)
 		return (NULL);
-	_memset(new, 0x0, sizeof(*new));
-	generate_guest_pseudo(new->nick, socket);
 	new->socket = socket;
+	generate_guest_pseudo(new->nick, socket);
+	new->nick_len = _strlen(new->nick);
+	new->chan = NULL;
+	new->next = NULL;
 	return (new);
 }
 
@@ -117,13 +119,10 @@ void	user_remove(t_users **users, int id)
 					*users = tmp->next;
 				else
 					*users = NULL;
-				free(tmp);
 			}
 			else
-			{
 				prev->next = tmp->next;
-				free(tmp);
-			}
+			free(tmp);
 			return ;
 		}
 		prev = tmp;

@@ -21,20 +21,20 @@ static void	setup_message(t_users *src, t_users *dst, const char *message)
 	send_data_to_single(dst->socket, data.data, data.len);
 }
 
-void	irc_msg(t_server *server, char **command, int off)
+void	irc_msg(t_server *server, t_users *user, char **command)
 {
 	t_users *src;
 	t_users *dst;
 
 	if (command[1] != NULL && command[2] != NULL)
 	{
-		src = user_search_by_id(server->users, off);
+		src = user_search_by_id(server->users, user->socket);
 		if (!src)
 			return ;
 		dst = user_search_by_name(server->users, command[1]);
 		if (dst)
 			setup_message(src, dst, command[2]);//			send_data_to_single(dst->socket, command[2], _strlen(command[2]));
 		else
-			send_data_to_single(off, "user not found", 15);
+			send_data_to_single(user->socket, "user not found", 15);
 	}
 }

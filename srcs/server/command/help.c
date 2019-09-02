@@ -12,7 +12,7 @@
 
 #include "server.h"
 
-void	irc_help(t_server *server, char **command, int off)
+void	irc_help(t_server *server, t_users *user, char **command)
 {
 	char help[] =
 		"'/help' : print this help\n"
@@ -28,7 +28,7 @@ void	irc_help(t_server *server, char **command, int off)
 
 	(void)server;
 	(void)command;
-	if (FD_ISSET(off, &server->info.write))
-		send_data_to_single(off, help, sizeof(help));
+	if (FD_ISSET(user->socket, &server->info.write))
+		send_data_to_single(user->socket, help, sizeof(help));
 	printf("HELP\n");
 }

@@ -13,10 +13,10 @@
 #include "server.h"
 
 // close the server
-void	irc_shutdown(t_server *server, char **command, int off)
+void	irc_shutdown(t_server *server, t_users *user, char **command)
 {
 	(void)server;
 	(void)command;
-	(void)off;
+	(void)user;
 	printf("[%s] SHUTDOWN\n", command[0]);
 }

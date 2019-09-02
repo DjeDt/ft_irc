@@ -31,7 +31,7 @@ void	send_response(t_users *user, char *nick)
 {
 	t_data			data;
 
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "'%s' changed nick to : '%s'.\n", user->nick, nick);
+	data.len = snprintf(data.data, MAX_INPUT_LEN, "'%s' is now known as '%s'.\n", user->nick, nick);
 	_memset(user->nick, 0x0, MAX_NICK_LEN);
 	memcpy(user->nick, nick, _strlen(nick));
 	if (user->chan == NULL)
@@ -40,18 +40,18 @@ void	send_response(t_users *user, char *nick)
 		notify_channel(user, data);
 }
 
-bool	is_available(t_users *users, char *nick, int off)
+bool	is_available(t_users *users_list, t_users *user, char *nick, int size)
 {
 	t_users *tmp;
 
-	tmp = users;
+	tmp = users_list;
 	while (tmp != NULL)
 	{
-		if (off != tmp->socket)
+		if (user->socket != tmp->socket)
 		{
-			if (strncmp(tmp->nick, nick, MAX_NICK_LEN) == 0)
+			if (strncmp(tmp->nick, nick, size > tmp->nick_len ? size : tmp->nick_len) == 0)
 			{
-				send_data_to_single(off, "nickname already taken.\n", 24);
+				send_data_to_single(user->socket, "nickname already taken.\n", 24);
 				return (false);
 			}
 		}
@@ -60,39 +60,33 @@ bool	is_available(t_users *users, char *nick, int off)
 	return (true);
 }
 
-bool	check_nick(t_users *users, t_users *usr, char *nick, int off)
+bool	check_nick(t_users *users_list, t_users *user, char *nick, int size)
 {
-	int		size;
-
-	size = _strlen(nick);
-	printf("user->nick = '%s' | command = '%s' | size = '%d'\n", usr->nick, nick, size);
 	if (size < 1 || size > MAX_NICK_LEN)
 	{
-		send_data_to_single(off, "nick must be between 1~13 char.\n", 32);
+		send_data_to_single(user->socket, "nick must be between 1~13 char.\n", 32);
 		return (false);
 	}
-	if (strncmp(usr->nick, nick, MAX_NICK_LEN) == 0)
+
+	if (_memcmp(user->nick, nick, size > user->nick_len ? size : user->nick_len) == 0)
 	{
-		send_data_to_single(off, "these are identical.\n", 21);
+		send_data_to_single(user->socket, "these are identical.\n", 21);
 		return (false);
 	}
-	if (is_available(users, nick, off) != true)
+
+	if (is_available(users_list, user, nick, size) != true)
 		return (false);
 	return (true);
 }
 
-void	irc_nick(t_server *server, char **command, int off)
+void	irc_nick(t_server *server, t_users *user, char **command)
 {
-	t_users	*user;
-
 	if (command[1] != NULL)
 	{
-		if ((user = user_search_by_id(server->users, off)) == NULL)
-			return ;
-		if (check_nick(server->users, user, command[1], off) != true)
+		if (check_nick(server->users, user, command[1], _strlen(command[1])) != true)
 			return ;
 		send_response(user, command[1]);
 	}
 	else
-		send_data_to_single(off, "usage '/nick <nickname>'.\n", 26);
+		send_data_to_single(user->socket, "usage '/nick <nickname>'.\n", 26);
 }
