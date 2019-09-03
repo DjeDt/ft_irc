@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 14:16:48 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/07/29 15:13:22 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/03 23:12:26 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,10 +103,10 @@ void	interpreter(t_interface *inter, t_list_user *user)
 {
     char *command[3];
 
-	if (user->input[0] == '/')
+	if (user->data.data[0] == '/')
     {
         _memset(command, 0x0, sizeof(char*) * 3);
-        if (split_command(command, user->input) != true)
+        if (split_command(command, user->data.data) != true)
             return ;
 		manage_command(inter, user, command);
         free_command(command);

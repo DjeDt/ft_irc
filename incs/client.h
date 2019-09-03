@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 14:24:19 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/07/29 15:11:04 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/03 23:17:00 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@
 # include <sys/select.h>
 # include <netinet/in.h>
 # include <arpa/inet.h>
-
 
 /*
 ** Enum
@@ -73,7 +72,7 @@ typedef struct			s_command
 typedef struct			s_data
 {
 	enum e_type			type;
-	int					tvalue;
+	int					err;
 	int					len;
 	char				data[MAX_INPUT_LEN];
 }						t_data;
@@ -92,7 +91,6 @@ typedef struct			s_list_user
 	bool				connected;
 	char				nick[MAX_NICK_LEN + 1];
 	t_data				data;
-//	char				input[MAX_INPUT_LEN + 1];
 	t_client			client;
 }						t_list_user;
 
@@ -104,7 +102,7 @@ typedef void (t_func) (t_interface *inter, t_list_user *user, char **command);
 void					running(t_interface *inter, t_list_user *user);
 void					interpreter(t_interface *inter, t_list_user *user);
 
-bool				    receive_data(int off, t_data *data, size_t size, int flag);
+bool				    receive_data(int off, t_data *data);
 bool					send_data(t_interface *inter, t_list_user *user);
 
 /* command */

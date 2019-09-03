@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   receive.c                                          :+:      :+:    :+:   */
+/*   nosuchchannel.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/28 15:24:36 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 22:56:22 by ddinaut          ###   ########.fr       */
+/*   Created: 2019/09/03 16:34:04 by ddinaut           #+#    #+#             */
+/*   Updated: 2019/09/03 22:51:00 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "client.h"
+#include "server.h"
 
-bool    receive_data(int off, t_data *data)
+void	err_nosuchchannel(t_users *user, char *channel)
 {
-	if (recv(off, data, sizeof(t_data), 0) < 1)
-	{
-		perror("recv");
-		return (false);
-	}
-	return (true);
+	t_data data;
+
+	data.type = ERROR_CODE;
+	data.err = ERR_NOSUCHCHANNEL_ID;
+	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server]: <%s> :No such channel", channel);
+	send_data_to_single_user(user->socket, &data);
 }

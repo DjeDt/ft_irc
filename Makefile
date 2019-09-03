@@ -6,7 +6,7 @@
 #    By: pguillie <pguillie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/22 18:46:54 by pguillie          #+#    #+#              #
-#    Updated: 2019/08/04 19:32:58 by ddinaut          ###   ########.fr        #
+#    Updated: 2019/09/03 21:59:58 by ddinaut          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -15,7 +15,7 @@ CLIENT	= client
 
 CC		= gcc
 CFLAGS	= -Wall -Werror -Wextra -I$(incdir)
-EFLAGS	= -g3 -fsanitize=address
+EFLAGS	= #-g3 -fsanitize=address
 
 incdir	= ./incs/
 srcdir	= ./srcs/
@@ -26,6 +26,7 @@ libdir		= lib/
 clientdir	= client/
 serverdir	= server/
 cmddir		= command/
+errordir	= error_function
 
 server_src =							\
 	$(serverdir)/server.c				\
@@ -51,11 +52,18 @@ server_src =							\
 	$(serverdir)/$(cmddir)/connect.c	\
 	$(serverdir)/$(cmddir)/quit.c		\
 	$(serverdir)/$(cmddir)/shutdw.c		\
-	\
+\
+	$(serverdir)/$(errordir)/unknow_command.c	\
+	$(serverdir)/$(errordir)/notonchannel.c		\
+	$(serverdir)/$(errordir)/nosuchchannel.c	\
+	$(serverdir)/$(errordir)/needmoreparams.c	\
+	$(serverdir)/$(errordir)/nicknameinuse.c	\
+	$(serverdir)/$(errordir)/erroneusnickname.c	\
+	$(serverdir)/$(errordir)/nosuchnick.c		\
+\
 	$(libdir)/logger.c					\
 	$(libdir)/lib.c						\
 	$(libdir)/strtok.c
-
 
 client_src = 							\
 	$(clientdir)/client.c				\

@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:26:02 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/08/04 21:51:14 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/03 23:42:09 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,16 @@
 
 t_command g_func_ptr[] =
 {
-	{ "/help", irc_help },
-	{ "/nick", irc_nick },
-	{ "/list", irc_list },
-	{ "/join", irc_join },
-	{ "/leave", irc_leave },
-	{ "/who", irc_who },
-	{ "/msg", irc_msg },
-	{ "/connect", irc_connect },
-	{ "/quit", irc_quit },
-	{ "/shutdown", irc_shutdown }
+	{ "/help", 5, irc_help },
+	{ "/nick", 5, irc_nick },
+	{ "/list", 5, irc_list },
+	{ "/join", 5, irc_join },
+	{ "/leave", 6, irc_leave },
+	{ "/who", 4, irc_who },
+	{ "/msg", 4, irc_msg },
+	{ "/connect", 8, irc_connect },
+	{ "/quit", 5, irc_quit },
+	{ "/kill", 5, irc_kill }
 };
 
 void	free_command(char **command)
@@ -82,14 +82,18 @@ bool	split_command(char **command, const char *data)
 
 bool	handle_command(t_server *server, t_users *user, char **command)
 {
+	int		len;
 	int		count;
+	int		cmp_len;
 	int		func_num;
 
 	count = 0;
+	len = _strlen(command[0]);
 	func_num = sizeof(g_func_ptr) / sizeof(g_func_ptr[0]);
 	while (count < func_num)
 	{
-		if (_memcmp(g_func_ptr[count].name, command[0], _strlen(g_func_ptr[count].name)) == 0)
+		cmp_len = len > g_func_ptr[count].name_len ? len : g_func_ptr[count].name_len;
+		if (_memcmp(g_func_ptr[count].name, command[0], cmp_len) == 0)
 		{
 			((t_func*)g_func_ptr[count].func)(server, user, command);
 			return (true);
@@ -97,7 +101,7 @@ bool	handle_command(t_server *server, t_users *user, char **command)
 		count++;
 	}
 	if (FD_ISSET(user->socket, &server->info.write))
-		send_data_to_single(user->socket, "command not found", 17);
+		err_unknow_command(user, command[0]);
 	return (false);
 }
 
@@ -109,14 +113,13 @@ void	handle_message(t_server *server, t_users *user, t_data d)
 	if (user->chan == NULL)
 		return ;
 	usr_list = ((t_channel*)user->chan)->users;
-	if (((t_channel*)user->chan)->users == NULL)
+	if (usr_list == NULL)
 		return ;
-
 	data.len = snprintf(data.data, MAX_INPUT_LEN, "[%s] [%s]> %s", ((t_channel*)user->chan)->name, user->nick, d.data);
 	while (usr_list != NULL)
 	{
 		if (FD_ISSET(usr_list->user->socket, &server->info.write))
-			send_data_to_single(usr_list->user->socket, data.data, data.len);
+			send_data_to_single_user(usr_list->user->socket, &data);
 		usr_list = usr_list->next;
 	}
 }

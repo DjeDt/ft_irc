@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:19:18 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/08/04 21:44:12 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/03 23:28:36 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 # include <sys/select.h>
 # include <netinet/in.h>
 # include <arpa/inet.h>
+
+# include "replies.h"
 
 /*
 ** Enum
@@ -85,13 +87,14 @@ enum e_type
 typedef struct			s_command
 {
 	char				name[16];
+	int					name_len;
 	void				*func;
 }						t_command;
 
 typedef struct			s_data
 {
 	enum e_type			type; // type of data (err/message...)
-	int					tvalue; // to set specific error message
+	int					err; // to set specific error message
 	int					len;
 	char				data[MAX_INPUT_LEN + 1];
 
@@ -153,10 +156,8 @@ bool					initialize(t_server *server, const char *str);
 bool					running(t_server *server);
 void					interpreter(t_server *server, t_data data, int off);
 
-bool					receive_data(int off, t_data *data, size_t size, int flag);
-bool					send_data_to_single(int fd, char *data, size_t size);
-bool					send_data_to_spec_chan(t_channel *chan, t_data data, char *nick);
-bool					send_data_to_channel(t_channel *chan, t_data data, char *name, char *nick);
+bool					receive_data(int off, t_data *data);
+bool					send_data_to_single_user(int socket, t_data *data);
 
 /* users */
 void					generate_guest_pseudo(char *pseudo, int id);
@@ -191,7 +192,7 @@ void					irc_who(t_server *server, t_users *user, char **command);
 void					irc_msg(t_server *server, t_users *user, char **command);
 void					irc_connect(t_server *server, t_users *user, char **command);
 void					irc_quit(t_server *server, t_users *user, char **command);
-void					irc_shutdown(t_server *server, t_users *user, char **command);
+void					irc_kill(t_server *server, t_users *user, char **command);
 
 /* lib */
 void					get_date(char *buf);
@@ -209,7 +210,16 @@ char					*_strndup(const char *src, size_t n);
 
 
 /* error handler */
-void					error(int num, const char *err);
+// new one
+void					err_unknow_command(t_users *user, char *command);
+void					err_notonchannel(t_users *user, char *name);
+void					err_nosuchchannel(t_users *user, char *channel);
+void					err_needmoreparams(t_users *user, char *command);
+void					err_nicknameinuse(t_users *user, char *nick);
+void					err_erroneusnickname(t_users *user, char *nick);
+void					err_nosuchnick(t_users *user, char *nick);
+// old one
+void					error(int ref, const char *err);
 void					invalid_arg(const char *str);
 void					invalid_port(const char *str);
 void					invalid_socket(const char *str);

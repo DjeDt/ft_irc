@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/07 14:09:28 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/08/04 21:49:37 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/03 22:10:29 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,6 @@ bool			channel_user_remove(t_channel_user **chan, t_users *user)
 					(*chan) = curr->next;
 				else
 					prev->next = curr->next;
-//				memset(curr, 0x0, sizeof(t_channel_user));
 				free(curr);
 				return (true);
 			}
@@ -115,12 +114,10 @@ void			channel_user_remove_all(t_channel_user **user_list)
 	tmp = (*user_list);
 	while (tmp != NULL)
 	{
-
 		tmp2 = tmp->next;
 		memset(tmp, 0x0, sizeof(t_channel_user));
 		free(tmp);
 		tmp = tmp2;
-
 	}
 	free(*user_list);
 	(*user_list) = NULL;

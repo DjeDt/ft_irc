@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:00:32 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/08/04 21:51:09 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/03 23:48:58 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,17 +60,17 @@ static void	read_from_user(t_interface *inter, t_list_user *user)
 
 static void	read_from_server(t_interface *inter, t_list_user *user)
 {
-	char data[MAX_INPUT_LEN];
+	t_data data;
 
 	_memset(&data, 0x0, sizeof(data));
-	if (recv(user->socket, data, MAX_INPUT_LEN, 0) < 1)
+	if (recv(user->socket, &data, sizeof(t_data), 0) < 1)
 	{
 		refresh_top_interface(inter, "Disconnected from server :_:");
 		close(user->socket);
 		user->connected = false;
 		return ;
 	}
-	refresh_top_interface(inter, "%s", data);
+	refresh_top_interface(inter, "%s", data.data);
 	refresh_bot_interface(inter, user->data.data);
 }
 

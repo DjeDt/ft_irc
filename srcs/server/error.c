@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/04 10:30:06 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/06/04 10:39:20 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/03 16:08:49 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ t_error g_err_ptr[] = {
 	invalid_listen
 };
 
-void	error(int num, const char *err)
+void	error(int ref, const char *err)
 {
 	int		func_num;
 
-	func_num = sizeof(g_err_ptr) / sizeof(g_err_ptr[0]);
-	if (num >= 0 || num < func_num)
-		(*g_err_ptr[num])(err);
+  	func_num = sizeof(g_err_ptr) / sizeof(g_err_ptr[0]);
+	if (ref >= 0 || ref < func_num)
+		(*g_err_ptr[ref])(err);
 }

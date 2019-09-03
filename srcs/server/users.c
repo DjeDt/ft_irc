@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/21 15:37:45 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/08/04 20:35:33 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/03 22:12:54 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,12 +114,7 @@ void	user_remove(t_users **users, int id)
 		if (tmp->socket == id)
 		{
 			if (prev == NULL)
-			{
-				if (tmp->next != NULL)
-					*users = tmp->next;
-				else
-					*users = NULL;
-			}
+				*users = tmp->next;
 			else
 				prev->next = tmp->next;
 			free(tmp);

@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:17:35 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/08/04 21:13:58 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/03 22:02:35 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void	already_in_chan(t_users *user)
 	t_data		data;
 
 	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server] : Already connected to '%s' channel.", ((t_channel*)user->chan)->name);
-	send_data_to_single(user->socket, data.data, data.len);
+	send_data_to_single_user(user->socket, &data);
 }
 
 static void	accept_user(t_channel *channel, t_users *user)
@@ -35,7 +35,7 @@ static void	accept_user(t_channel *channel, t_users *user)
 		while (tmp != NULL)
 		{
 			if (user->socket != tmp->user->socket)
-				send_data_to_single(tmp->user->socket, data.data, data.len);
+				send_data_to_single_user(tmp->user->socket, &data);
 			tmp = tmp->next;
 		}
 	}
@@ -54,8 +54,7 @@ static void	init_channel(t_server *server, t_users *user, char *chan_name)
 	user->chan = chan;
 	channel_user_add(&chan->users, user);
 	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server] : you joined '%s' channel.\n", chan_name);
-	send_data_to_single(user->socket, data.data, data.len);
-
+	send_data_to_single_user(user->socket, &data);
 }
 
 void	irc_join(t_server *server, t_users *user, char **command)

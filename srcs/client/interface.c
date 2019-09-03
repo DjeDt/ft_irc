@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:04:28 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/07/29 15:54:30 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/03 23:53:28 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void	refresh_top_interface(t_interface *inter, char *input, ...)
 	va_start(arglist, input);
 	vsnprintf(data, MAX_INPUT_LEN, input, arglist);
 	va_end(arglist);
-
 	wprintw(inter->top, " %s\n", data);
 	box(inter->top, ACS_VLINE, ACS_HLINE);
 	wmove(inter->bot, 1, inter->cursor);
@@ -70,7 +69,6 @@ void	refresh_top_interface(t_interface *inter, char *input, ...)
 void	refresh_bot_interface(t_interface *inter, char *input)
 {
 	wclear(inter->bot);
-
 	box(inter->bot, ACS_VLINE, ACS_HLINE);
 	mvwprintw(inter->bot, 1, 1, "> %s", input);
 	wmove(inter->bot, 1, inter->cursor);

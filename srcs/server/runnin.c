@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/08/04 19:11:42 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/03 23:02:55 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ bool	accept_connection(t_server *server)
 	user->socket = accept(server->sock, (struct sockaddr*)&addr, &len);
 	if (user->socket < 0)
 	{
-		puts("[LOG !] Error : can't accept new user");
+		printf("[LOG !] Error : can't accept new user");
 		user_remove(&server->users, user->socket);
 		return (false);
 	}
@@ -71,7 +71,7 @@ bool	processing(t_server *server, int off)
 	else
 	{
 		_memset(&data, 0x0, sizeof(data));
-		if (receive_data(off, &data, MAX_INPUT_LEN, 0) != true)
+		if (receive_data(off, &data) != true)
 			close_connection(server, off);
 		else
 			interpreter(server, data, off);
