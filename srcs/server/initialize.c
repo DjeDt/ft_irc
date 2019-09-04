@@ -75,7 +75,7 @@ static bool	init_socket(t_server *server, const char *port)
 	server->port = atoi(port);
 	if (server->port < 1)
 	{
-		error(INVALID_PORT, port);
+		printf("Error: '%s' port is invalid. Abort\n", port);
 		return (false);
 	}
 	if (bind_socket_ipv4(server) != true)

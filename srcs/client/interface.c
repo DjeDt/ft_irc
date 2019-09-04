@@ -43,9 +43,7 @@ bool	init_interface(t_interface *inter)
 	// refresh term
 	wnoutrefresh(inter->top);
 	wnoutrefresh(inter->bot);
-
 	doupdate();
-
 	return (true);
 }
 
@@ -57,7 +55,6 @@ void	refresh_top_interface(t_interface *inter, char *input, ...)
 	va_start(arglist, input);
 	vsnprintf(data, MAX_INPUT_LEN, input, arglist);
 	va_end(arglist);
-
 	wprintw(inter->top, " %s", data);
 	box(inter->top, ACS_VLINE, ACS_HLINE);
 	wnoutrefresh(inter->top);

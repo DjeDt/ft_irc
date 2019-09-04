@@ -51,7 +51,7 @@ static void	read_from_user(t_interface *inter, t_list_user *user)
 		delete_char(inter, user->data.data);
 	else if (key == '\n')
 	{
-		interpreter(inter, user);
+		send_data(inter, user);
 		reset_data(inter, &user->data);
 	}
 	else

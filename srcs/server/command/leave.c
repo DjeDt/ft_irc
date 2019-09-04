@@ -18,7 +18,7 @@ static void	send_leave_notif(t_channel *chan, t_users *user)
 	t_channel_user	*tmp;
 
 	printf("[LOG] '%s' leaved channel '%s'\n", user->nick, chan->name);
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server] : '%s' leaved channel.\n", user->nick);
+	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server] : '%s' leaved channel.", user->nick);
 	tmp = chan->users;
 	while (tmp != NULL)
 	{
@@ -44,8 +44,6 @@ static void	_remove_user_from_channel(t_server *server, t_channel *chan, t_users
 	}
 	send_leave_notif(chan, user);
 }
-
-
 
 void	irc_leave(t_server *server, t_users *user, char **command)
 {

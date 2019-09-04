@@ -1,30 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   nicknameinuse.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/06/04 10:30:06 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 16:08:49 by ddinaut          ###   ########.fr       */
+/*   Created: 2019/09/03 17:09:42 by ddinaut           #+#    #+#             */
+/*   Updated: 2019/09/03 22:51:37 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
 
-t_error g_err_ptr[] = {
-	invalid_arg,
-	invalid_port,
-	invalid_socket,
-	invalid_bind,
-	invalid_listen
-};
-
-void	error(int ref, const char *err)
+void	err_nicknameinuse(t_users *user, char *nick)
 {
-	int		func_num;
+	t_data data;
 
-  	func_num = sizeof(g_err_ptr) / sizeof(g_err_ptr[0]);
-	if (ref >= 0 || ref < func_num)
-		(*g_err_ptr[ref])(err);
+	data.type = ERROR_CODE;
+	data.err = ERR_NICKNAMEINUSE_ID;
+	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server]: <%s> :Nickname is already in use.", nick);
+	send_data_to_single_user(user->socket, &data);
 }

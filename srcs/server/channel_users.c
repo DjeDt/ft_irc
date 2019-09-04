@@ -22,7 +22,6 @@ void			print_channel_user(t_channel_user *chan)
 		printf("\tuser : %s\n", tmp->user->nick);
 		tmp = tmp->next;
 	}
-	puts("\n\n");
 }
 
 t_channel_user	*channel_user_create(t_users *user)
@@ -89,7 +88,7 @@ bool			channel_user_remove(t_channel_user **chan, t_users *user)
 		{
 			if (curr->user->socket == user->socket)
 			{
-				printf("[-] Remove user '%s' -> addr %p\n", curr->user->nick, &curr);
+				printf("[LOG -] Remove user '%s'\n", curr->user->nick);
 
 				if (prev == NULL)
 					(*chan) = curr->next;

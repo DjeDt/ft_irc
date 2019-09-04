@@ -51,7 +51,7 @@ void	send_response(t_users *user)
 
 	data.type = MESSAGE_CODE;
 	data.err = false;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "You are now known as '%s'.\n", user->nick);
+	data.len = snprintf(data.data, MAX_INPUT_LEN, "You are now known as '%s'.", user->nick);
 	send_data_to_single_user(user->socket, &data);
 }
 
@@ -64,12 +64,12 @@ void	notify_channel(t_users *user, char *old_nick)
 	{
 		data.type = MESSAGE_CODE;
 		data.err = false;
-		data.len = snprintf(data.data, MAX_INPUT_LEN, "'%s' is now known as '%s'.\n", old_nick, user->nick);
-		send_data_to_single_user(user->socket, &data);
+		data.len = snprintf(data.data, MAX_INPUT_LEN, "'%s' is now known as '%s'.", old_nick, user->nick);
 		tmp = ((t_channel*)user->chan)->users;
 		while (tmp != NULL)
 		{
-			send_data_to_single_user(tmp->user->socket, &data);
+			if (tmp->user->socket != user->socket)
+				send_data_to_single_user(tmp->user->socket, &data);
 			tmp = tmp->next;
 		}
 	}
@@ -85,6 +85,7 @@ void	irc_nick(t_server *server, t_users *user, char **command)
 		size = _strlen(command[1]);
 		if (check_nick(server->users, user, command[1], size) != true)
 			return ;
+		_memset(old_nick, 0x0, MAX_NICK_LEN + 1);
 		_memcpy(old_nick, command[1], size);
 		_memset(user->nick, 0x0, MAX_NICK_LEN);
 		_memcpy(user->nick, command[1], size);

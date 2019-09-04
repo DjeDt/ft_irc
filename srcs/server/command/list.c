@@ -20,7 +20,6 @@ void	irc_list(t_server *server, t_users *user, char **command)
 
 	// TODO SPECIFIC HANDLER BOTH CLIENT/SERVER
 
-
 	(void)command;
 	if (server->channel != NULL)
 	{

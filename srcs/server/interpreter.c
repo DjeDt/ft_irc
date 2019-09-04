@@ -19,6 +19,7 @@ t_command g_func_ptr[] =
 	{ "/list", 5, irc_list },
 	{ "/join", 5, irc_join },
 	{ "/leave", 6, irc_leave },
+	{ "/topic", 6, irc_topic },
 	{ "/who", 4, irc_who },
 	{ "/msg", 4, irc_msg },
 	{ "/connect", 8, irc_connect },

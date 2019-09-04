@@ -15,7 +15,7 @@ CLIENT	= client
 
 CC		= gcc
 CFLAGS	= -Wall -Werror -Wextra -I$(incdir)
-EFLAGS	= #-g3 -fsanitize=address
+EFLAGS	= -g3 -fsanitize=address
 
 incdir	= ./incs/
 srcdir	= ./srcs/
@@ -26,7 +26,7 @@ libdir		= lib/
 clientdir	= client/
 serverdir	= server/
 cmddir		= command/
-errordir	= error_function
+repliesdir	= replies/
 
 server_src =							\
 	$(serverdir)/server.c				\
@@ -38,8 +38,6 @@ server_src =							\
 	$(serverdir)/receive.c				\
 	$(serverdir)/interpreter.c			\
 	$(serverdir)/send.c					\
-	$(serverdir)/error.c				\
-	$(serverdir)/error_functions.c		\
 \
 	$(serverdir)/$(cmddir)/help.c		\
 	$(serverdir)/$(cmddir)/list.c		\
@@ -47,46 +45,40 @@ server_src =							\
 	$(serverdir)/$(cmddir)/leave.c		\
 	$(serverdir)/$(cmddir)/nick.c		\
 	$(serverdir)/$(cmddir)/who.c		\
-	$(serverdir)/$(cmddir)/msg.c		\
+	$(serverdir)/$(cmddir)/message.c	\
 	$(serverdir)/$(cmddir)/quit.c		\
+	$(serverdir)/$(cmddir)/topic.c		\
 	$(serverdir)/$(cmddir)/connect.c	\
 	$(serverdir)/$(cmddir)/quit.c		\
-	$(serverdir)/$(cmddir)/shutdw.c		\
+	$(serverdir)/$(cmddir)/kill.c		\
 \
-	$(serverdir)/$(errordir)/unknow_command.c	\
-	$(serverdir)/$(errordir)/notonchannel.c		\
-	$(serverdir)/$(errordir)/nosuchchannel.c	\
-	$(serverdir)/$(errordir)/needmoreparams.c	\
-	$(serverdir)/$(errordir)/nicknameinuse.c	\
-	$(serverdir)/$(errordir)/erroneusnickname.c	\
-	$(serverdir)/$(errordir)/nosuchnick.c		\
+	$(serverdir)/$(repliesdir)/unknow_command.c		\
+	$(serverdir)/$(repliesdir)/notonchannel.c		\
+	$(serverdir)/$(repliesdir)/nosuchchannel.c		\
+	$(serverdir)/$(repliesdir)/toomanychannels.c	\
+	$(serverdir)/$(repliesdir)/needmoreparams.c		\
+	$(serverdir)/$(repliesdir)/nicknameinuse.c		\
+	$(serverdir)/$(repliesdir)/erroneusnickname.c	\
+	$(serverdir)/$(repliesdir)/nosuchnick.c			\
+	$(serverdir)/$(repliesdir)/rpl_topic.c			\
+	$(serverdir)/$(repliesdir)/rpl_notopic.c		\
+	$(serverdir)/$(repliesdir)/rpl_whoreply.c		\
+	$(serverdir)/$(repliesdir)/rpl_endofwho.c		\
+	$(serverdir)/$(repliesdir)/rpl_namreply.c		\
+	$(serverdir)/$(repliesdir)/rpl_endofnames.c		\
 \
-	$(libdir)/logger.c					\
 	$(libdir)/lib.c						\
-	$(libdir)/strtok.c
 
 client_src = 							\
 	$(clientdir)/client.c				\
+	$(clientdir)/connect.c				\
 	$(clientdir)/interface.c			\
 	$(clientdir)/running.c				\
-	$(clientdir)/interpreter.c			\
 	$(clientdir)/key.c					\
 	$(clientdir)/send.c					\
 	$(clientdir)/receive.c				\
 \
-	$(clientdir)/$(cmddir)/connect.c	\
-	$(clientdir)/$(cmddir)/msg.c		\
-	$(clientdir)/$(cmddir)/who.c		\
-	$(clientdir)/$(cmddir)/list.c		\
-	$(clientdir)/$(cmddir)/nick.c		\
-	$(clientdir)/$(cmddir)/help.c		\
-	$(clientdir)/$(cmddir)/quit.c		\
-	$(clientdir)/$(cmddir)/join.c		\
-	$(clientdir)/$(cmddir)/leave.c		\
-\
-	$(libdir)/logger.c					\
-	$(libdir)/lib.c						\
-	$(libdir)/strtok.c
+	$(libdir)/lib.c
 
 
 server_obj = $(addprefix $(srcdir), $(server_src:%.c=%.o))

@@ -21,7 +21,7 @@ static bool	is_valid_argument(const char *str)
 	{
 		if (str[count] < '0' || str[count] > '9')
 		{
-			error(INVALID_ARG, str);
+			printf("Error: '%s' port is invalid. Abort\n", str);
 			return (false);
 		}
 		count++;
@@ -58,7 +58,7 @@ int			main(int ac, char **av)
 	}
 	else
 	{
-		error(INVALID_ARG, av[0]);
+		printf("Usage: %s <port>\n", av[0]);
 		return (ERROR);
 	}
 	return (ERROR);

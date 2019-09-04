@@ -12,22 +12,6 @@
 
 #include "server.h"
 
-static void	rpl_whoreply(t_channel *chan, t_users *user, t_data *data, char *nick)
-{
-	data->type = MESSAGE_CODE;
-	data->err = false;
-	data->len = snprintf(data->data, MAX_INPUT_LEN, "[%s]: %s\n", chan->name, nick);
-	send_data_to_single_user(user->socket, data);
-}
-
-static void	rpl_endofwho(t_channel *chan, t_users *user, t_data *data)
-{
-	data->type = MESSAGE_CODE;
-	data->err = false;
-	data->len = snprintf(data->data, MAX_INPUT_LEN, "[%s]: end of /who list.\n", chan->name);
-	send_data_to_single_user(user->socket, data);
-}
-
 static void	gather_all_user_in_chan(t_channel *chan, t_users *user)
 {
 	t_data			data;

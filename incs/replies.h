@@ -21,6 +21,7 @@
 # define ERR_NOSUCHSERVER_ID		402
 # define ERR_NOSUCHCHANNEL_ID		403
 # define ERR_CANNOTSENDTOCHAN_ID	404
+# define ERR_TOOMANYCHANNELS_ID		405
 # define ERR_NORECIPIENT_ID			411
 # define ERR_NOTEXTTOSEND_ID		412
 # define ERR_UNKNOWNCOMMAND_ID		421
@@ -36,6 +37,8 @@
 # define ERR_NEEDMOREPARAMS_ID		461
 # define ERR_CANTKILLSERVER_ID		483
 
+# define ERR_TOPICTOOLONG_ID		499
+
 /*
 ** Error replies string following rfc 1459
 */
@@ -43,6 +46,7 @@
 # define ERR_NOSUCHSERVER		"402 <server name> :No such server"
 # define ERR_NOSUCHCHANNEL		"403 <channel name> :No such channel"
 # define ERR_CANNOTSENDTOCHAN	"404 <channel name> :Cannot send to channel"
+# define ERR_TOOMANYCHANNELS	"405 <channel name> :You have joined too many channels"
 # define ERR_NORECIPIENT		"411 :No recipient given (<command>)"
 # define ERR_NOTEXTTOSEND		"412 :No text to send"
 # define ERR_UNKNOWNCOMMAND		"421 <%s> :Unknown command"

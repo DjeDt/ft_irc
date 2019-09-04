@@ -44,6 +44,10 @@ enum	e_type
 /*
 ** Defines
 */
+
+# define ERROR			-1
+# define SUCCESS		0
+
 # define DEFAULT_PORT	"1234"
 # define LOCALHOST		"127.0.0.1"
 

@@ -31,8 +31,7 @@ int		main(int ac, char **av)
 	if (init_data(&inter, &user) != true)
 	{
 		printf("Can't initialize interface, abort.");
-		return (-1);
-
+		return (ERROR);
 	}
 	if (ac == 2)
 		irc_connect(&inter, &user, av[1], DEFAULT_PORT);
@@ -42,5 +41,5 @@ int		main(int ac, char **av)
 		refresh_top_interface(&inter, "Use '/connect [ip] [port]'", av[0]);
 	running(&inter, &user);
 	endwin();
-	return (0);
+	return (SUCCESS);
 }

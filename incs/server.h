@@ -36,16 +36,6 @@
 /*
 ** Enum
 */
-enum e_error
-{
-	INVALID_ARG,
-	INVALID_PORT,
-	INVALID_SOCKET_IPV4,
-	INVALID_SOCKET_IPV6,
-	INVALID_BIND_IPV4,
-	INVALID_BIND_IPV6
-};
-
 enum e_type
 {
 	OK_CODE,
@@ -56,14 +46,8 @@ enum e_type
 /*
 ** Defines
 */
-# define INVALID_ARG	0
-# define INVALID_PORT	1
-# define INVALID_SCKT   2
-# define INVALID_BIND	3
-# define INVALID_LISTEN	4
 
 /* default config */
-# define DEFAULT_CHAN	"general"
 # define DEFAULT_PORT	"1234"
 
 /* Error/Success */
@@ -75,6 +59,7 @@ enum e_type
 # define MAX_NICK_LEN	16
 
 # define MAX_CHAN_LEN	50
+# define MAX_TOPIC_LEN	128
 # define MAX_INPUT_LEN	512
 
 # define GUEST			0
@@ -128,6 +113,7 @@ typedef struct			s_channel
 	int					num;		// number of users
 	int					name_len;
 	char				name[MAX_CHAN_LEN + 1];
+	char				*topic;
 	t_channel_user		*users;		// list of connected users
 	struct s_channel	*next;		// next channel
 }						t_channel;
@@ -190,6 +176,7 @@ void					irc_leave(t_server *server, t_users *user, char **command);
 void					irc_who(t_server *server, t_users *user, char **command);
 void					irc_msg(t_server *server, t_users *user, char **command);
 void					irc_connect(t_server *server, t_users *user, char **command);
+void					irc_topic(t_server *server, t_users *user, char **command);
 void					irc_quit(t_server *server, t_users *user, char **command);
 void					irc_kill(t_server *server, t_users *user, char **command);
 
@@ -207,22 +194,21 @@ void					_itoa(char *str, int n);
 int						_isspace(char c);
 char					*_strndup(const char *src, size_t n);
 
-
-/* error handler */
-// new one
+/* replies */
 void					err_unknow_command(t_users *user, char *command);
 void					err_notonchannel(t_users *user, char *name);
 void					err_nosuchchannel(t_users *user, char *channel);
+void					err_toomanychannels(t_users *user, char *chan_name);
 void					err_needmoreparams(t_users *user, char *command);
 void					err_nicknameinuse(t_users *user, char *nick);
 void					err_erroneusnickname(t_users *user, char *nick);
 void					err_nosuchnick(t_users *user, char *nick);
-// old one
-void					error(int ref, const char *err);
-void					invalid_arg(const char *str);
-void					invalid_port(const char *str);
-void					invalid_socket(const char *str);
-void					invalid_bind(const char *err);
-void					invalid_listen(const char *err);
+
+void					rpl_topic(t_channel *channel, t_users *user);
+void					rpl_notopic(t_channel *channel, t_users *user);
+void					rpl_whoreply(t_channel *chan, t_users *user, t_data *data, char *nick);
+void					rpl_endofwho(t_channel *chan, t_users *user, t_data *data);
+void					rpl_namreply(t_channel *chan, t_users *user, t_data *data, char *nick);
+void					rpl_endofnames(t_channel *chan, t_users *user, t_data *data);
 
 #endif

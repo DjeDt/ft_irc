@@ -12,9 +12,10 @@
 
 #include "server.h"
 
+
+// TODO CIRVULAR BUFFER
 bool	send_data_to_single_user(int socket, t_data *data)
 {
-	printf("DEBUG SEND : %s\n", data->data);
 	if (send(socket, data, sizeof(t_data), 0) < 1)
 	{
 		perror("send");
