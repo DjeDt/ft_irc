@@ -24,14 +24,14 @@ static void	init_fd(t_list_user *user)
 	}
 }
 
-static void	reset_data(t_interface *inter, char *input)
+static void	reset_data(t_interface *inter, t_data *data)
 {
-	_memset(input, 0x0, MAX_INPUT_LEN);
+	_memset(data, 0x0, sizeof(t_data));
 	inter->off = 0;
 	inter->curmax = 0;
 	inter->cursor = 3;
 	wclear(inter->bot);
-	refresh_bot_interface(inter, input);
+	refresh_bot_interface(inter, data->data);
 }
 
 static void	read_from_user(t_interface *inter, t_list_user *user)
@@ -52,7 +52,7 @@ static void	read_from_user(t_interface *inter, t_list_user *user)
 	else if (key == '\n')
 	{
 		interpreter(inter, user);
-		reset_data(inter, user->data.data);
+		reset_data(inter, &user->data);
 	}
 	else
 		insert_char(inter, user->data.data, key);
@@ -65,12 +65,12 @@ static void	read_from_server(t_interface *inter, t_list_user *user)
 	_memset(&data, 0x0, sizeof(data));
 	if (recv(user->socket, &data, sizeof(t_data), 0) < 1)
 	{
-		refresh_top_interface(inter, "Disconnected from server :_:");
 		close(user->socket);
 		user->connected = false;
+		refresh_top_interface(inter, "Disconnected from server :_:");
 		return ;
 	}
-	refresh_top_interface(inter, "%s", data.data);
+	refresh_top_interface(inter, "%s\n", data.data);
 	refresh_bot_interface(inter, user->data.data);
 }
 
@@ -79,7 +79,6 @@ void	running(t_interface *inter, t_list_user *user)
 	while (user->running == true)
 	{
 		init_fd(user);
-
 		if (select(user->socket + 1, &user->client.read, &user->client.write, NULL, NULL) < 0)
 			return ;
 		if (FD_ISSET(STDIN_FILENO, &user->client.read))

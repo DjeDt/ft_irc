@@ -115,7 +115,7 @@ void	handle_message(t_server *server, t_users *user, t_data d)
 	usr_list = ((t_channel*)user->chan)->users;
 	if (usr_list == NULL)
 		return ;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "[%s] [%s]> %s", ((t_channel*)user->chan)->name, user->nick, d.data);
+	data.len = snprintf(data.data, MAX_INPUT_LEN, "[time] [%s] [%s]> %s", ((t_channel*)user->chan)->name, user->nick, d.data);
 	while (usr_list != NULL)
 	{
 		if (FD_ISSET(usr_list->user->socket, &server->info.write))

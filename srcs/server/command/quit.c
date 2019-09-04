@@ -23,9 +23,10 @@ static void	notify_leave(t_users *user, char **command)
 	if (command[1] != NULL)
 	{
 		data.len = snprintf(data.data, MAX_INPUT_LEN, "[server] : '%s' quit: %s", user->nick, command[1]);
+		tmp = ((t_channel*)user->chan)->users;
 		while (tmp != NULL)
 		{
-			send_data_to_single_user(user->socket, &data);
+			send_data_to_single_user(tmp->user->socket, &data);
 			tmp = tmp->next;
 		}
 	}

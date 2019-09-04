@@ -127,8 +127,7 @@ typedef struct			s_channel
 {
 	int					num;		// number of users
 	int					name_len;
-//	char				name[MAX_CHAN_LEN + 1];
-	char				*name;
+	char				name[MAX_CHAN_LEN + 1];
 	t_channel_user		*users;		// list of connected users
 	struct s_channel	*next;		// next channel
 }						t_channel;

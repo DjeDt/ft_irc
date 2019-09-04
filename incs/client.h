@@ -74,7 +74,7 @@ typedef struct			s_data
 	enum e_type			type;
 	int					err;
 	int					len;
-	char				data[MAX_INPUT_LEN];
+	char				data[MAX_INPUT_LEN + 1];
 }						t_data;
 
 typedef struct			s_client

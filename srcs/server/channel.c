@@ -22,12 +22,8 @@ t_channel	*channel_create(char *name)
  	len = _strlen(name);
 	if (len > MAX_CHAN_LEN)
 		len = MAX_CHAN_LEN;
-	//memset(new_chan->name, 0x0, MAX_CHAN_LEN);
-
-	new_chan->name = malloc(len + 1);
-	memset(new_chan->name, 0x0, len + 1);
+	memset(new_chan->name, 0x0, MAX_CHAN_LEN);
 	_memcpy(new_chan->name, name, len);
-
 	new_chan->num = 0;
 	new_chan->name_len = len;
 	new_chan->users = NULL;
@@ -64,24 +60,11 @@ t_channel	*channel_search(t_channel **chan, char *name)
 	len = _strlen(name);
 	while (tmp != NULL)
 	{
-		if (tmp->name != NULL)
-		{
-			if (strncmp(tmp->name, name, len > tmp->name_len ? len : tmp->name_len) == 0)
-				return (tmp);
-		}
+		if (strncmp(tmp->name, name, len > tmp->name_len ? len : tmp->name_len) == 0)
+			return (tmp);
 		tmp = tmp->next;
 	}
 	return (NULL);
-}
-
-void	delete_chan_chunk(t_channel *chan)
-{
-	if (chan->name != NULL)
-	{
-		free(chan->name);
-		chan->name = NULL;
-	}
-	free(chan);
 }
 
 void	channel_delete(t_channel **channel, char *name)
@@ -98,12 +81,11 @@ void	channel_delete(t_channel **channel, char *name)
 		if (strncmp(tmp->name, name, len > tmp->name_len ? len : tmp->name_len) == 0)
 		{
 			printf("[-] Remove channel '%s' -> addr %p\n", tmp->name, tmp);
-
 			if (prev == NULL)
 				(*channel) = tmp->next;
 			else
 				prev->next = tmp->next;
-			delete_chan_chunk(tmp);
+			free(tmp);
 			return ;
 		}
 		prev = tmp;

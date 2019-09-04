@@ -39,7 +39,6 @@ bool	init_interface(t_interface *inter)
 	// move the cursor to the input box
 	wprintw(inter->top, "\n");
 	mvwprintw(inter->bot, 1, 1, "> ");
-	wmove(inter->bot, 1, inter->cursor);
 
 	// refresh term
 	wnoutrefresh(inter->top);
@@ -53,16 +52,15 @@ bool	init_interface(t_interface *inter)
 void	refresh_top_interface(t_interface *inter, char *input, ...)
 {
 	va_list	arglist;
-	char	data[MAX_INPUT_LEN];
+	char	data[MAX_INPUT_LEN + 1] = {0};
 
 	va_start(arglist, input);
 	vsnprintf(data, MAX_INPUT_LEN, input, arglist);
 	va_end(arglist);
-	wprintw(inter->top, " %s\n", data);
+
+	wprintw(inter->top, " %s", data);
 	box(inter->top, ACS_VLINE, ACS_HLINE);
-	wmove(inter->bot, 1, inter->cursor);
 	wnoutrefresh(inter->top);
-	wnoutrefresh(inter->bot);
 	doupdate();
 }
 
