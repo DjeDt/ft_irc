@@ -19,7 +19,6 @@ static void	notify_leave(t_users *user, char **command)
 
 	data.type = MESSAGE_CODE;
 	data.err = false;
-
 	if (command[1] != NULL)
 	{
 		data.len = snprintf(data.data, MAX_INPUT_LEN, "[server] : '%s' quit: %s", user->nick, command[1]);
@@ -44,7 +43,7 @@ void	irc_quit(t_server *server, t_users *user, char **command)
 		if (user != NULL)
 		{
 			notify_leave(user, command);
-			channel_user_remove_full(server->channel, user);
+			channel_user_remove_full(&server->channel, user);
 			user_remove(&server->users, user->socket);
 			close(user->socket);
 			FD_CLR(user->socket, &server->info.master);

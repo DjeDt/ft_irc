@@ -22,7 +22,7 @@ t_channel	*channel_create(char *name)
  	len = _strlen(name);
 	if (len > MAX_CHAN_LEN)
 		len = MAX_CHAN_LEN;
-	memset(new_chan->name, 0x0, MAX_CHAN_LEN);
+	memset(new_chan->name, 0x0, MAX_CHAN_LEN + 1);
 	_memcpy(new_chan->name, name, len);
 	new_chan->num = 0;
 	new_chan->name_len = len;

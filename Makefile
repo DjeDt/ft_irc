@@ -59,6 +59,7 @@ server_src =							\
 	$(serverdir)/$(repliesdir)/needmoreparams.c		\
 	$(serverdir)/$(repliesdir)/nicknameinuse.c		\
 	$(serverdir)/$(repliesdir)/erroneusnickname.c	\
+	$(serverdir)/$(repliesdir)/erroneuschanname.c	\
 	$(serverdir)/$(repliesdir)/nosuchnick.c			\
 	$(serverdir)/$(repliesdir)/rpl_topic.c			\
 	$(serverdir)/$(repliesdir)/rpl_notopic.c		\

@@ -36,7 +36,6 @@
 
 enum	e_type
 {
-	OK_CODE,
 	ERROR_CODE,
 	MESSAGE_CODE
 };
@@ -47,6 +46,10 @@ enum	e_type
 
 # define ERROR			-1
 # define SUCCESS		0
+
+# define CRLF           "\r\n"
+# define CRLF_LEN       2
+# define CRLF_HEX       0x0a0d
 
 # define DEFAULT_PORT	"1234"
 # define LOCALHOST		"127.0.0.1"
@@ -78,7 +81,7 @@ typedef struct			s_data
 	enum e_type			type;
 	int					err;
 	int					len;
-	char				data[MAX_INPUT_LEN + 1];
+	char				data[MAX_INPUT_LEN + 3];
 }						t_data;
 
 typedef struct			s_client
@@ -93,7 +96,6 @@ typedef struct			s_list_user
 	int					socket;
 	bool				running;
 	bool				connected;
-	char				nick[MAX_NICK_LEN + 1];
 	t_data				data;
 	t_client			client;
 }						t_list_user;

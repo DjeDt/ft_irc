@@ -12,6 +12,23 @@
 
 #include "server.h"
 
+static bool	check_name(char *name)
+{
+	int count;
+
+	count = 1;
+	printf("name = %s\n", name);
+	if (name[0] != '#' && name[0] != '&')
+		return (false);
+	while (name[count] != '\0')
+	{
+		if (name[count] == ' ' || name[count] == 7 || name[count] == ',')
+			return (false);
+		count++;
+	}
+	return (true);
+}
+
 static void	notify_channel(t_channel_user *chan_users, t_users *user)
 {
 	t_data			data;
@@ -79,6 +96,11 @@ void	irc_join(t_server *server, t_users *user, char **command)
 
 	if (command[1] != NULL)
 	{
+		if (check_name(command[1]) == false)
+		{
+			err_erroneuschanname(user, command[1]);
+			return ;
+		}
 		if (user->chan != NULL)
 		{
 			err_toomanychannels(user, command[1]);

@@ -62,8 +62,8 @@ static void	read_from_server(t_interface *inter, t_list_user *user)
 {
 	t_data data;
 
-	_memset(&data, 0x0, sizeof(data));
-	if (recv(user->socket, &data, sizeof(t_data), 0) < 1)
+	_memset(&data, 0x0, sizeof(t_data));
+	if (receive_data(user->socket, &data) != true)
 	{
 		close(user->socket);
 		user->connected = false;
@@ -71,11 +71,11 @@ static void	read_from_server(t_interface *inter, t_list_user *user)
 		return ;
 	}
 	refresh_top_interface(inter, "%s\n", data.data);
-	refresh_bot_interface(inter, user->data.data);
 }
 
 void	running(t_interface *inter, t_list_user *user)
 {
+	memset((void*)&user->data, 0x0, sizeof(t_data));
 	while (user->running == true)
 	{
 		init_fd(user);

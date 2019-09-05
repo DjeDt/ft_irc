@@ -12,19 +12,40 @@
 
 #include "server.h"
 
-bool	receive_data(int off, t_data *data)
+bool	search_for_crlf(char *data, int size)
 {
-	// there is only client. should be enum* MESSAGE anytimes
-	if (recv(off, data, sizeof(t_data), 0) < 1)
+	void *ptr;
+
+	if ((ptr = memchr(data, CRLF_HEX, size)) != NULL)
 	{
-		perror("recv");
-		return (false);
+		*(unsigned char*)ptr = 0x0000;
+		return (true);
+	}
+	return (false);
+}
+
+bool	receive_data(int socket, t_data *data)
+{
+	int	ret;
+	int	limit;
+	int	offset;
+
+	limit = sizeof(t_data);
+	offset = 0;
+	while (offset < limit)
+	{
+		ret = recv(socket, (void*)data + offset, sizeof(t_data), 0);
+		if (ret < 1)
+			return (false);
+		if (search_for_crlf(data->data + offset, ret) == true)
+			break ;
+		offset += ret;
 	}
 
-	// drop this data if not
 	if (data->type != MESSAGE_CODE)
 		return (false);
+
 	// log
-	printf("[LOG ~~] %d octets from %d -> [%s]\n", data->len, off, data->data);
+	printf("[LOG ~~] from %d -> [%s]\n", socket, data->data);
 	return (true);
 }

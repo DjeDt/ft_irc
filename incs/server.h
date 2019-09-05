@@ -38,7 +38,6 @@
 */
 enum e_type
 {
-	OK_CODE,
 	ERROR_CODE,
 	MESSAGE_CODE
 };
@@ -46,29 +45,23 @@ enum e_type
 /*
 ** Defines
 */
-
-/* default config */
 # define DEFAULT_PORT	"1234"
+# define CRLF			"\r\n"
+# define CRLF_LEN		2
+# define CRLF_HEX		0x0a0d
 
-/* Error/Success */
 # define ERROR			-1
 # define SUCCESS		0
 
-/* fixed value */
 # define MAX_QUEUE		5
 # define MAX_NICK_LEN	16
-
-# define MAX_CHAN_LEN	50
+# define MAX_CHAN_LEN	200
 # define MAX_TOPIC_LEN	128
 # define MAX_INPUT_LEN	512
-
-# define GUEST			0
-# define LOGGED			1
 
 /*
 ** Typedef
 */
-
 typedef struct			s_command
 {
 	char				name[16];
@@ -78,10 +71,10 @@ typedef struct			s_command
 
 typedef struct			s_data
 {
-	enum e_type			type; // type of data (err/message...)
-	int					err; // to set specific error message
+	enum e_type			type;
+	int					err;
 	int					len;
-	char				data[MAX_INPUT_LEN + 1];
+	char				data[MAX_INPUT_LEN + 3];
 
 }						t_data;
 
@@ -165,7 +158,7 @@ t_channel_user			*channel_user_search(t_channel_user *chus, int off);
 bool					channel_user_add(t_channel_user **chan, t_users *user);
 bool					channel_user_remove(t_channel_user **chan, t_users *user);
 void					channel_user_remove_all(t_channel_user **user_list);
-void					channel_user_remove_full(t_channel *chan, t_users *users);
+void					channel_user_remove_full(t_channel **chan, t_users *users);
 
 /* commands */
 void					irc_help(t_server *server, t_users *user, char **command);
@@ -202,6 +195,7 @@ void					err_toomanychannels(t_users *user, char *chan_name);
 void					err_needmoreparams(t_users *user, char *command);
 void					err_nicknameinuse(t_users *user, char *nick);
 void					err_erroneusnickname(t_users *user, char *nick);
+void					err_erroneuschanname(t_users *user, char *name);
 void					err_nosuchnick(t_users *user, char *nick);
 
 void					rpl_topic(t_channel *channel, t_users *user);

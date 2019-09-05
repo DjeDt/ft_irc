@@ -20,8 +20,9 @@ bool	send_data(t_interface *inter, t_list_user *user)
 		{
 			user->data.type = MESSAGE_CODE;
 			user->data.err = false;
+			strncat(user->data.data, CRLF, CRLF_LEN);
 			if (send(user->socket, &user->data, sizeof(t_data), 0) < 0)
-				refresh_top_interface(inter, "[error] Can't send data to server : %s\n");
+				refresh_top_interface(inter, "[error] Can't send data to server\n");
 			else
 				return (true);
 		}

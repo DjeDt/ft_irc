@@ -58,7 +58,7 @@ void	close_connection(t_server *server, int off)
 	if (off == server->info.fd_max)
 		server->info.fd_max -= 1;
 	printf("[LOG -] Remove user '%s'\n", user->nick);
-	channel_user_remove_full(server->channel, user);
+	channel_user_remove_full(&server->channel, user);
 	user_remove(&server->users, off);
 }
 

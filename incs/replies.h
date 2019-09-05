@@ -38,6 +38,7 @@
 # define ERR_CANTKILLSERVER_ID		483
 
 # define ERR_TOPICTOOLONG_ID		499
+# define ERR_ERRONEUSCHANNAME_ID	500
 
 /*
 ** Error replies string following rfc 1459

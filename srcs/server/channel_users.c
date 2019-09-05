@@ -89,7 +89,6 @@ bool			channel_user_remove(t_channel_user **chan, t_users *user)
 			if (curr->user->socket == user->socket)
 			{
 				printf("[LOG -] Remove user '%s'\n", curr->user->nick);
-
 				if (prev == NULL)
 					(*chan) = curr->next;
 				else
@@ -98,7 +97,6 @@ bool			channel_user_remove(t_channel_user **chan, t_users *user)
 				return (true);
 			}
 		}
-
 		prev = curr;
 		curr = curr->next;
 	}
@@ -122,11 +120,11 @@ void			channel_user_remove_all(t_channel_user **user_list)
 	(*user_list) = NULL;
 }
 
-void			channel_user_remove_full(t_channel *channel, t_users *user)
+void			channel_user_remove_full(t_channel **channel, t_users *user)
 {
 	t_channel *tmp;
 
-	tmp = channel;
+	tmp = (*channel);
 	while (tmp != NULL)
 	{
 		channel_user_remove(&tmp->users, user);

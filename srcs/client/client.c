@@ -14,8 +14,8 @@
 
 bool	init_data(t_interface *inter, t_list_user *user)
 {
-	_memset(inter, 0x0, sizeof(*inter));
-	_memset(user, 0x0, sizeof(*user));
+	_memset(inter, 0x0, sizeof(t_interface));
+	_memset(user, 0x0, sizeof(t_list_user));
 	user->running = true;
 	user->connected = false;
 	if (init_interface(inter) != true)
