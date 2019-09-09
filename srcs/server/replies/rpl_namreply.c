@@ -1,9 +1,7 @@
 #include "server.h"
 
-void	rpl_namreply(t_channel *chan, t_users *user, t_data *data, char *nick)
+void	rpl_namreply(t_channel *chan, t_users *user, char *nick, char *buf)
 {
-	data->type = MESSAGE_CODE;
-	data->err = false;
-	data->len = snprintf(data->data, MAX_INPUT_LEN, RPL_NAMREPLY, chan->name, nick);
-	send_data_to_single_user(user->socket, data);
+	snprintf(buf, MAX_INPUT_LEN, RPL_NAMREPLY, chan->name, nick);
+	circular_send(user->socket, buf);
 }

@@ -14,10 +14,8 @@
 
 void	err_notonchannel(t_users *user, char *name)
 {
-	t_data data;
+	char buf[MAX_INPUT_LEN + 3];
 
-	data.type = ERROR_CODE;
-	data.err = ERR_NOTONCHANNEL_ID;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, ERR_NOTONCHANNEL, name);
-	send_data_to_single_user(user->socket, &data);
+	snprintf(buf, MAX_INPUT_LEN, ERR_NOTONCHANNEL, name);
+	circular_send(user->socket, buf);
 }

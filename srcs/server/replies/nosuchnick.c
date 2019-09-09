@@ -14,10 +14,8 @@
 
 void	err_nosuchnick(t_users *user, char *nick)
 {
-	t_data data;
+	char buf[MAX_INPUT_LEN + 3];
 
-	data.type = ERROR_CODE;
-	data.err = ERR_ERRONEUSNICKNAME_ID;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, ERR_NOSUCHNICK, nick);
-	send_data_to_single_user(user->socket, &data);
+	snprintf(buf, MAX_INPUT_LEN, ERR_NOSUCHNICK, nick);
+	circular_send(user->socket, buf);
 }

@@ -70,20 +70,6 @@ typedef struct			s_interface
 	int					curmax;	// max visible cursor
 }						t_interface;
 
-typedef struct			s_command
-{
-	char				name[MAX_NICK_LEN];
-	void				*func;
-}						t_command;
-
-typedef struct			s_data
-{
-	enum e_type			type;
-	int					err;
-	int					len;
-	char				data[MAX_INPUT_LEN + 3];
-}						t_data;
-
 typedef struct			s_client
 {
 	int					fd_max;
@@ -91,12 +77,21 @@ typedef struct			s_client
 	fd_set				write;
 }						t_client;
 
+typedef struct			s_circular
+{
+	int					head;
+	int					tail;
+	int					len;
+	char				buf[MAX_INPUT_LEN + 3];
+}						t_circular;
+
 typedef struct			s_list_user
 {
 	int					socket;
 	bool				running;
 	bool				connected;
-	t_data				data;
+	char				input[MAX_INPUT_LEN + 3];
+	t_circular			circ;
 	t_client			client;
 }						t_list_user;
 
@@ -108,18 +103,12 @@ typedef void (t_func) (t_interface *inter, t_list_user *user, char **command);
 void					running(t_interface *inter, t_list_user *user);
 void					interpreter(t_interface *inter, t_list_user *user);
 
-bool				    receive_data(int off, t_data *data);
-bool					send_data(t_interface *inter, t_list_user *user);
+bool                    circular_get(int soket, t_circular *circ);
+void                    circular_send(int socket, char *data);
+void                    circular_push(t_circular *circ, char *data, int size);
+bool                    search_for_crlf(t_circular *circ, int size);
 
 /* command */
-void					irc_msg(t_interface *inter, t_list_user *user, char **command);
-void					irc_who(t_interface *inter, t_list_user *user, char **command);
-void					irc_help(t_interface *inter, t_list_user *user, char **command);
-void					irc_list(t_interface *inter, t_list_user *user, char **command);
-void					irc_quit(t_interface *inter, t_list_user *user, char **command);
-bool					irc_nick(t_interface *inter, t_list_user *user, char **command);
-void					irc_join(t_interface *inter, t_list_user *user, char **command);
-void					irc_leave(t_interface *inter, t_list_user *user, char **command);
 void					wrapper_connect(t_interface *inter, t_list_user *user, char **command);
 bool					irc_connect(t_interface *inter, t_list_user *user, const char *s_ip, const char *s_port);
 

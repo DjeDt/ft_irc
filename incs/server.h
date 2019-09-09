@@ -62,38 +62,38 @@ enum e_type
 /*
 ** Typedef
 */
-typedef struct			s_command
+typedef struct				s_command
 {
-	char				name[16];
-	int					name_len;
-	void				*func;
-}						t_command;
+	char					name[16];
+	int						name_len;
+	void					*func;
+}							t_command;
 
-typedef struct			s_data
+typedef struct				s_fd
 {
-	enum e_type			type;
-	int					err;
-	int					len;
-	char				data[MAX_INPUT_LEN + 3];
+	int						fd_max;
+	fd_set					master;
+	fd_set					read;
+	fd_set					write;
+}							t_fd;
 
-}						t_data;
-
-typedef struct			s_fd
+typedef struct				s_circular
 {
-	int					fd_max;
-	fd_set				master;
-	fd_set				read;
-	fd_set				write;
-}						t_fd;
+	int						head;
+	int						tail;
+	int						len;
+	char					buf[MAX_INPUT_LEN + 3];
+}							t_circular;
 
-typedef struct			s_users
+typedef struct				s_users
 {
-	int					socket;
-	int					nick_len;
-	char				nick[MAX_NICK_LEN + 1];
-	void				*chan;
-	struct s_users		*next;
-}						t_users;
+	int						socket;
+	int						nick_len;
+	char					nick[MAX_NICK_LEN + 1];
+	t_circular				circ;
+	void					*chan;
+	struct s_users			*next;
+}							t_users;
 
 typedef struct				s_channel_user
 {
@@ -101,25 +101,24 @@ typedef struct				s_channel_user
 	struct s_channel_user	*next;
 }							t_channel_user;
 
-typedef struct			s_channel
+typedef struct				s_channel
 {
-	int					num;		// number of users
-	int					name_len;
-	char				name[MAX_CHAN_LEN + 1];
-	char				*topic;
-	t_channel_user		*users;		// list of connected users
-	struct s_channel	*next;		// next channel
-}						t_channel;
+	int						num;		// number of users
+	int						name_len;
+	char					name[MAX_CHAN_LEN + 1];
+	char					*topic;
+	t_channel_user			*users;		// list of connected users
+	struct s_channel		*next;		// next channel
+}							t_channel;
 
-typedef struct			s_server
+typedef struct				s_server
 {
-	int					port;
-	int					sock;
-	t_fd				info;
-	t_users				*users;
-	t_channel			*channel;
-}						t_server;
-
+	int						port;
+	int						sock;
+	t_fd					info;
+	t_users					*users;
+	t_channel				*channel;
+}							t_server;
 // server -> channel -> channel_user -> user;
 
 typedef void (*t_error) (const char *err);
@@ -132,10 +131,13 @@ typedef void (t_func) (t_server *server, t_users *user, char **command);
 /* core */
 bool					initialize(t_server *server, const char *str);
 bool					running(t_server *server);
-void					interpreter(t_server *server, t_data data, int off);
+void					interpreter(t_server *server, t_users *user);
 
-bool					receive_data(int off, t_data *data);
-bool					send_data_to_single_user(int socket, t_data *data);
+/* Circular buffer */
+bool					circular_get(int soket, t_circular *circ);
+void					circular_send(int socket, char *data, int size);
+void					circular_push(t_circular *circ, char *data, int size);
+bool					search_for_crlf(t_circular *circ, int size);
 
 /* users */
 void					generate_guest_pseudo(char *pseudo, int id);
@@ -200,13 +202,12 @@ void					err_nosuchnick(t_users *user, char *nick);
 
 void					rpl_topic(t_channel *channel, t_users *user);
 void					rpl_notopic(t_channel *channel, t_users *user);
-void					rpl_whoreply(t_channel *chan, t_users *user, t_data *data, char *nick);
-void					rpl_endofwho(t_channel *chan, t_users *user, t_data *data);
-void					rpl_namreply(t_channel *chan, t_users *user, t_data *data, char *nick);
-void					rpl_endofnames(t_channel *chan, t_users *user, t_data *data);
-void					rpl_liststart(t_users *user, t_data *data);
-void					rpl_list(t_channel *channel, t_users *user, t_data *data);
-void					rpl_endoflist(t_users *user, t_data *data);
-
+void					rpl_whoreply(t_channel *chan, t_users *user, char *nick, char *buf);
+void					rpl_endofwho(t_channel *chan, t_users *user, char *buf);
+void					rpl_namreply(t_channel *chan, t_users *user, char *nick, char *buf);
+void					rpl_endofnames(t_channel *chan, t_users *user, char *buf);
+void					rpl_liststart(t_users *user, char *buf);
+void					rpl_list(t_channel *channel, t_users *user, char *buf);
+void					rpl_endoflist(t_users *user, char *buf);
 
 #endif

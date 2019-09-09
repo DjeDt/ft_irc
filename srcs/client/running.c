@@ -24,14 +24,14 @@ static void	init_fd(t_list_user *user)
 	}
 }
 
-static void	reset_data(t_interface *inter, t_data *data)
+static void	reset_data(t_interface *inter, char *buf)
 {
-	_memset(data, 0x0, sizeof(t_data));
+	_memset(buf, 0x0, MAX_INPUT_LEN + 3);
 	inter->off = 0;
 	inter->curmax = 0;
 	inter->cursor = 3;
 	wclear(inter->bot);
-	refresh_bot_interface(inter, data->data);
+	refresh_bot_interface(inter, buf);
 }
 
 static void	read_from_user(t_interface *inter, t_list_user *user)
@@ -40,42 +40,39 @@ static void	read_from_user(t_interface *inter, t_list_user *user)
 
 	key = wgetch(inter->bot);
 	if (key == KEY_LEFT)
-		do_key_left(inter, user->data.data);
+		do_key_left(inter, user->input);
 	else if (key == KEY_RIGHT)
-		do_key_right(inter, user->data.data);
+		do_key_right(inter, user->input);
 	else if (key == KEY_UP)
-		do_key_up(inter, user->data.data);
+		do_key_up(inter, user->input);
 	else if (key == KEY_DOWN)
-		do_key_down(inter, user->data.data);
+		do_key_down(inter, user->input);
 	else if (key == 127)
-		delete_char(inter, user->data.data);
+		delete_char(inter, user->input);
 	else if (key == '\n')
 	{
-		send_data(inter, user);
-		reset_data(inter, &user->data);
+		circular_send(user->socket, user->input);
+		reset_data(inter, user->input);
 	}
 	else
-		insert_char(inter, user->data.data, key);
+		insert_char(inter, user->input, key);
 }
 
 static void	read_from_server(t_interface *inter, t_list_user *user)
 {
-	t_data data;
-
-	_memset(&data, 0x0, sizeof(t_data));
-	if (receive_data(user->socket, &data) != true)
+	if (circular_get(user->socket, &user->circ) != true)
 	{
 		close(user->socket);
 		user->connected = false;
 		refresh_top_interface(inter, "Disconnected from server :_:");
 		return ;
 	}
-	refresh_top_interface(inter, "%s\n", data.data);
+	if (search_for_crlf(&user->circ, user->circ.tail - user->circ.head) == true)
+		refresh_top_interface(inter, "%s\n", user->circ.buf);
 }
 
 void	running(t_interface *inter, t_list_user *user)
 {
-	memset((void*)&user->data, 0x0, sizeof(t_data));
 	while (user->running == true)
 	{
 		init_fd(user);

@@ -2,10 +2,8 @@
 
 void	err_toomanychannels(t_users *user, char *chan_name)
 {
-	t_data data;
+	char buf[MAX_INPUT_LEN + 3];
 
-	data.type = ERROR_CODE;
-	data.err = ERR_TOOMANYCHANNELS_ID;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, ERR_TOOMANYCHANNELS, chan_name);
-	send_data_to_single_user(user->socket, &data);
+	snprintf(buf, MAX_INPUT_LEN, ERR_TOOMANYCHANNELS, chan_name);
+	circular_send(user->socket, buf);
 }

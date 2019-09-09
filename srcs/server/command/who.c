@@ -14,16 +14,16 @@
 
 static void	gather_all_user_in_chan(t_channel *chan, t_users *user)
 {
-	t_data			data;
+	char			buf[MAX_INPUT_LEN + 3];
 	t_channel_user	*tmp;
 
 	tmp = chan->users;
 	while (tmp != NULL)
 	{
-		rpl_whoreply(chan, user, &data, tmp->user->nick);
+		rpl_whoreply(chan, user, tmp->user->nick, buf);
 		tmp = tmp->next;
 	}
-	rpl_endofwho(chan, user, &data);
+	rpl_endofwho(chan, user, buf);
 }
 
 void		irc_who(t_server *server, t_users *user, char **command)

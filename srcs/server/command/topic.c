@@ -2,12 +2,10 @@
 
 static void	err_topictoolong(t_users *user, char *topic)
 {
-	t_data data;
+	char buf[MAX_INPUT_LEN + 3];
 
-	data.type = MESSAGE_CODE;
-	data.err = ERR_TOPICTOOLONG_ID;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server]: <%s> :Topic too long.", topic);
-	send_data_to_single_user(user->socket, &data);
+	snprintf(buf, MAX_INPUT_LEN, "[server]: <%s> :Topic too long.", topic);
+	circular_send(user->socket, buf);
 }
 
 static void	send_channel_topic(t_channel *chan, t_users *user)

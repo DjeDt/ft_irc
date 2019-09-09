@@ -14,26 +14,22 @@
 
 static void	setup_message_to_user(t_users *src, t_users *dst, const char *message)
 {
-	t_data data;
+	char buf[MAX_INPUT_LEN + 3];
 
-	data.type = MESSAGE_CODE;
-	data.err = false;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "[msg] [%s] : %s\n", src->nick, message);
-	send_data_to_single_user(dst->socket, &data);
+	snprintf(buf, MAX_INPUT_LEN, "[msg] [%s] : %s\n", src->nick, message);
+	circular_send(dst->socket, buf);
 }
 
 static void	setup_message_to_channel(t_users *src, t_channel *dst, const char *message)
 {
-	t_data			data;
+	char			buf[MAX_INPUT_LEN + 3];
 	t_channel_user	*tmp;
 
-	data.type = MESSAGE_CODE;
-	data.err = false;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "[msg] [%s] : %s\n", src->nick, message);
+	snprintf(buf, MAX_INPUT_LEN, "[msg] [%s] : %s\n", src->nick, message);
 	tmp = dst->users;
 	while (tmp != NULL)
 	{
-		send_data_to_single_user(tmp->user->socket, &data);
+		circular_send(tmp->user->socket, buf);
 		tmp = tmp->next;
 	}
 }

@@ -31,24 +31,22 @@ static bool	check_name(char *name)
 
 static void	notify_channel(t_channel_user *chan_users, t_users *user)
 {
-	t_data			data;
+	char			buf[MAX_INPUT_LEN + 3];
 	t_channel_user	*tmp;
 
-	data.type = MESSAGE_CODE;
-	data.err = false;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server] : '%s' joined channel.", user->nick);
 	tmp = chan_users;
+	snprintf(buf, MAX_INPUT_LEN, "[server] : '%s' joined channel.", user->nick);
 	while (tmp != NULL)
 	{
 		if (user->socket != tmp->user->socket)
-			send_data_to_single_user(tmp->user->socket, &data);
+			circular_send(user->socket, buf);
 		tmp = tmp->next;
 	}
 }
 
 static void	notify_user(t_channel *chan, t_users *user)
 {
-	t_data			data;
+	char			buf[MAX_INPUT_LEN + 3];
 	t_channel_user	*tmp;
 
 	if (chan->topic != NULL)
@@ -59,10 +57,10 @@ static void	notify_user(t_channel *chan, t_users *user)
 	tmp = chan->users;
 	while (tmp != NULL)
 	{
-		rpl_namreply(chan, user, &data, tmp->user->nick);
+		rpl_namreply(chan, user, buf, tmp->user->nick);
 		tmp = tmp->next;
 	}
-	rpl_endofnames(chan, user, &data);
+	rpl_endofnames(chan, user, buf);
 }
 
 static void	accept_user(t_channel *channel, t_users *user)

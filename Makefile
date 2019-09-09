@@ -35,9 +35,7 @@ server_src =							\
 	$(serverdir)/users.c				\
 	$(serverdir)/channel.c				\
 	$(serverdir)/channel_users.c		\
-	$(serverdir)/receive.c				\
 	$(serverdir)/interpreter.c			\
-	$(serverdir)/send.c					\
 \
 	$(serverdir)/$(cmddir)/help.c		\
 	$(serverdir)/$(cmddir)/list.c		\
@@ -72,6 +70,7 @@ server_src =							\
 	$(serverdir)/$(repliesdir)/rpl_endoflist.c		\
 \
 	$(libdir)/lib.c						\
+	$(libdir)/circular.c
 
 client_src = 							\
 	$(clientdir)/client.c				\
@@ -79,11 +78,9 @@ client_src = 							\
 	$(clientdir)/interface.c			\
 	$(clientdir)/running.c				\
 	$(clientdir)/key.c					\
-	$(clientdir)/send.c					\
-	$(clientdir)/receive.c				\
 \
-	$(libdir)/lib.c
-
+	$(libdir)/lib.c						\
+	$(libdir)/circular.c
 
 server_obj = $(addprefix $(srcdir), $(server_src:%.c=%.o))
 client_obj = $(addprefix $(srcdir), $(client_src:%.c=%.o))

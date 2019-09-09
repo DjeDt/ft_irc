@@ -14,25 +14,23 @@
 
 static void	notify_leave(t_users *user, char **command)
 {
-	t_data			data;
+	char			buf[MAX_INPUT_LEN + 3];
 	t_channel_user	*tmp;
 
-	data.type = MESSAGE_CODE;
-	data.err = false;
 	if (command[1] != NULL)
 	{
-		data.len = snprintf(data.data, MAX_INPUT_LEN, "[server] : '%s' quit: %s", user->nick, command[1]);
+		snprintf(buf, MAX_INPUT_LEN, "[server] : '%s' quit: %s", user->nick, command[1]);
 		tmp = ((t_channel*)user->chan)->users;
 		while (tmp != NULL)
 		{
-			send_data_to_single_user(tmp->user->socket, &data);
+			circular_send(tmp->user->socket, buf);
 			tmp = tmp->next;
 		}
 	}
 	else
 	{
-		data.len = snprintf(data.data, MAX_INPUT_LEN, "Disconnected.");
-		send_data_to_single_user(user->socket, &data);
+		snprintf(buf, MAX_INPUT_LEN, "Disconnected.");
+		circular_send(user->socket, buf);
 	}
 }
 

@@ -51,12 +51,12 @@ int		command_size(char *cmd)
 	return (i);
 }
 
-bool	split_command(char **command, const char *data)
+bool	split_command(char **command, const char *final)
 {
 	int		size;
 	char	*ptr;
 
-	ptr = (char*)data;
+	ptr = (char*)final;
 	size = command_size(ptr);
 	if (size > 0)
 	{
@@ -106,9 +106,8 @@ bool	handle_command(t_server *server, t_users *user, char **command)
 	return (false);
 }
 
-void	handle_message(t_server *server, t_users *user, t_data d)
+void	handle_message(t_server *server, t_users *user, char *final)
 {
-	t_data			data;
 	t_channel_user	*usr_list;
 
 	if (user->chan == NULL)
@@ -116,33 +115,49 @@ void	handle_message(t_server *server, t_users *user, t_data d)
 	usr_list = ((t_channel*)user->chan)->users;
 	if (usr_list == NULL)
 		return ;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "[time] [%s] [%s]> %s", ((t_channel*)user->chan)->name, user->nick, d.data);
+	snprintf(final, MAX_INPUT_LEN, "[time] [%s] [%s]> %s", ((t_channel*)user->chan)->name, user->nick, final);
 	while (usr_list != NULL)
 	{
+		strncat(final, CRLF, CRLF_LEN);
 		if (FD_ISSET(usr_list->user->socket, &server->info.write))
-			send_data_to_single_user(usr_list->user->socket, &data);
+			circular_send(usr_list->user->socket, final);
 		usr_list = usr_list->next;
 	}
 }
 
-void	interpreter(t_server *server, t_data data, int off)
+void	get_final_input(char *final, t_circular *circ)
 {
-	t_users	*user;
-	char	*cmd[3];
+	int count;
+	int tail;
 
-	if ((user = user_search_by_id(server->users, off)) == NULL)
-		return ;
-	if (data.data[0] == '/')
+	count = 0;
+	tail = circ->tail;
+	while (count < circ->len)
+	{
+		final[count] = circ->buf[tail];
+		tail = (tail + 1) % MAX_INPUT_LEN;
+		count++;
+	}
+}
+
+void	interpreter(t_server *server, t_users *user)
+{
+	char	*cmd[3];
+	char	final[MAX_INPUT_LEN + 1];
+
+	memset(final, 0x0, MAX_INPUT_LEN + 1);
+	get_final_input(final, &user->circ);
+	if (final[0] == '/')
 	{
 		_memset(&cmd, 0x0, sizeof(cmd));
-		if (split_command(cmd, data.data) != true)
+		if (split_command(cmd, final) != true)
 			return ;
 		handle_command(server, user, cmd);
 		free_command(cmd);
 	}
 	else
 	{
-		if (FD_ISSET(off, &server->info.write))
-			handle_message(server, user, data);
+		if (FD_ISSET(user->socket, &server->info.write))
+			handle_message(server, user, final);
 	}
 }

@@ -56,6 +56,7 @@ void	refresh_top_interface(t_interface *inter, char *input, ...)
 	vsnprintf(data, MAX_INPUT_LEN, input, arglist);
 	va_end(arglist);
 	wprintw(inter->top, " %s", data);
+	wmove(inter->bot, 1, inter->cursor);
 	box(inter->top, ACS_VLINE, ACS_HLINE);
 	wnoutrefresh(inter->top);
 	doupdate();

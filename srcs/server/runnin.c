@@ -46,56 +46,54 @@ bool	accept_connection(t_server *server)
 	return (true);
 }
 
-void	close_connection(t_server *server, int off)
+void	close_connection(t_server *server, t_users *user)
 {
-	t_users		*user;
-
-	user = user_search_by_id(server->users, off);
-	if (user == NULL)
-		return ;
-	close(user->socket);
-	FD_CLR(off, &server->info.master);
-	if (off == server->info.fd_max)
+	if (user->socket == server->info.fd_max)
 		server->info.fd_max -= 1;
 	printf("[LOG -] Remove user '%s'\n", user->nick);
+	close(user->socket);
+	FD_CLR(user->socket, &server->info.master);
 	channel_user_remove_full(&server->channel, user);
-	user_remove(&server->users, off);
+	user_remove(&server->users, user->socket);
 }
 
-bool	processing(t_server *server, int off)
+bool	processing(t_server *server, int socket)
 {
-	t_data	data;
+	t_users *user;
 
-	if (off == server->sock)
+	if (socket == server->sock)
 		accept_connection(server);
 	else
 	{
-		_memset(&data, 0x0, sizeof(data));
-		if (receive_data(off, &data) != true)
-			close_connection(server, off);
-		else
-			interpreter(server, data, off);
+		user = user_search_by_id(server->users, socket);
+		if (user != NULL)
+		{
+			if (circular_get(user->socket, &user->circ) == false)
+				close_connection(server, user);
+			if (search_for_crlf(&user->circ, user->circ.tail - user->circ.head) == true)
+				interpreter(server, user);
+		}
 	}
 	return (true);
 }
 
 bool	running(t_server *server)
 {
-	int off;
+	int socket;
 
 	init_client_list(&server->info, server->sock);
 	while (true)
 	{
-		off = 0;
+		socket = 0;
 		server->info.read = server->info.master;
 		server->info.write = server->info.master;
 		if (select(server->info.fd_max + 1, &server->info.read, &server->info.write, NULL, NULL) < 0)
 			return (false);
-		while (off <= server->info.fd_max)
+		while (socket <= server->info.fd_max)
 		{
-			if (FD_ISSET(off, &server->info.read))
-				processing(server, off);
-			off++;
+			if (FD_ISSET(socket, &server->info.read))
+				processing(server, socket);
+			socket++;
 		}
 	}
 	return (true);

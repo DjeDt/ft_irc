@@ -14,17 +14,17 @@
 
 void	irc_list(t_server *server, t_users *user, char **command)
 {
-	t_data		data;
+	char		buf[MAX_INPUT_LEN + 3];
 	t_channel	*tmp;
 
 	(void)command;
 	tmp = server->channel;
-	rpl_liststart(user, &data);
+	rpl_liststart(user, buf);
 	while (tmp != NULL)
 	{
-		memset(&data, 0x0, sizeof(t_data));
-		rpl_list(tmp, user, &data);
+		memset(buf, 0x0, MAX_INPUT_LEN + 3);
+		rpl_list(tmp, user, buf);
 		tmp = tmp->next;
 	}
-	rpl_endoflist(user, &data);
+	rpl_endoflist(user, buf);
 }

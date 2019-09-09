@@ -47,29 +47,25 @@ bool	check_nick(t_users *users_list, t_users *user, char *nick, int size)
 
 void	send_response(t_users *user)
 {
-	t_data data;
+	char buf[MAX_INPUT_LEN + 3];
 
-	data.type = MESSAGE_CODE;
-	data.err = false;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "You are now known as '%s'.", user->nick);
-	send_data_to_single_user(user->socket, &data);
+	snprintf(buf, MAX_INPUT_LEN, "You are now known as '%s'.", user->nick);
+	circular_send(user->socket, buf);
 }
 
 void	notify_channel(t_users *user, char *old_nick)
 {
-	t_data			data;
+	char			buf[MAX_INPUT_LEN + 3];
 	t_channel_user	*tmp;
 
 	if (user->chan != NULL)
 	{
-		data.type = MESSAGE_CODE;
-		data.err = false;
-		data.len = snprintf(data.data, MAX_INPUT_LEN, "'%s' is now known as '%s'.", old_nick, user->nick);
+		snprintf(buf, MAX_INPUT_LEN, "'%s' is now known as '%s'.", old_nick, user->nick);
 		tmp = ((t_channel*)user->chan)->users;
 		while (tmp != NULL)
 		{
 			if (tmp->user->socket != user->socket)
-				send_data_to_single_user(tmp->user->socket, &data);
+				circular_send(user->socket, buf);
 			tmp = tmp->next;
 		}
 	}
