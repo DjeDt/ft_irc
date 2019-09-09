@@ -43,36 +43,45 @@
 /*
 ** Error replies string following rfc 1459
 */
-# define ERR_NOSUCHNICK			"401 <nickname> :No such nick/channel"
-# define ERR_NOSUCHSERVER		"402 <server name> :No such server"
-# define ERR_NOSUCHCHANNEL		"403 <channel name> :No such channel"
-# define ERR_CANNOTSENDTOCHAN	"404 <channel name> :Cannot send to channel"
-# define ERR_TOOMANYCHANNELS	"405 <channel name> :You have joined too many channels"
-# define ERR_NORECIPIENT		"411 :No recipient given (<command>)"
-# define ERR_NOTEXTTOSEND		"412 :No text to send"
-# define ERR_UNKNOWNCOMMAND		"421 <%s> :Unknown command"
+# define ERR_NOSUCHNICK			"[server] <%s> :No such nick/channel."	// nickname2Q
+# define ERR_NOSUCHSERVER		"[server] <%s> :No such server."			// server name
+# define ERR_NOSUCHCHANNEL		"[server] <%s> :No such channel." // channel name
+# define ERR_CANNOTSENDTOCHAN	"[server] <%s> :Cannot send to channel." // channel name
+# define ERR_TOOMANYCHANNELS	"[server] <%s> :You have joined too many channels." // channel name
+# define ERR_NORECIPIENT		"[server] :No recipient given (<%s>)." // command
+# define ERR_NOTEXTTOSEND		"[server] :No text to send."
+# define ERR_UNKNOWNCOMMAND		"[server] <%s> :Unknown command." // command
 
-# define ERR_NONICKNAMEGIVEN	"431 :No nickname given"
-# define ERR_ERRONEUSNICKNAME	"432 <nick> :Erroneus nickname"
-# define ERR_NICKNAMEINUSE		"433 <nick> :Nickname is already in use"
-# define ERR_NICKCOLLISION		"436 <nick> :Nickname collision KILL"
+# define ERR_NONICKNAMEGIVEN	"[server] :No nickname given."
+# define ERR_ERRONEUSNICKNAME	"[server] <%s> :Erroneus nickname." // nickname
+# define ERR_ERRONEUSCHANNAME	"[server] <%s> :Erroneus chan name." // channel
+# define ERR_NICKNAMEINUSE		"[server] <%s> :Nickname is already in use." // nickname
+# define ERR_NICKCOLLISION		"[server] <%s> :Nickname collision KILL." // nickname
 
-# define ERR_USERNOTINCHANNEL	"441 <nick> <channel> :They aren' on that channel"
-# define ERR_NOTONCHANNEL		"442 <channel> :You're not on that channel"
-# define ERR_NOLOGIN			"444 <user> :User not logged in"
-# define ERR_NEEDMOREPARAMS		"461 <command> :Not enough parameters"
-# define ERR_CANTKILLSERVER		"483 :You cant kill a server"
+# define ERR_USERNOTINCHANNEL	"[server] <%s> <%s> :They aren' on that channel." // nick / channel
+# define ERR_NOTONCHANNEL		"[server] <%s> :You're not on that channel." // channel
+# define ERR_NOLOGIN			"[server] <%s> :User not logged in." // user
+# define ERR_NEEDMOREPARAMS		"[server] <%s> :Not enough parameters." // command
+# define ERR_CANTKILLSERVER		"[server] :You cant kill a server."
 
 /*
 ** Normal replies
 */
-
 # define RPL_LISTSTART_ID			321
 # define RPL_LIST_ID				322
 # define RPL_LISTEND_ID				323
 
-# define RPL_LISTSTART			"321 Channel :Users  Name"
-# define RPL_LIST				"322 <channel> <user visible>"
-# define RPL_LISTEND			"323 End of /LIST"
+# define RPL_LISTSTART			"[server] Channel :Users  Name"
+# define RPL_LIST				"[server] <%s> <%d>"
+# define RPL_ENDOFLIST			"[server] End of /list."
+
+# define RPL_TOPIC				"[server] <%s> :<%s>." // canal / subject
+# define RPL_NOTOPIC			"[server] <%s> :No topic is set." // channel
+
+# define RPL_NAMREPLY			"[server] <%s> :<%s>." // channel / nickname
+# define RPL_ENDOFNAMES			"[server] <%s> :End of /NAMES list." // channel
+
+# define RPL_WHOREPLY			"[server] <%s> :<%s>." // channel / nickname
+# define RPL_ENDOFWHO			"[server] <%s> :End of /NAMES list." // channel
 
 #endif

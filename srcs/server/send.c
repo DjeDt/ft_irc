@@ -16,7 +16,7 @@
 bool	send_data_to_single_user(int socket, t_data *data)
 {
 	strncat(data->data, CRLF, CRLF_LEN);
-	if (send(socket, data, sizeof(t_data), 0) < 1)
+	if (send(socket, data, sizeof(t_data), 0) < 0)
 	{
 		perror("send");
 		return (false);

@@ -14,27 +14,17 @@
 
 void	irc_list(t_server *server, t_users *user, char **command)
 {
-	t_channel	*tmp;
 	t_data		data;
-
-
-	// TODO SPECIFIC HANDLER BOTH CLIENT/SERVER
+	t_channel	*tmp;
 
 	(void)command;
-	if (server->channel != NULL)
+	tmp = server->channel;
+	rpl_liststart(user, &data);
+	while (tmp != NULL)
 	{
-		tmp = server->channel;
-		data.len = snprintf(data.data, MAX_INPUT_LEN, "Current channel:\n.");
-		while (tmp != NULL)
-		{
-			data.len = snprintf(data.data, MAX_INPUT_LEN, "channel:\t'%s'.\n", tmp->name);
-			send_data_to_single_user(user->socket, &data);
-			tmp = tmp->next;
-		}
+		memset(&data, 0x0, sizeof(t_data));
+		rpl_list(tmp, user, &data);
+		tmp = tmp->next;
 	}
-	else
-	{
-		data.len = snprintf(data.data, MAX_INPUT_LEN, "There isn't any channel.\n");
-		send_data_to_single_user(user->socket, &data);
-	}
+	rpl_endoflist(user, &data);
 }

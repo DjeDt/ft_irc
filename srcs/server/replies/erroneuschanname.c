@@ -6,6 +6,6 @@ void	err_erroneuschanname(t_users *user, char *name)
 
 	data.type = ERROR_CODE;
 	data.err = ERR_ERRONEUSCHANNAME_ID;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server]: <%s> :Erroneus chan name.", name);
+	data.len = snprintf(data.data, MAX_INPUT_LEN, ERR_ERRONEUSCHANNAME, name);
 	send_data_to_single_user(user->socket, &data);
 }

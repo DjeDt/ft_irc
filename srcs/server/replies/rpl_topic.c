@@ -6,6 +6,6 @@ void	rpl_topic(t_channel *channel, t_users *user)
 
 	data.type = MESSAGE_CODE;
 	data.err = false;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server]: <%s> :topic : '%s'.", channel->name, channel->topic);
+	data.len = snprintf(data.data, MAX_INPUT_LEN, RPL_TOPIC, channel->name, channel->topic);
 	send_data_to_single_user(user->socket, &data);
 }

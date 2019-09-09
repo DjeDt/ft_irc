@@ -18,6 +18,6 @@ void	err_nicknameinuse(t_users *user, char *nick)
 
 	data.type = ERROR_CODE;
 	data.err = ERR_NICKNAMEINUSE_ID;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server]: <%s> :Nickname is already in use.", nick);
+	data.len = snprintf(data.data, MAX_INPUT_LEN, ERR_NICKNAMEINUSE, nick);
 	send_data_to_single_user(user->socket, &data);
 }

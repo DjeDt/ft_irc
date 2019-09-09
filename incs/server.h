@@ -204,5 +204,9 @@ void					rpl_whoreply(t_channel *chan, t_users *user, t_data *data, char *nick);
 void					rpl_endofwho(t_channel *chan, t_users *user, t_data *data);
 void					rpl_namreply(t_channel *chan, t_users *user, t_data *data, char *nick);
 void					rpl_endofnames(t_channel *chan, t_users *user, t_data *data);
+void					rpl_liststart(t_users *user, t_data *data);
+void					rpl_list(t_channel *channel, t_users *user, t_data *data);
+void					rpl_endoflist(t_users *user, t_data *data);
+
 
 #endif

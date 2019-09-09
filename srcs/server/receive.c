@@ -12,7 +12,7 @@
 
 #include "server.h"
 
-bool	search_for_crlf(char *data, int size)
+static bool	search_for_crlf(char *data, int size)
 {
 	void *ptr;
 
@@ -45,7 +45,6 @@ bool	receive_data(int socket, t_data *data)
 	if (data->type != MESSAGE_CODE)
 		return (false);
 
-	// log
 	printf("[LOG ~~] from %d -> [%s]\n", socket, data->data);
 	return (true);
 }

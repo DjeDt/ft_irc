@@ -18,6 +18,6 @@ void	err_needmoreparams(t_users *user, char *command)
 
 	data.type = ERROR_CODE;
 	data.err = ERR_NEEDMOREPARAMS_ID;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server]: <%s> :Not enough parameters", command);
+	data.len = snprintf(data.data, MAX_INPUT_LEN, ERR_NEEDMOREPARAMS, command);
 	send_data_to_single_user(user->socket, &data);
 }

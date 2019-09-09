@@ -18,6 +18,6 @@ void	err_erroneusnickname(t_users *user, char *nick)
 
 	data.type = ERROR_CODE;
 	data.err = ERR_ERRONEUSNICKNAME_ID;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server]: <%s> :Erroneus nickname.", nick);
+	data.len = snprintf(data.data, MAX_INPUT_LEN, ERR_ERRONEUSNICKNAME, nick);
 	send_data_to_single_user(user->socket, &data);
 }

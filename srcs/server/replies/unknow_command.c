@@ -18,7 +18,7 @@ void	err_unknow_command(t_users *user, char *command)
 
 	data.type = ERROR_CODE;
 	data.err = ERR_UNKNOWNCOMMAND_ID;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server]: <%s> :Unknow command", command);
+	data.len = snprintf(data.data, MAX_INPUT_LEN, ERR_UNKNOWNCOMMAND, command);
 	send_data_to_single_user(user->socket, &data);
 	return ;
 }

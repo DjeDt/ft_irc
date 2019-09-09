@@ -67,6 +67,9 @@ server_src =							\
 	$(serverdir)/$(repliesdir)/rpl_endofwho.c		\
 	$(serverdir)/$(repliesdir)/rpl_namreply.c		\
 	$(serverdir)/$(repliesdir)/rpl_endofnames.c		\
+	$(serverdir)/$(repliesdir)/rpl_liststart.c		\
+	$(serverdir)/$(repliesdir)/rpl_list.c			\
+	$(serverdir)/$(repliesdir)/rpl_endoflist.c		\
 \
 	$(libdir)/lib.c						\
 

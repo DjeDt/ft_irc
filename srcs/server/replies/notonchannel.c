@@ -18,6 +18,6 @@ void	err_notonchannel(t_users *user, char *name)
 
 	data.type = ERROR_CODE;
 	data.err = ERR_NOTONCHANNEL_ID;
-	data.len = snprintf(data.data, MAX_INPUT_LEN, "[server]: <%s> :You're not on that channel", name);
+	data.len = snprintf(data.data, MAX_INPUT_LEN, ERR_NOTONCHANNEL, name);
 	send_data_to_single_user(user->socket, &data);
 }
