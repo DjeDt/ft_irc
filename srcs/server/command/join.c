@@ -30,22 +30,23 @@ static bool	check_name(char *name)
 
 static void	notify_channel(t_channel_user *chan_users, t_users *user)
 {
-	char			buf[MAX_INPUT_LEN + 3];
+	int				len;
+	char			buf[MAX_INPUT_LEN + 3] = {0};
 	t_channel_user	*tmp;
 
 	tmp = chan_users;
-	snprintf(buf, MAX_INPUT_LEN, "[server] : '%s' joined channel.%s", user->nick, CRLF);
+	len = snprintf(buf, MAX_INPUT_LEN, "[server] : '%s' joined channel.", user->nick.nick);
 	while (tmp != NULL)
 	{
 		if (user->socket != tmp->user->socket)
-			circular_send(user->socket, buf, _strlen(buf));
+			circular_send(user->socket, buf, len);
 		tmp = tmp->next;
 	}
 }
 
 static void	notify_user(t_channel *chan, t_users *user)
 {
-	char			buf[MAX_INPUT_LEN + 3];
+	char			buf[MAX_INPUT_LEN + 3] = {0};
 	t_channel_user	*tmp;
 
 	if (chan->topic != NULL)
@@ -56,7 +57,7 @@ static void	notify_user(t_channel *chan, t_users *user)
 	tmp = chan->users;
 	while (tmp != NULL)
 	{
-		rpl_namreply(chan, user, buf, tmp->user->nick);
+		rpl_namreply(chan, user, tmp->user->nick.nick, buf);
 		tmp = tmp->next;
 	}
 	rpl_endofnames(chan, user, buf);
@@ -83,6 +84,7 @@ static void	init_channel(t_server *server, t_users *user, char *chan_name)
 		return ;
 	chan->num += 1;
 	user->chan = chan;
+
 	channel_user_add(&chan->users, user);
 	notify_user(chan, user);
 }
