@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:00:32 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 23:48:58 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/10 20:37:55 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void	reset_data(t_interface *inter, char *buf)
 	refresh_bot_interface(inter, buf);
 }
 
-static void	read_from_user(t_interface *inter, t_list_user *user)
+void	read_from_user(t_interface *inter, t_list_user *user)
 {
 	wint_t key;
 
@@ -51,15 +51,39 @@ static void	read_from_user(t_interface *inter, t_list_user *user)
 		delete_char(inter, user->input);
 	else if (key == '\n')
 	{
-		circular_send(user->socket, user->input);
+		refresh_top_interface(inter, " sending : '%s'\n", user->input);
+
+		strncat(user->input, CRLF, CRLF_LEN);
+		circular_send(user->socket, user->input, _strlen(user->input));
 		reset_data(inter, user->input);
 	}
 	else
 		insert_char(inter, user->input, key);
 }
 
+
+static void	get_final_input(char *final, t_circular *circ)
+{
+	int count;
+	int head;
+
+	count = 0;
+	head = circ->head;
+	while (count < circ->len)
+	{
+		final[count] = circ->buf[head];
+		head = (head + 1) % MAX_INPUT_LEN;
+		count++;
+	}
+	final[count] = '\0';
+}
+
+
 static void	read_from_server(t_interface *inter, t_list_user *user)
 {
+	char	buf[MAX_INPUT_LEN + 3];
+
+	memset(buf, 0x0, MAX_INPUT_LEN + 3);
 	if (circular_get(user->socket, &user->circ) != true)
 	{
 		close(user->socket);
@@ -67,8 +91,16 @@ static void	read_from_server(t_interface *inter, t_list_user *user)
 		refresh_top_interface(inter, "Disconnected from server :_:");
 		return ;
 	}
-	if (search_for_crlf(&user->circ, user->circ.tail - user->circ.head) == true)
-		refresh_top_interface(inter, "%s\n", user->circ.buf);
+	else
+	{
+		if (search_for_crlf(&user->circ, user->circ.len) == true \
+			|| user->circ.len >= MAX_INPUT_LEN)
+		{
+			get_final_input(buf, &user->circ);
+			user->circ.head = user->circ.tail;
+			user->circ.len = 0;
+		}
+	}
 }
 
 void	running(t_interface *inter, t_list_user *user)

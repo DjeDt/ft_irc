@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:41:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 22:27:33 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/10 16:55:43 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	send_leave_notif(t_channel *chan, t_users *user)
 	tmp = chan->users;
 	while (tmp != NULL)
 	{
-		circular_send(user->socket, buf);
+		circular_send(user->socket, buf, _strlen(buf));
 		tmp = tmp->next;
 	}
 }
@@ -36,7 +36,7 @@ static void	_remove_user_from_channel(t_server *server, t_channel *chan, t_users
 	chan->num -= 1;
 	user->chan = NULL;
 	snprintf(buf, MAX_INPUT_LEN, "[server]: Disconnected from '%s'.", chan_name);
-	circular_send(user->socket, buf);
+	circular_send(user->socket, buf, _strlen(buf));
 	if (chan->num <= 0)
 	{
 		channel_delete(&server->channel, chan->name);

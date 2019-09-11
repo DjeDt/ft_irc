@@ -5,7 +5,7 @@ static void	err_topictoolong(t_users *user, char *topic)
 	char buf[MAX_INPUT_LEN + 3];
 
 	snprintf(buf, MAX_INPUT_LEN, "[server]: <%s> :Topic too long.", topic);
-	circular_send(user->socket, buf);
+	circular_send(user->socket, buf, _strlen(buf));
 }
 
 static void	send_channel_topic(t_channel *chan, t_users *user)

@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 14:35:50 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 22:04:39 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/10 16:56:34 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void	setup_message_to_user(t_users *src, t_users *dst, const char *messag
 	char buf[MAX_INPUT_LEN + 3];
 
 	snprintf(buf, MAX_INPUT_LEN, "[msg] [%s] : %s\n", src->nick, message);
-	circular_send(dst->socket, buf);
+	circular_send(dst->socket, buf, _strlen(buf));
 }
 
 static void	setup_message_to_channel(t_users *src, t_channel *dst, const char *message)
@@ -29,7 +29,7 @@ static void	setup_message_to_channel(t_users *src, t_channel *dst, const char *m
 	tmp = dst->users;
 	while (tmp != NULL)
 	{
-		circular_send(tmp->user->socket, buf);
+		circular_send(tmp->user->socket, buf, _strlen(buf));
 		tmp = tmp->next;
 	}
 }

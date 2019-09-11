@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 14:43:26 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 20:12:34 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/10 16:56:15 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	send_response(t_users *user)
 	char buf[MAX_INPUT_LEN + 3];
 
 	snprintf(buf, MAX_INPUT_LEN, "You are now known as '%s'.", user->nick);
-	circular_send(user->socket, buf);
+	circular_send(user->socket, buf, _strlen(buf));
 }
 
 void	notify_channel(t_users *user, char *old_nick)
@@ -65,7 +65,7 @@ void	notify_channel(t_users *user, char *old_nick)
 		while (tmp != NULL)
 		{
 			if (tmp->user->socket != user->socket)
-				circular_send(user->socket, buf);
+				circular_send(user->socket, buf, _strlen(buf));
 			tmp = tmp->next;
 		}
 	}

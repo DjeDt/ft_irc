@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/05 13:49:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 16:49:32 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/10 16:51:58 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,5 @@ void	irc_help(t_server *server, t_users *user, char **command)
 		"/kill'                 : shutdown connected server\r\n");
 
 	if (FD_ISSET(user->socket, &server->info.write))
-		circular_send(user->socket, buf);
-//		send_data_to_single_user(user->socket, );
+		circular_send(user->socket, buf, sizeof(buf));
 }

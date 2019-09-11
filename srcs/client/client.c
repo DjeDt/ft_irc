@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/27 21:31:12 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/07/29 15:54:07 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/10 20:01:33 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int		main(int ac, char **av)
 
 	if (init_data(&inter, &user) != true)
 	{
-		printf("Can't initialize interface, abort.");
+		puts("Can't initialize interface, abort.");
 		return (ERROR);
 	}
 	if (ac == 2)

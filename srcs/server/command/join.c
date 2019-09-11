@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:17:35 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 22:02:35 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/10 20:08:49 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ static bool	check_name(char *name)
 	int count;
 
 	count = 1;
-	printf("name = %s\n", name);
 	if (name[0] != '#' && name[0] != '&')
 		return (false);
 	while (name[count] != '\0')
@@ -35,11 +34,11 @@ static void	notify_channel(t_channel_user *chan_users, t_users *user)
 	t_channel_user	*tmp;
 
 	tmp = chan_users;
-	snprintf(buf, MAX_INPUT_LEN, "[server] : '%s' joined channel.", user->nick);
+	snprintf(buf, MAX_INPUT_LEN, "[server] : '%s' joined channel.%s", user->nick, CRLF);
 	while (tmp != NULL)
 	{
 		if (user->socket != tmp->user->socket)
-			circular_send(user->socket, buf);
+			circular_send(user->socket, buf, _strlen(buf));
 		tmp = tmp->next;
 	}
 }

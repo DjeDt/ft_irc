@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:26:02 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 23:42:09 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/10 20:38:05 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,12 +115,13 @@ void	handle_message(t_server *server, t_users *user, char *final)
 	usr_list = ((t_channel*)user->chan)->users;
 	if (usr_list == NULL)
 		return ;
-	snprintf(final, MAX_INPUT_LEN, "[time] [%s] [%s]> %s", ((t_channel*)user->chan)->name, user->nick, final);
+
+	char *tmp = final;
+	snprintf(final, MAX_INPUT_LEN, "[%s] [%s]> %s", ((t_channel*)user->chan)->name, user->nick, tmp);
 	while (usr_list != NULL)
 	{
-		strncat(final, CRLF, CRLF_LEN);
 		if (FD_ISSET(usr_list->user->socket, &server->info.write))
-			circular_send(usr_list->user->socket, final);
+			circular_send(usr_list->user->socket, final, _strlen(final));
 		usr_list = usr_list->next;
 	}
 }
@@ -128,25 +129,27 @@ void	handle_message(t_server *server, t_users *user, char *final)
 void	get_final_input(char *final, t_circular *circ)
 {
 	int count;
-	int tail;
+	int head;
 
 	count = 0;
-	tail = circ->tail;
+	head = circ->head;
 	while (count < circ->len)
 	{
-		final[count] = circ->buf[tail];
-		tail = (tail + 1) % MAX_INPUT_LEN;
+		final[count] = circ->buf[head];
+		head = (head + 1) % MAX_INPUT_LEN;
 		count++;
 	}
+	final[count] = '\0';
 }
 
 void	interpreter(t_server *server, t_users *user)
 {
 	char	*cmd[3];
-	char	final[MAX_INPUT_LEN + 1];
+	char	final[MAX_INPUT_LEN + 3];
 
-	memset(final, 0x0, MAX_INPUT_LEN + 1);
+	memset(final, 0x0, MAX_INPUT_LEN + 3);
 	get_final_input(final, &user->circ);
+
 	if (final[0] == '/')
 	{
 		_memset(&cmd, 0x0, sizeof(cmd));
@@ -159,5 +162,6 @@ void	interpreter(t_server *server, t_users *user)
 	{
 		if (FD_ISSET(user->socket, &server->info.write))
 			handle_message(server, user, final);
+
 	}
 }

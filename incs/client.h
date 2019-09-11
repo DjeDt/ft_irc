@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 14:24:19 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 23:17:00 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/10 17:03:31 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ enum	e_type
 # define SUCCESS		0
 
 # define CRLF           "\r\n"
-# define CRLF_LEN       2
+# define CRLF_LEN       3
 # define CRLF_HEX       0x0a0d
 
 # define DEFAULT_PORT	"1234"
@@ -104,7 +104,7 @@ void					running(t_interface *inter, t_list_user *user);
 void					interpreter(t_interface *inter, t_list_user *user);
 
 bool                    circular_get(int soket, t_circular *circ);
-void                    circular_send(int socket, char *data);
+void                    circular_send(int socket, char *data, int size);
 void                    circular_push(t_circular *circ, char *data, int size);
 bool                    search_for_crlf(t_circular *circ, int size);
 

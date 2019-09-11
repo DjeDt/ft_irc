@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:28 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 14:14:27 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/10 20:36:35 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,34 +16,55 @@ bool	search_for_crlf(t_circular *circ, int size)
 {
 	int	head;
 
-	puts("TITU");
 	head = circ->head;
-	puts("SDFGSDFGSDFG");
-	while (size >= 0)
+	while (size)
 	{
-		puts("AA");
 		if (*(unsigned int*)&circ->buf[head] == CRLF_HEX)
 		{
-			puts("BB");
-			*(unsigned int*)&circ->buf[head] = 0x0000;
-			puts("CC");
+//			*(unsigned int*)&circ->buf[head] = 0x0000;
 			return (true);
 		}
-		puts("DD");
 		head = (head + 1) % MAX_INPUT_LEN;
-		puts("EE");
 		size--;
 	}
 	return (false);
 }
 
-void	circular_push(t_circular *circ, char *data, int size)
+void	circular_push(t_circular *circ, char *received, int size)
 {
+	int count;
+
+	count = 0;
 	while (size)
 	{
-		circ->buf[circ->tail] = *data++;
+		circ->buf[circ->tail] = received[count];
 		circ->tail = (circ->tail + 1) % MAX_INPUT_LEN;
 		size--;
+		count++;
+	}
+}
+
+bool is_message_valid(const char *buf, int head, int length, const int limit)
+{
+	while (length)
+	{
+		if (*(unsigned int*)&buf[head] == CRLF_HEX)
+			return (true);
+		head = (head + 1) % limit;
+		length -= 1;
+	}
+
+	return false;
+}
+
+void fill_buffer(char *dst, const char *src, int tail, int length, const int limit)
+{
+	while (length)
+	{
+		dst[tail] = *src++;
+
+		tail = (tail + 1) % limit;
+		length -= 1;
 	}
 }
 
@@ -53,20 +74,26 @@ bool		circular_get(int socket, t_circular *circ)
 	char	data[MAX_INPUT_LEN + 3];
 
 	ret = recv(socket, data, MAX_INPUT_LEN - circ->len, 0);
-	printf("DEBUG : ret = %d ^ recv '%s'\n", ret, data);
 	if (ret < 1)
 	{
 		printf("[LOG !] Can't receive data from [%d]\n", socket);
 		return (false);
 	}
-	circular_push(circ, data, ret);
+	fill_buffer(circ->buf, data, circ->tail, ret, MAX_INPUT_LEN);
+	circ->tail = (circ->tail + ret) % MAX_INPUT_LEN;
 	circ->len += ret;
+
+//	circular_push(circ, data, ret);
+
+	// does bullshit
+//	circ->tail = (circ->tail + ret) % MAX_INPUT_LEN;/
+//	circ->len += ret;
 	return (true);
 }
 
 void	circular_send(int socket, char *data, int size)
 {
-	if (send(socket, data, size, 0) < 0)
+	if (send(socket, data, size + CRLF_LEN, 0) < 0)
 	{
 		printf("[LOG !] Can't send data to %d\n", socket);
 		return ;

@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/31 09:04:16 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 22:49:08 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/10 16:56:46 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,14 @@ static void	notify_leave(t_users *user, char **command)
 		tmp = ((t_channel*)user->chan)->users;
 		while (tmp != NULL)
 		{
-			circular_send(tmp->user->socket, buf);
+			circular_send(tmp->user->socket, buf, _strlen(buf));
 			tmp = tmp->next;
 		}
 	}
 	else
 	{
 		snprintf(buf, MAX_INPUT_LEN, "Disconnected.");
-		circular_send(user->socket, buf);
+		circular_send(user->socket, buf, _strlen(buf));
 	}
 }
 

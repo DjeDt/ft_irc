@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:19:18 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 23:28:36 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/10 20:27:07 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ enum e_type
 */
 # define DEFAULT_PORT	"1234"
 # define CRLF			"\r\n"
-# define CRLF_LEN		2
+# define CRLF_LEN		3
 # define CRLF_HEX		0x0a0d
 
 # define ERROR			-1
@@ -97,18 +97,18 @@ typedef struct				s_users
 
 typedef struct				s_channel_user
 {
-	t_users					*user;	// ptr to server->users_list->'user_chunk'
+	t_users					*user;
 	struct s_channel_user	*next;
 }							t_channel_user;
 
 typedef struct				s_channel
 {
-	int						num;		// number of users
+	int						num;
 	int						name_len;
 	char					name[MAX_CHAN_LEN + 1];
 	char					*topic;
-	t_channel_user			*users;		// list of connected users
-	struct s_channel		*next;		// next channel
+	t_channel_user			*users;
+	struct s_channel		*next;
 }							t_channel;
 
 typedef struct				s_server
@@ -119,7 +119,6 @@ typedef struct				s_server
 	t_users					*users;
 	t_channel				*channel;
 }							t_server;
-// server -> channel -> channel_user -> user;
 
 typedef void (*t_error) (const char *err);
 typedef void (t_func) (t_server *server, t_users *user, char **command);
@@ -127,7 +126,6 @@ typedef void (t_func) (t_server *server, t_users *user, char **command);
 /*
 ** Functions
 */
-
 /* core */
 bool					initialize(t_server *server, const char *str);
 bool					running(t_server *server);
@@ -138,7 +136,7 @@ bool					circular_get(int soket, t_circular *circ);
 void					circular_send(int socket, char *data, int size);
 void					circular_push(t_circular *circ, char *data, int size);
 bool					search_for_crlf(t_circular *circ, int size);
-
+bool is_message_valid(const char *buf, int head, int length, const int limit);
 /* users */
 void					generate_guest_pseudo(char *pseudo, int id);
 t_users					*user_create(int socket);

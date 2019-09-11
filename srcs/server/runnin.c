@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 23:02:55 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/10 20:35:03 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,18 @@ bool	processing(t_server *server, int socket)
 		{
 			if (circular_get(user->socket, &user->circ) == false)
 				close_connection(server, user);
-			if (search_for_crlf(&user->circ, user->circ.tail - user->circ.head) == true)
+			if (search_for_crlf(&user->circ, user->circ.len) == true \
+				|| user->circ.len >= MAX_INPUT_LEN)
+			{
 				interpreter(server, user);
+				user->circ.head = user->circ.tail;
+				user->circ.len = 0;
+			}
+			else
+			{
+				puts("no crlf found on these data");
+			}
+
 		}
 	}
 	return (true);
