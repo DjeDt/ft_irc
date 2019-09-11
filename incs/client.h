@@ -31,16 +31,6 @@
 # include <arpa/inet.h>
 
 /*
-** Enum
-*/
-
-enum	e_type
-{
-	ERROR_CODE,
-	MESSAGE_CODE
-};
-
-/*
 ** Defines
 */
 
@@ -103,8 +93,8 @@ typedef void (t_func) (t_interface *inter, t_list_user *user, char **command);
 void					running(t_interface *inter, t_list_user *user);
 void					interpreter(t_interface *inter, t_list_user *user);
 
-bool                    circular_get(int soket, t_circular *circ);
-void                    circular_send(int socket, char *data, int size);
+bool                    circular_get(t_interface *inter, t_list_user *user);
+void                    circular_send(t_interface *inter, t_list_user *user);
 void                    circular_push(t_circular *circ, char *data, int size);
 bool                    search_for_crlf(t_circular *circ, int size);
 

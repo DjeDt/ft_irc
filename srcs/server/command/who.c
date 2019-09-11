@@ -20,7 +20,7 @@ static void	gather_all_user_in_chan(t_channel *chan, t_users *user)
 	tmp = chan->users;
 	while (tmp != NULL)
 	{
-		rpl_whoreply(chan, user, tmp->user->nick, buf);
+		rpl_whoreply(chan, user, tmp->user->nick.nick, buf);
 		tmp = tmp->next;
 	}
 	rpl_endofwho(chan, user, buf);

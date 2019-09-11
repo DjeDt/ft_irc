@@ -34,15 +34,6 @@
 # include "replies.h"
 
 /*
-** Enum
-*/
-enum e_type
-{
-	ERROR_CODE,
-	MESSAGE_CODE
-};
-
-/*
 ** Defines
 */
 # define DEFAULT_PORT	"1234"
@@ -72,10 +63,16 @@ typedef struct				s_command
 typedef struct				s_fd
 {
 	int						fd_max;
-	fd_set					master;
 	fd_set					read;
 	fd_set					write;
+	fd_set					master;
 }							t_fd;
+
+typedef struct				s_nick
+{
+	int						nick_len;
+	char					nick[MAX_NICK_LEN + 1];
+}							t_nick;
 
 typedef struct				s_circular
 {
@@ -88,9 +85,10 @@ typedef struct				s_circular
 typedef struct				s_users
 {
 	int						socket;
-	int						nick_len;
-	char					nick[MAX_NICK_LEN + 1];
+
+	t_nick					nick;
 	t_circular				circ;
+
 	void					*chan;
 	struct s_users			*next;
 }							t_users;
@@ -132,11 +130,11 @@ bool					running(t_server *server);
 void					interpreter(t_server *server, t_users *user);
 
 /* Circular buffer */
-bool					circular_get(int soket, t_circular *circ);
+bool					circular_get(t_users *user, char *received);
 void					circular_send(int socket, char *data, int size);
 void					circular_push(t_circular *circ, char *data, int size);
 bool					search_for_crlf(t_circular *circ, int size);
-bool is_message_valid(const char *buf, int head, int length, const int limit);
+
 /* users */
 void					generate_guest_pseudo(char *pseudo, int id);
 t_users					*user_create(int socket);

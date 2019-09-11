@@ -26,11 +26,21 @@ t_users	*user_create(int socket)
 {
 	t_users *new;
 
-	if ((new = malloc(sizeof(*new))) == NULL)
+	if ((new = malloc(sizeof(t_users))) == NULL)
 		return (NULL);
+
 	new->socket = socket;
-	generate_guest_pseudo(new->nick, socket);
-	new->nick_len = _strlen(new->nick);
+
+	memset(&new->nick, 0x0, sizeof(t_nick));
+
+	generate_guest_pseudo(new->nick.nick, socket);
+	new->nick.nick_len = _strlen(new->nick.nick);
+
+	new->circ.len = 0;
+	new->circ.head = 0;
+	new->circ.tail = 0;
+	memset(new->circ.buf, 0x0, MAX_INPUT_LEN);
+
 	new->chan = NULL;
 	new->next = NULL;
 	return (new);
@@ -94,7 +104,7 @@ t_users		*user_search_by_name(t_users *users, const char *name)
 		len = _strlen(name);
 		while (tmp != NULL)
 		{
-			if (_memcmp(name, tmp->nick, len) == 0)
+			if (_memcmp(name, tmp->nick.nick, len) == 0)
 				return (tmp);
 			tmp = tmp->next;
 		}

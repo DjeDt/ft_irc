@@ -19,16 +19,21 @@ t_channel	*channel_create(char *name)
 
 	if (!(new_chan = malloc(sizeof(t_channel))))
 		return (NULL);
+
  	len = _strlen(name);
 	if (len > MAX_CHAN_LEN)
 		len = MAX_CHAN_LEN;
+
 	memset(new_chan->name, 0x0, MAX_CHAN_LEN + 1);
 	_memcpy(new_chan->name, name, len);
+
 	new_chan->num = 0;
 	new_chan->name_len = len;
+
 	new_chan->topic = NULL;
 	new_chan->users = NULL;
 	new_chan->next = NULL;
+
 	printf("[LOG +] Channel created '%s'\n", new_chan->name);
 	return (new_chan);
 }

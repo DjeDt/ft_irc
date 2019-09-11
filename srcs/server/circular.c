@@ -32,70 +32,45 @@ bool	search_for_crlf(t_circular *circ, int size)
 
 void	circular_push(t_circular *circ, char *received, int size)
 {
-	int count;
-
-	count = 0;
 	while (size)
 	{
-		circ->buf[circ->tail] = received[count];
+		circ->buf[circ->tail] = *received++;
 		circ->tail = (circ->tail + 1) % MAX_INPUT_LEN;
 		size--;
-		count++;
 	}
 }
 
-bool is_message_valid(const char *buf, int head, int length, const int limit)
-{
-	while (length)
-	{
-		if (*(unsigned int*)&buf[head] == CRLF_HEX)
-			return (true);
-		head = (head + 1) % limit;
-		length -= 1;
-	}
-
-	return false;
-}
-
-void fill_buffer(char *dst, const char *src, int tail, int length, const int limit)
-{
-	while (length)
-	{
-		dst[tail] = *src++;
-
-		tail = (tail + 1) % limit;
-		length -= 1;
-	}
-}
-
-bool		circular_get(int socket, t_circular *circ)
+bool	circular_get(t_users *user, char *received)
 {
 	int		ret;
-	char	data[MAX_INPUT_LEN + 3];
 
-	ret = recv(socket, data, MAX_INPUT_LEN - circ->len, 0);
+	ret = recv(user->socket, received, MAX_INPUT_LEN - user->circ.len, 0);
+
+	printf("recv : '%s'\n", received);
+	printf("==============================\n\n");
+
+	printf("TEST 1 : nick = '%s'\n", user->nick.nick);
+	printf("==============================\n\n");
+
 	if (ret < 1)
 	{
-		printf("[LOG !] Can't receive data from [%d]\n", socket);
+		printf("[LOG !] Can't receive data from [%d]\n", user->socket);
 		return (false);
 	}
-	fill_buffer(circ->buf, data, circ->tail, ret, MAX_INPUT_LEN);
-	circ->tail = (circ->tail + ret) % MAX_INPUT_LEN;
-	circ->len += ret;
 
-//	circular_push(circ, data, ret);
+	circular_push(&user->circ, received, ret);
+	user->circ.len += ret;
 
-	// does bullshit
-//	circ->tail = (circ->tail + ret) % MAX_INPUT_LEN;/
-//	circ->len += ret;
 	return (true);
 }
 
 void	circular_send(int socket, char *data, int size)
 {
+	printf("Sending '%s'\n", data);
 	if (send(socket, data, size + CRLF_LEN, 0) < 0)
 	{
 		printf("[LOG !] Can't send data to %d\n", socket);
 		return ;
 	}
+
 }

@@ -15,7 +15,7 @@ CLIENT	= client
 
 CC		= gcc
 CFLAGS	= -Wall -Werror -Wextra -I$(incdir)
-EFLAGS	= -g3 #-fsanitize=address
+EFLAGS	= -g3 -fsanitize=address
 
 incdir	= ./incs/
 srcdir	= ./srcs/
@@ -36,6 +36,7 @@ server_src =							\
 	$(serverdir)/channel.c				\
 	$(serverdir)/channel_users.c		\
 	$(serverdir)/interpreter.c			\
+	$(serverdir)/circular.c				\
 \
 	$(serverdir)/$(cmddir)/help.c		\
 	$(serverdir)/$(cmddir)/list.c		\
@@ -69,18 +70,17 @@ server_src =							\
 	$(serverdir)/$(repliesdir)/rpl_list.c			\
 	$(serverdir)/$(repliesdir)/rpl_endoflist.c		\
 \
-	$(libdir)/lib.c						\
-	$(libdir)/circular.c
+	$(libdir)/lib.c
 
 client_src = 							\
 	$(clientdir)/client.c				\
 	$(clientdir)/connect.c				\
 	$(clientdir)/interface.c			\
 	$(clientdir)/running.c				\
+	$(clientdir)/circular.c				\
 	$(clientdir)/key.c					\
 \
-	$(libdir)/lib.c						\
-	$(libdir)/circular.c
+	$(libdir)/lib.c
 
 server_obj = $(addprefix $(srcdir), $(server_src:%.c=%.o))
 client_obj = $(addprefix $(srcdir), $(client_src:%.c=%.o))

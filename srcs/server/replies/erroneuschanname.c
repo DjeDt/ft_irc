@@ -14,8 +14,9 @@
 
 void	err_erroneuschanname(t_users *user, char *name)
 {
-	char buf[MAX_INPUT_LEN + 3];
+	int		len;
+	char	buf[MAX_INPUT_LEN + 3] = {0};
 
-	snprintf(buf, MAX_INPUT_LEN, ERR_ERRONEUSCHANNAME, name);
-	circular_send(user->socket, buf, _strlen(buf));
+	len = snprintf(buf, MAX_INPUT_LEN, ERR_ERRONEUSCHANNAME, name);
+	circular_send(user->socket, buf, len);
 }

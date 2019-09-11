@@ -21,7 +21,7 @@ bool	is_available(t_users *users_list, t_users *user, char *nick, int size)
 	{
 		if (user->socket != tmp->socket)
 		{
-			if (strncmp(tmp->nick, nick, size > tmp->nick_len ? size : tmp->nick_len) == 0)
+			if (strncmp(tmp->nick.nick, nick, size > tmp->nick.nick_len ? size : tmp->nick.nick_len) == 0)
 				return (false);
 		}
 		tmp = tmp->next;
@@ -47,25 +47,27 @@ bool	check_nick(t_users *users_list, t_users *user, char *nick, int size)
 
 void	send_response(t_users *user)
 {
-	char buf[MAX_INPUT_LEN + 3];
+	int		len;
+	char	buf[MAX_INPUT_LEN + 3] = {0};
 
-	snprintf(buf, MAX_INPUT_LEN, "You are now known as '%s'.", user->nick);
-	circular_send(user->socket, buf, _strlen(buf));
+	len = snprintf(buf, MAX_INPUT_LEN, "You are now known as '%s'.", user->nick.nick);
+	circular_send(user->socket, buf, len);
 }
 
 void	notify_channel(t_users *user, char *old_nick)
 {
-	char			buf[MAX_INPUT_LEN + 3];
+	int				len;
+	char			buf[MAX_INPUT_LEN + 3] = {0};
 	t_channel_user	*tmp;
 
 	if (user->chan != NULL)
 	{
-		snprintf(buf, MAX_INPUT_LEN, "'%s' is now known as '%s'.", old_nick, user->nick);
+		len = snprintf(buf, MAX_INPUT_LEN, "'%s' is now known as '%s'.", old_nick, user->nick.nick);
 		tmp = ((t_channel*)user->chan)->users;
 		while (tmp != NULL)
 		{
 			if (tmp->user->socket != user->socket)
-				circular_send(user->socket, buf, _strlen(buf));
+				circular_send(user->socket, buf, len);
 			tmp = tmp->next;
 		}
 	}
@@ -74,7 +76,7 @@ void	notify_channel(t_users *user, char *old_nick)
 void	irc_nick(t_server *server, t_users *user, char **command)
 {
 	int		size;
-	char	old_nick[MAX_NICK_LEN + 1];
+	char	old_nick[MAX_NICK_LEN + 1] = {0};
 
 	if (command[1] != NULL)
 	{
@@ -83,8 +85,8 @@ void	irc_nick(t_server *server, t_users *user, char **command)
 			return ;
 		_memset(old_nick, 0x0, MAX_NICK_LEN + 1);
 		_memcpy(old_nick, command[1], size);
-		_memset(user->nick, 0x0, MAX_NICK_LEN);
-		_memcpy(user->nick, command[1], size);
+		_memset(user->nick.nick, 0x0, MAX_NICK_LEN);
+		_memcpy(user->nick.nick, command[1], size);
 		send_response(user);
 		notify_channel(user, old_nick);
 		return ;

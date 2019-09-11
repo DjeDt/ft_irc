@@ -19,7 +19,7 @@ static void	notify_leave(t_users *user, char **command)
 
 	if (command[1] != NULL)
 	{
-		snprintf(buf, MAX_INPUT_LEN, "[server] : '%s' quit: %s", user->nick, command[1]);
+		snprintf(buf, MAX_INPUT_LEN, "[server] : '%s' quit: %s", user->nick.nick, command[1]);
 		tmp = ((t_channel*)user->chan)->users;
 		while (tmp != NULL)
 		{

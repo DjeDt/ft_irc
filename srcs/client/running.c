@@ -51,10 +51,8 @@ void	read_from_user(t_interface *inter, t_list_user *user)
 		delete_char(inter, user->input);
 	else if (key == '\n')
 	{
-		refresh_top_interface(inter, " sending : '%s'\n", user->input);
-
-		strncat(user->input, CRLF, CRLF_LEN);
-		circular_send(user->socket, user->input, _strlen(user->input));
+//		refresh_top_interface(inter, "sending : '%s'\n", user->input);
+		circular_send(inter, user);
 		reset_data(inter, user->input);
 	}
 	else
@@ -78,28 +76,29 @@ static void	get_final_input(char *final, t_circular *circ)
 	final[count] = '\0';
 }
 
-
 static void	read_from_server(t_interface *inter, t_list_user *user)
 {
-	char	buf[MAX_INPUT_LEN + 3];
+	char	buf[MAX_INPUT_LEN + 3] = {0};
 
-	memset(buf, 0x0, MAX_INPUT_LEN + 3);
-	if (circular_get(user->socket, &user->circ) != true)
+	if (circular_get(inter, user) != true)
 	{
 		close(user->socket);
 		user->connected = false;
-		refresh_top_interface(inter, "Disconnected from server :_:");
+		refresh_top_interface(inter, "Disconnected from server :_:\n");
 		return ;
 	}
 	else
 	{
-		if (search_for_crlf(&user->circ, user->circ.len) == true \
-			|| user->circ.len >= MAX_INPUT_LEN)
-		{
+//		refresh_top_interface(inter, "head = %d | tail = %d | len = %d | buf = '%s'\n", user->circ.head, user->circ.tail, user->circ.len, user->circ.buf);
+//		if (search_for_crlf(&user->circ, user->circ.len) == true || user->circ.len >= MAX_INPUT_LEN)
+//		{
 			get_final_input(buf, &user->circ);
+
+			refresh_top_interface(inter, buf);
+
 			user->circ.head = user->circ.tail;
 			user->circ.len = 0;
-		}
+//		}
 	}
 }
 

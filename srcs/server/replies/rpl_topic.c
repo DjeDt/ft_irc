@@ -14,8 +14,9 @@
 
 void	rpl_topic(t_channel *channel, t_users *user)
 {
-	char buf[MAX_INPUT_LEN + 3];
+	int		len;
+	char	buf[MAX_INPUT_LEN + 3] = {0};
 
-	snprintf(buf, MAX_INPUT_LEN, RPL_TOPIC, channel->name, channel->topic);
-	circular_send(user->socket, buf, _strlen(buf));
+	len = snprintf(buf, MAX_INPUT_LEN, RPL_TOPIC, channel->name, channel->topic);
+	circular_send(user->socket, buf, len);
 }
