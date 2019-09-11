@@ -166,7 +166,6 @@ void					irc_join(t_server *server, t_users *user, char **command);
 void					irc_leave(t_server *server, t_users *user, char **command);
 void					irc_who(t_server *server, t_users *user, char **command);
 void					irc_msg(t_server *server, t_users *user, char **command);
-void					irc_connect(t_server *server, t_users *user, char **command);
 void					irc_topic(t_server *server, t_users *user, char **command);
 void					irc_quit(t_server *server, t_users *user, char **command);
 void					irc_kill(t_server *server, t_users *user, char **command);

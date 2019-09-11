@@ -17,7 +17,7 @@ void	err_unknow_command(t_users *user, char *command)
 	int		len;
 	char	buf[MAX_INPUT_LEN + 3];
 
-	len = snprintf(buf, MAX_INPUT_LEN, ERR_UNKNOWNCOMMAND, command);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, ERR_UNKNOWNCOMMAND, command);
 	circular_send(user->socket, buf, len);
 	return ;
 }

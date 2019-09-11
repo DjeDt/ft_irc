@@ -14,8 +14,9 @@
 
 void	err_nosuchnick(t_users *user, char *nick)
 {
-	char buf[MAX_INPUT_LEN + 3];
+	int		len;
+	char	buf[MAX_INPUT_LEN + 3];
 
-	snprintf(buf, MAX_INPUT_LEN, ERR_NOSUCHNICK, nick);
-	circular_send(user->socket, buf, _strlen(buf));
+	len = snprintf(buf, MAX_INPUT_LEN + 3, ERR_NOSUCHNICK, nick);
+	circular_send(user->socket, buf, len);
 }

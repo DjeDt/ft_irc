@@ -50,7 +50,7 @@ void	send_response(t_users *user)
 	int		len;
 	char	buf[MAX_INPUT_LEN + 3] = {0};
 
-	len = snprintf(buf, MAX_INPUT_LEN, "You are now known as '%s'.", user->nick.nick);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, "You are now known as '%s'.%s", user->nick.nick, CRLF);
 	circular_send(user->socket, buf, len);
 }
 
@@ -62,7 +62,7 @@ void	notify_channel(t_users *user, char *old_nick)
 
 	if (user->chan != NULL)
 	{
-		len = snprintf(buf, MAX_INPUT_LEN, "'%s' is now known as '%s'.", old_nick, user->nick.nick);
+		len = snprintf(buf, MAX_INPUT_LEN + 3, "'%s' is now known as '%s'.%s", old_nick, user->nick.nick, CRLF);
 		tmp = ((t_channel*)user->chan)->users;
 		while (tmp != NULL)
 		{

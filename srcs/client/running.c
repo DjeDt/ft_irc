@@ -51,7 +51,6 @@ void	read_from_user(t_interface *inter, t_list_user *user)
 		delete_char(inter, user->input);
 	else if (key == '\n')
 	{
-//		refresh_top_interface(inter, "sending : '%s'\n", user->input);
 		circular_send(inter, user);
 		reset_data(inter, user->input);
 	}
@@ -60,7 +59,7 @@ void	read_from_user(t_interface *inter, t_list_user *user)
 }
 
 
-static void	get_final_input(char *final, t_circular *circ)
+static void	extract_from_circle(char *final, t_circular *circ)
 {
 	int count;
 	int head;
@@ -89,16 +88,13 @@ static void	read_from_server(t_interface *inter, t_list_user *user)
 	}
 	else
 	{
-//		refresh_top_interface(inter, "head = %d | tail = %d | len = %d | buf = '%s'\n", user->circ.head, user->circ.tail, user->circ.len, user->circ.buf);
-//		if (search_for_crlf(&user->circ, user->circ.len) == true || user->circ.len >= MAX_INPUT_LEN)
-//		{
-			get_final_input(buf, &user->circ);
-
-			refresh_top_interface(inter, buf);
-
+		if (search_for_crlf(&user->circ, user->circ.len) == true || user->circ.len >= MAX_INPUT_LEN)
+		{
+			extract_from_circle(buf, &user->circ);
+			refresh_top_interface(inter, "%s\n", buf);
 			user->circ.head = user->circ.tail;
 			user->circ.len = 0;
-//		}
+		}
 	}
 }
 

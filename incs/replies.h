@@ -43,26 +43,26 @@
 /*
 ** Error replies string following rfc 1459
 */
-# define ERR_NOSUCHNICK			"[server] <%s> :No such nick/channel."	// nickname
-# define ERR_NOSUCHSERVER		"[server] <%s> :No such server."			// server name
-# define ERR_NOSUCHCHANNEL		"[server] <%s> :No such channel." // channel name
-# define ERR_CANNOTSENDTOCHAN	"[server] <%s> :Cannot send to channel." // channel name
-# define ERR_TOOMANYCHANNELS	"[server] <%s> :You have joined too many channels." // channel name
-# define ERR_NORECIPIENT		"[server] :No recipient given (<%s>)." // command
-# define ERR_NOTEXTTOSEND		"[server] :No text to send."
-# define ERR_UNKNOWNCOMMAND		"[server] <%s> :Unknown command." // command
+# define ERR_NOSUCHNICK			"[server] <%s> :No such nick/channel.\r\n"	// nickname
+# define ERR_NOSUCHSERVER		"[server] <%s> :No such server.\r\n"			// server name
+# define ERR_NOSUCHCHANNEL		"[server] <%s> :No such channel.\r\n" // channel name
+# define ERR_CANNOTSENDTOCHAN	"[server] <%s> :Cannot send to channel.\r\n" // channel name
+# define ERR_TOOMANYCHANNELS	"[server] <%s> :You have joined too many channels.\r\n" // channel name
+# define ERR_NORECIPIENT		"[server] :No recipient given (<%s>).\r\n" // command
+# define ERR_NOTEXTTOSEND		"[server] :No text to send.\r\n"
+# define ERR_UNKNOWNCOMMAND		"[server] <%s> :Unknown command.\r\n" // command
 
-# define ERR_NONICKNAMEGIVEN	"[server] :No nickname given."
-# define ERR_ERRONEUSNICKNAME	"[server] <%s> :Erroneus nickname." // nickname
-# define ERR_ERRONEUSCHANNAME	"[server] <%s> :Erroneus chan name." // channel
-# define ERR_NICKNAMEINUSE		"[server] <%s> :Nickname is already in use." // nickname
-# define ERR_NICKCOLLISION		"[server] <%s> :Nickname collision KILL." // nickname
+# define ERR_NONICKNAMEGIVEN	"[server] :No nickname given.\r\n"
+# define ERR_ERRONEUSNICKNAME	"[server] <%s> :Erroneus nickname.\r\n" // nickname
+# define ERR_ERRONEUSCHANNAME	"[server] <%s> :Erroneus chan name.\r\n" // channel
+# define ERR_NICKNAMEINUSE		"[server] <%s> :Nickname is already in use.\r\n" // nickname
+# define ERR_NICKCOLLISION		"[server] <%s> :Nickname collision KILL.\r\n" // nickname
 
-# define ERR_USERNOTINCHANNEL	"[server] <%s> <%s> :They aren' on that channel." // nick / channel
-# define ERR_NOTONCHANNEL		"[server] <%s> :You're not on that channel." // channel
-# define ERR_NOLOGIN			"[server] <%s> :User not logged in." // user
-# define ERR_NEEDMOREPARAMS		"[server] <%s> :Not enough parameters." // command
-# define ERR_CANTKILLSERVER		"[server] :You cant kill a server."
+# define ERR_USERNOTINCHANNEL	"[server] <%s> <%s> :They aren' on that channel.\r\n" // nick / channel
+# define ERR_NOTONCHANNEL		"[server] <%s> :You're not on that channel.\r\n" // channel
+# define ERR_NOLOGIN			"[server] <%s> :User not logged in.\r\n" // user
+# define ERR_NEEDMOREPARAMS		"[server] <%s> :Not enough parameters.\r\n" // command
+# define ERR_CANTKILLSERVER		"[server] :You cant kill a server.\r\n"
 
 /*
 ** Normal replies
@@ -71,17 +71,17 @@
 # define RPL_LIST_ID				322
 # define RPL_LISTEND_ID				323
 
-# define RPL_LISTSTART			"[server] Channel :Users  Name"
-# define RPL_LIST				"[server] <%s> <%d>"
-# define RPL_ENDOFLIST			"[server] End of /list."
+# define RPL_LISTSTART			"[server] Channel :Users  Name\r\n"
+# define RPL_LIST				"[server] <%s> <%d>\r\n"
+# define RPL_ENDOFLIST			"[server] End of /list.\r\n"
 
-# define RPL_TOPIC				"[server] <%s> :<%s>." // canal / subject
-# define RPL_NOTOPIC			"[server] <%s> :No topic is set." // channel
+# define RPL_TOPIC				"[server] <%s> :<%s>.\r\n" // canal / subject
+# define RPL_NOTOPIC			"[server] <%s> :No topic is set.\r\n" // channel
 
-# define RPL_NAMREPLY			"[server] <%s> :<%s>." // channel / nickname
-# define RPL_ENDOFNAMES			"[server] <%s> :End of /NAMES list." // channel
+# define RPL_NAMREPLY			"[server] <%s> :<%s>.\r\n" // channel / nickname
+# define RPL_ENDOFNAMES			"[server] <%s> :End of /NAMES list.\r\n" // channel
 
-# define RPL_WHOREPLY			"[server] <%s> :<%s>." // channel / nickname
-# define RPL_ENDOFWHO			"[server] <%s> :End of /NAMES list." // channel
+# define RPL_WHOREPLY			"[server] <%s> :<%s>.\r\n" // channel / nickname
+# define RPL_ENDOFWHO			"[server] <%s> :End of /NAMES list.\r\n" // channel
 
 #endif

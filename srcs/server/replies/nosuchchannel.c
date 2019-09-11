@@ -14,8 +14,9 @@
 
 void	err_nosuchchannel(t_users *user, char *channel)
 {
-	char buf[MAX_INPUT_LEN + 3];
+	int		len;
+	char	buf[MAX_INPUT_LEN + 3];
 
-	snprintf(buf, MAX_INPUT_LEN, ERR_NOSUCHCHANNEL, channel);
-	circular_send(user->socket, buf, _strlen(buf));
+	len = snprintf(buf, MAX_INPUT_LEN + 3, ERR_NOSUCHCHANNEL, channel);
+	circular_send(user->socket, buf, len);
 }

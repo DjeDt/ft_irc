@@ -79,9 +79,9 @@ bool	processing(t_server *server, int socket)
 			else if (search_for_crlf(&user->circ, user->circ.len) == true || user->circ.len >= MAX_INPUT_LEN)
 			{
 				interpreter(server, user);
+
 				user->circ.head = user->circ.tail;
 				user->circ.len = 0;
-				return (true);
 			}
 		}
 		return (false);

@@ -22,7 +22,6 @@ t_command g_func_ptr[] =
 	{ "/topic", 6, irc_topic },
 	{ "/who", 4, irc_who },
 	{ "/msg", 4, irc_msg },
-	{ "/connect", 8, irc_connect },
 	{ "/quit", 5, irc_quit },
 	{ "/kill", 5, irc_kill }
 };
@@ -62,21 +61,18 @@ bool	split_command(char **command, const char *final)
 	{
 		if (!(command[0] = _strndup(ptr, size)))
 			return (false);
-		printf("\tcommand[0] = '%s'\n", command[0]);
 		ptr = ptr + (size + 1);
 		size = command_size(ptr);
 		if (size > 0)
 		{
 			if (!(command[1] = _strndup(ptr, size)))
 				return (false);
-			printf("\tcommand[1] = '%s'\n", command[1]);
 			ptr = ptr + (size + 1);
 			size = _strlen(ptr);
 			if (size > 0)
 			{
 				if (!(command[2] = _strndup(ptr, size)))
 					return (false);
-				printf("\tcommand[2] = '%s'\n", command[2]);
 			}
 		}
 		return (true);
@@ -94,39 +90,18 @@ bool	handle_command(t_server *server, t_users *user, char **command)
 	count = 0;
 	len = _strlen(command[0]);
 	func_num = sizeof(g_func_ptr) / sizeof(g_func_ptr[0]);
-
-	printf("HANDLE COMMAND 1 : nick = '%s'\n", user->nick.nick);
-	printf("==============================\n\n");
-
-
 	while (count < func_num)
 	{
 		cmp_len = len > g_func_ptr[count].name_len ? len : g_func_ptr[count].name_len;
 		if (_memcmp(g_func_ptr[count].name, command[0], cmp_len) == 0)
 		{
-
 			((t_func*)g_func_ptr[count].func)(server, user, command);
-
-			printf("HANDLE COMMAND 2 : nick = '%s'\n", user->nick.nick);
-			printf("==============================\n\n");
-
-
 			return (true);
 		}
 		count++;
 	}
-
-	printf("HANDLE COMMAND 3 : nick = '%s'\n", user->nick.nick);
-	printf("==============================\n\n");
-
-
 	if (FD_ISSET(user->socket, &server->info.write))
 		err_unknow_command(user, command[0]);
-
-	printf("HANDLE COMMAND 4 : nick = '%s'\n", user->nick.nick);
-	printf("==============================\n\n");
-
-
 	return (false);
 }
 
@@ -136,22 +111,12 @@ void	handle_message(t_server *server, t_users *user, char *final)
 	char			test[MAX_INPUT_LEN + 3] = {0};
 	t_channel_user	*usr_list;
 
-
-	printf("TEST 1 : nick = '%s'\n", user->nick.nick);
-	printf("==============================\n\n");
 	if (user->chan == NULL)
 		return ;
 	usr_list = ((t_channel*)user->chan)->users;
 	if (usr_list == NULL)
 		return ;
-	printf("TEST 2 : nick = '%s'\n", user->nick.nick);
-	printf("==============================\n\n");
-
-	len = snprintf(test, MAX_INPUT_LEN, "[%s] %s : %s", ((t_channel*)user->chan)->name, user->nick.nick, final);
-
-	printf("TEST 3 : nick = '%s'\n", user->nick.nick);
-	printf("==============================\n\n");
-
+	len = snprintf(test, MAX_INPUT_LEN + 3, "[%s] %s : %s%s", ((t_channel*)user->chan)->name, user->nick.nick, final, CRLF);
 	while (usr_list != NULL)
 	{
 		if (FD_ISSET(usr_list->user->socket, &server->info.write))
@@ -182,23 +147,12 @@ void	interpreter(t_server *server, t_users *user)
 	char	final[MAX_INPUT_LEN + 3] = {0};
 
 	extract_from_circular(final, &user->circ);
-	printf("Extracted from circle : '%s'\n", final);
-	printf("==============================\n\n");
 	if (final[0] == '/')
 	{
 		if (split_command(cmd, final) != true)
 			return ;
-
-	printf("TEST 4 : nick = '%s'\n", user->nick.nick);
-	printf("==============================\n\n");
-
-	handle_command(server, user, cmd);
-
-	printf("TEST 5 : nick = '%s'\n", user->nick.nick);
-	printf("==============================\n\n");
-
-	free_command(cmd);
-
+		handle_command(server, user, cmd);
+		free_command(cmd);
 	}
 	else
 	{

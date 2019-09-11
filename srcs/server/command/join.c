@@ -35,7 +35,7 @@ static void	notify_channel(t_channel_user *chan_users, t_users *user)
 	t_channel_user	*tmp;
 
 	tmp = chan_users;
-	len = snprintf(buf, MAX_INPUT_LEN, "[server] : '%s' joined channel.", user->nick.nick);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, "[server] : '%s' joined channel.%s", user->nick.nick, CRLF);
 	while (tmp != NULL)
 	{
 		if (user->socket != tmp->user->socket)

@@ -19,7 +19,7 @@ static void	send_leave_notif(t_channel *chan, t_users *user)
 	t_channel_user	*tmp;
 
 	printf("[LOG] '%s' leaved channel '%s'\n", user->nick.nick, chan->name);
-	len = snprintf(buf, MAX_INPUT_LEN, "[server] : '%s' leaved channel.", user->nick.nick);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, "[server] : '%s' leaved channel.%s", user->nick.nick, CRLF);
 	tmp = chan->users;
 	while (tmp != NULL)
 	{
@@ -37,7 +37,7 @@ static void	_remove_user_from_channel(t_server *server, t_channel *chan, t_users
 		return ;
 	chan->num -= 1;
 	user->chan = NULL;
-	len = snprintf(buf, MAX_INPUT_LEN, "[server]: Disconnected from '%s'.", chan_name);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, "[server]: Disconnected from '%s'.%s", chan_name, CRLF);
 	circular_send(user->socket, buf, len);
 	if (chan->num <= 0)
 	{

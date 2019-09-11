@@ -47,7 +47,6 @@ server_src =							\
 	$(serverdir)/$(cmddir)/message.c	\
 	$(serverdir)/$(cmddir)/quit.c		\
 	$(serverdir)/$(cmddir)/topic.c		\
-	$(serverdir)/$(cmddir)/connect.c	\
 	$(serverdir)/$(cmddir)/quit.c		\
 	$(serverdir)/$(cmddir)/kill.c		\
 \

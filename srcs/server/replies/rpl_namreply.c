@@ -16,6 +16,6 @@ void	rpl_namreply(t_channel *chan, t_users *user, char *nick, char *buf)
 {
 	int	len;
 
-	len = snprintf(buf, MAX_INPUT_LEN, RPL_NAMREPLY, chan->name, nick);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, RPL_NAMREPLY, chan->name, nick);
 	circular_send(user->socket, buf, len);
 }

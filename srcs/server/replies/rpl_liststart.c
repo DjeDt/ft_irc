@@ -14,6 +14,8 @@
 
 void	rpl_liststart(t_users *user, char *buf)
 {
-	snprintf(buf, MAX_INPUT_LEN, RPL_LISTSTART);
-	circular_send(user->socket, buf, _strlen(buf));
+	int len;
+
+	len = snprintf(buf, MAX_INPUT_LEN + 3, RPL_LISTSTART);
+	circular_send(user->socket, buf, len);
 }

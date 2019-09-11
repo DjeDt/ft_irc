@@ -21,7 +21,7 @@ bool	search_for_crlf(t_circular *circ, int size)
 	{
 		if (*(unsigned int*)&circ->buf[head] == CRLF_HEX)
 		{
-//			*(unsigned int*)&circ->buf[head] = 0x0000;
+			*(unsigned int*)&circ->buf[head] = 0x0000;
 			return (true);
 		}
 		head = (head + 1) % MAX_INPUT_LEN;
@@ -45,32 +45,22 @@ bool	circular_get(t_users *user, char *received)
 	int		ret;
 
 	ret = recv(user->socket, received, MAX_INPUT_LEN - user->circ.len, 0);
-
-	printf("recv : '%s'\n", received);
-	printf("==============================\n\n");
-
-	printf("TEST 1 : nick = '%s'\n", user->nick.nick);
-	printf("==============================\n\n");
-
 	if (ret < 1)
 	{
 		printf("[LOG !] Can't receive data from [%d]\n", user->socket);
 		return (false);
 	}
-
 	circular_push(&user->circ, received, ret);
 	user->circ.len += ret;
-
 	return (true);
 }
 
 void	circular_send(int socket, char *data, int size)
 {
-	printf("Sending '%s'\n", data);
+	printf("sending : '%s'", data);
 	if (send(socket, data, size + CRLF_LEN, 0) < 0)
 	{
 		printf("[LOG !] Can't send data to %d\n", socket);
 		return ;
 	}
-
 }
