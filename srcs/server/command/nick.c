@@ -6,13 +6,13 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 14:43:26 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/10 16:56:15 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/12 09:53:56 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
 
-bool	is_available(t_users *users_list, t_users *user, char *nick, int size)
+static bool	is_available(t_users *users_list, t_users *user, char *nick, int size)
 {
 	t_users *tmp;
 
@@ -29,7 +29,7 @@ bool	is_available(t_users *users_list, t_users *user, char *nick, int size)
 	return (true);
 }
 
-bool	check_nick(t_users *users_list, t_users *user, char *nick, int size)
+static bool	check_nick(t_users *users_list, t_users *user, char *nick, int size)
 {
 	if (size < 1 || size > MAX_NICK_LEN)
 	{
@@ -45,7 +45,7 @@ bool	check_nick(t_users *users_list, t_users *user, char *nick, int size)
 	return (true);
 }
 
-void	send_response(t_users *user)
+static void	send_response(t_users *user)
 {
 	int		len;
 	char	buf[MAX_INPUT_LEN + 3] = {0};
@@ -54,7 +54,7 @@ void	send_response(t_users *user)
 	circular_send(user->socket, buf, len);
 }
 
-void	notify_channel(t_users *user, char *old_nick)
+static void	notify_channel(t_users *user, char *old_nick)
 {
 	int				len;
 	char			buf[MAX_INPUT_LEN + 3] = {0};

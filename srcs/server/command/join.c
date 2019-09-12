@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:17:35 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/10 20:08:49 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/12 13:50:33 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,18 @@ static void	notify_channel(t_channel_user *chan_users, t_users *user)
 	t_channel_user	*tmp;
 
 	tmp = chan_users;
-	len = snprintf(buf, MAX_INPUT_LEN + 3, "[server] : '%s' joined channel.%s", user->nick.nick, CRLF);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, "[server] : '%s' has joined %s.%s", user->nick.nick, ((t_channel*)user->chan)->name, CRLF);
 	while (tmp != NULL)
 	{
 		if (user->socket != tmp->user->socket)
-			circular_send(user->socket, buf, len);
+			circular_send(tmp->user->socket, buf, len);
 		tmp = tmp->next;
 	}
 }
 
 static void	notify_user(t_channel *chan, t_users *user)
 {
-	char			buf[MAX_INPUT_LEN + 3] = {0};
+	char			buf[MAX_INPUT_LEN + 3];
 	t_channel_user	*tmp;
 
 	if (chan->topic != NULL)
@@ -57,6 +57,7 @@ static void	notify_user(t_channel *chan, t_users *user)
 	tmp = chan->users;
 	while (tmp != NULL)
 	{
+		memset(buf, 0x0, MAX_INPUT_LEN + 3);
 		rpl_namreply(chan, user, tmp->user->nick.nick, buf);
 		tmp = tmp->next;
 	}
@@ -82,9 +83,9 @@ static void	init_channel(t_server *server, t_users *user, char *chan_name)
 	chan = channel_add(&server->channel, chan_name);
 	if (chan == NULL)
 		return ;
+
 	chan->num += 1;
 	user->chan = chan;
-
 	channel_user_add(&chan->users, user);
 	notify_user(chan, user);
 }
@@ -100,11 +101,13 @@ void	irc_join(t_server *server, t_users *user, char **command)
 			err_erroneuschanname(user, command[1]);
 			return ;
 		}
+
 		if (user->chan != NULL)
 		{
 			err_toomanychannels(user, command[1]);
 			return ;
 		}
+
 		channel = channel_search(&server->channel, command[1]);
 		if (channel == NULL)
 			init_channel(server, user, command[1]);

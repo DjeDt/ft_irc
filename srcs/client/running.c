@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:00:32 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/10 20:37:55 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/12 16:06:46 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void	reset_data(t_interface *inter, char *buf)
 	refresh_bot_interface(inter, buf);
 }
 
-void	read_from_user(t_interface *inter, t_list_user *user)
+static void	read_from_user(t_interface *inter, t_list_user *user)
 {
 	wint_t key;
 
@@ -51,6 +51,7 @@ void	read_from_user(t_interface *inter, t_list_user *user)
 		delete_char(inter, user->input);
 	else if (key == '\n')
 	{
+		strncat(user->input, CRLF, CRLF_LEN);
 		circular_send(inter, user);
 		reset_data(inter, user->input);
 	}
@@ -58,26 +59,9 @@ void	read_from_user(t_interface *inter, t_list_user *user)
 		insert_char(inter, user->input, key);
 }
 
-
-static void	extract_from_circle(char *final, t_circular *circ)
-{
-	int count;
-	int head;
-
-	count = 0;
-	head = circ->head;
-	while (count < circ->len)
-	{
-		final[count] = circ->buf[head];
-		head = (head + 1) % MAX_INPUT_LEN;
-		count++;
-	}
-	final[count] = '\0';
-}
-
 static void	read_from_server(t_interface *inter, t_list_user *user)
 {
-	char	buf[MAX_INPUT_LEN + 3] = {0};
+	char	buf[MAX_INPUT_LEN + 3];
 
 	if (circular_get(inter, user) != true)
 	{
@@ -86,15 +70,15 @@ static void	read_from_server(t_interface *inter, t_list_user *user)
 		refresh_top_interface(inter, "Disconnected from server :_:\n");
 		return ;
 	}
-	else
+
+	while (search_for_crlf(&user->circ, user->circ.len) == true)
 	{
-		if (search_for_crlf(&user->circ, user->circ.len) == true || user->circ.len >= MAX_INPUT_LEN)
-		{
-			extract_from_circle(buf, &user->circ);
-			refresh_top_interface(inter, "%s\n", buf);
-			user->circ.head = user->circ.tail;
-			user->circ.len = 0;
-		}
+		extract_from_circle(buf, &user->circ);
+
+		user->circ.len -= (_strlen(buf) - CRLF_LEN);
+		user->circ.head += CRLF_LEN;
+
+		refresh_top_interface(inter, "%s", buf);
 	}
 }
 

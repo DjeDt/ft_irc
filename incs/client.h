@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 14:24:19 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/10 17:03:31 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/12 15:34:42 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef struct			s_interface
 {
 	WINDOW				*top;
 	WINDOW				*bot;
+	bool				status;
 	int					off;	// cursor offset in str
 	int					line;	// printable line for top
 	int					cursor;	// where is the visible cursor
@@ -97,6 +98,7 @@ bool                    circular_get(t_interface *inter, t_list_user *user);
 void                    circular_send(t_interface *inter, t_list_user *user);
 void                    circular_push(t_circular *circ, char *data, int size);
 bool                    search_for_crlf(t_circular *circ, int size);
+void					extract_from_circle(char *final, t_circular *circ);
 
 /* command */
 void					wrapper_connect(t_interface *inter, t_list_user *user, char **command);

@@ -6,7 +6,7 @@
 #    By: pguillie <pguillie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/22 18:46:54 by pguillie          #+#    #+#              #
-#    Updated: 2019/09/10 18:28:47 by ddinaut          ###   ########.fr        #
+#    Updated: 2019/09/12 11:31:38 by ddinaut          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -15,7 +15,7 @@ CLIENT	= client
 
 CC		= gcc
 CFLAGS	= -Wall -Werror -Wextra -I$(incdir)
-EFLAGS	= -g3 -fsanitize=address
+EFLAGS	= #-g3 -fsanitize=address
 
 incdir	= ./incs/
 srcdir	= ./srcs/
@@ -36,6 +36,7 @@ server_src =							\
 	$(serverdir)/channel.c				\
 	$(serverdir)/channel_users.c		\
 	$(serverdir)/interpreter.c			\
+	$(serverdir)/command_func.c			\
 	$(serverdir)/circular.c				\
 \
 	$(serverdir)/$(cmddir)/help.c		\

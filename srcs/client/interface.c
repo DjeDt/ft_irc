@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:04:28 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 23:53:28 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/12 15:43:40 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,19 @@ bool	init_interface(t_interface *inter)
 	inter->bot = subwin(stdscr, BOX_INPUT_LEN, COLS, LINES - BOX_INPUT_LEN, 0);
 
 	if (!inter->top || !inter->bot)
+	{
+		inter->status = false;
 		return (false);
+	}
 
 	scrollok(inter->top, TRUE);
 	keypad(inter->bot, TRUE);
 
 	// draw interface
 	box(inter->top, ACS_VLINE, ACS_HLINE);
+//	wborder(inter->top, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 	box(inter->bot, ACS_VLINE, ACS_HLINE);
+
 
 	// move the cursor to the input box
 	wprintw(inter->top, "\n");
@@ -42,7 +47,7 @@ bool	init_interface(t_interface *inter)
 
 	// refresh term
 	wnoutrefresh(inter->top);
-	wnoutrefresh(inter->bot);
+//	wnoutrefresh(inter->bot);
 	doupdate();
 	return (true);
 }
@@ -50,20 +55,37 @@ bool	init_interface(t_interface *inter)
 void	refresh_top_interface(t_interface *inter, char *input, ...)
 {
 	va_list	arglist;
-	char	data[MAX_INPUT_LEN + 1] = {0};
+	char	data[MAX_INPUT_LEN + 3] = {0};
 
 	va_start(arglist, input);
 	vsnprintf(data, MAX_INPUT_LEN, input, arglist);
 	va_end(arglist);
+
+	/* if (inter->status == false) */
+	/* { */
+	/* 	printf("%s", data); */
+	/* 	return ; */
+	/* } */
+
 	wprintw(inter->top, " %s", data);
-	wmove(inter->bot, 1, inter->cursor);
+
 	box(inter->top, ACS_VLINE, ACS_HLINE);
+//	wborder(inter->top, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
+
+	wmove(inter->bot, 1, inter->cursor);
+
 	wnoutrefresh(inter->top);
+	wnoutrefresh(inter->bot);
 	doupdate();
 }
 
 void	refresh_bot_interface(t_interface *inter, char *input)
 {
+	/* if (inter->status == false) */
+	/* { */
+	/* 	printf("\r> %s", input); */
+	/* 	return ; */
+	/* } */
 	wclear(inter->bot);
 	box(inter->bot, ACS_VLINE, ACS_HLINE);
 	mvwprintw(inter->bot, 1, 1, "> %s", input);

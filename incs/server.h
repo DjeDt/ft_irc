@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:19:18 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/10 20:27:07 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/12 12:44:52 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ typedef struct				s_circular
 	int						tail;
 	int						len;
 	char					buf[MAX_INPUT_LEN + 3];
+	char					received[MAX_INPUT_LEN + 3];
 }							t_circular;
 
 typedef struct				s_users
@@ -130,10 +131,11 @@ bool					running(t_server *server);
 void					interpreter(t_server *server, t_users *user);
 
 /* Circular buffer */
-bool					circular_get(t_users *user, char *received);
+bool					circular_get(t_users *user);
 void					circular_send(int socket, char *data, int size);
 void					circular_push(t_circular *circ, char *data, int size);
 bool					search_for_crlf(t_circular *circ, int size);
+void					extract_from_circular(char *final, t_circular *circ);
 
 /* users */
 void					generate_guest_pseudo(char *pseudo, int id);
@@ -159,6 +161,10 @@ void					channel_user_remove_all(t_channel_user **user_list);
 void					channel_user_remove_full(t_channel **chan, t_users *users);
 
 /* commands */
+void					command_free(char **command);
+int						command_size(char *command);
+bool					command_split(char **command, const char *final);
+
 void					irc_help(t_server *server, t_users *user, char **command);
 void					irc_nick(t_server *server, t_users *user, char **command);
 void					irc_list(t_server *server, t_users *user, char **command);

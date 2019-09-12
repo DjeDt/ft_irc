@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/27 21:31:12 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/10 20:01:33 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/12 15:39:34 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,15 @@ bool	init_data(t_interface *inter, t_list_user *user)
 {
 	_memset(inter, 0x0, sizeof(t_interface));
 	_memset(user, 0x0, sizeof(t_list_user));
+	_memset(&user->circ, 0x0, sizeof(t_circular));
+
 	user->running = true;
 	user->connected = false;
-	if (init_interface(inter) != true)
-		return (false);
+	inter->status = true;
+
+	if (init_interface(inter) == false)
+		printf("Can't use ncurse. Using basic client instead\n");
+
 	return (true);
 }
 

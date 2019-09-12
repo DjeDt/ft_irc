@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/10 20:35:03 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/12 12:51:51 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,23 +29,18 @@ bool	accept_connection(t_server *server)
 
 	if (!(user = user_create(0)))
 		return (false);
-
 	len = sizeof(addr);
 	user->socket = accept(server->sock, (struct sockaddr*)&addr, &len);
-
 	if (user->socket < 0)
 	{
 		printf("[LOG !] Error : can't accept new user");
 		user_remove(&server->users, user->socket);
 		return (false);
 	}
-
 	FD_SET(user->socket, &server->info.master);
 	generate_guest_pseudo(user->nick.nick, user->socket);
-
 	if (user->socket > server->info.fd_max)
 		server->info.fd_max = user->socket;
-
 	user_push(&server->users, user);
 	printf("[LOG +] new user : '%s'\n", user->nick.nick);
 	return (true);
@@ -53,40 +48,47 @@ bool	accept_connection(t_server *server)
 
 void	close_connection(t_server *server, t_users *user)
 {
+	char trash[MAX_INPUT_LEN];
+
 	if (user->socket == server->info.fd_max)
 		server->info.fd_max -= 1;
 	printf("[LOG -] Remove user '%s'\n", user->nick.nick);
+	while (true)
+	{
+		if (recv(user->socket, trash, MAX_INPUT_LEN, 0) < 1)
+			break ;
+	}
 	close(user->socket);
 	FD_CLR(user->socket, &server->info.master);
 	channel_user_remove_full(&server->channel, user);
 	user_remove(&server->users, user->socket);
 }
 
-bool	processing(t_server *server, int socket)
+
+void	processing(t_server *server, int socket)
 {
 	t_users	*user;
-	char	received[MAX_INPUT_LEN + 3] = {0};
 
 	if (socket == server->sock)
-		accept_connection(server);
-	else
 	{
-		user = user_search_by_id(server->users, socket);
-		if (user != NULL)
-		{
-			if (circular_get(user, received) == false)
-				close_connection(server, user);
-			else if (search_for_crlf(&user->circ, user->circ.len) == true || user->circ.len >= MAX_INPUT_LEN)
-			{
-				interpreter(server, user);
-
-				user->circ.head = user->circ.tail;
-				user->circ.len = 0;
-			}
-		}
-		return (false);
+		accept_connection(server);
+		return ;
 	}
-	return (true);
+	user = user_search_by_id(server->users, socket);
+	if (user == NULL)
+		return ;
+	if (circular_get(user) == false)
+	{
+		close_connection(server, user);
+		return ;
+	}
+	if (search_for_crlf(&user->circ, user->circ.len) == true || \
+		user->circ.len >= MAX_INPUT_LEN)
+	{
+		interpreter(server, user);
+		user->circ.head = user->circ.tail;
+		user->circ.len = 0;
+	}
 }
 
 bool	running(t_server *server)

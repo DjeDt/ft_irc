@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:26:02 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/10 20:38:05 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/12 11:37:55 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,61 +26,7 @@ t_command g_func_ptr[] =
 	{ "/kill", 5, irc_kill }
 };
 
-void	free_command(char **command)
-{
-	if (command[0] != NULL)
-	{
-		free(command[0]);
-		if (command[1] != NULL)
-		{
-			free(command[1]);
-			if (command[2] != NULL)
-				free(command[2]);
-		}
-	}
-}
-
-int		command_size(char *cmd)
-{
-	int i;
-
-	i = 0;
-	while (cmd[i] && _isspace(cmd[i]) != 0)
-		i++;
-	return (i);
-}
-
-bool	split_command(char **command, const char *final)
-{
-	int		size;
-	char	*ptr;
-
-	ptr = (char*)final;
-	size = command_size(ptr);
-	if (size > 0)
-	{
-		if (!(command[0] = _strndup(ptr, size)))
-			return (false);
-		ptr = ptr + (size + 1);
-		size = command_size(ptr);
-		if (size > 0)
-		{
-			if (!(command[1] = _strndup(ptr, size)))
-				return (false);
-			ptr = ptr + (size + 1);
-			size = _strlen(ptr);
-			if (size > 0)
-			{
-				if (!(command[2] = _strndup(ptr, size)))
-					return (false);
-			}
-		}
-		return (true);
-	}
-	return (false);
-}
-
-bool	handle_command(t_server *server, t_users *user, char **command)
+static bool	handle_command(t_server *server, t_users *user, char **command)
 {
 	int		len;
 	int		count;
@@ -105,14 +51,20 @@ bool	handle_command(t_server *server, t_users *user, char **command)
 	return (false);
 }
 
-void	handle_message(t_server *server, t_users *user, char *final)
+
+static void	handle_message(t_server *server, t_users *user, char *final)
 {
 	int				len;
-	char			test[MAX_INPUT_LEN + 3] = {0};
+	char			test[MAX_INPUT_LEN + 3];
 	t_channel_user	*usr_list;
 
+	memset(test, 0x0, MAX_INPUT_LEN + 3);
 	if (user->chan == NULL)
+	{
+		len = snprintf(test, MAX_INPUT_LEN + 3, "Join channel to send message%s", CRLF);
+		circular_send(user->socket, test, len);
 		return ;
+	}
 	usr_list = ((t_channel*)user->chan)->users;
 	if (usr_list == NULL)
 		return ;
@@ -125,34 +77,20 @@ void	handle_message(t_server *server, t_users *user, char *final)
 	}
 }
 
-void	extract_from_circular(char *final, t_circular *circ)
-{
-	int count;
-	int head;
-
-	count = 0;
-	head = circ->head;
-	while (count < circ->len)
-	{
-		final[count] = circ->buf[head];
-		head = (head + 1) % MAX_INPUT_LEN;
-		count++;
-	}
-	final[count] = '\0';
-}
-
 void	interpreter(t_server *server, t_users *user)
 {
-	char	*cmd[3] = {0};
-	char	final[MAX_INPUT_LEN + 3] = {0};
+	char	*cmd[3];
+	char	final[MAX_INPUT_LEN + 3];
 
+	memset(cmd, 0x0, sizeof(char*) * 3);
+	memset(final, 0x0, MAX_INPUT_LEN + 3);
 	extract_from_circular(final, &user->circ);
 	if (final[0] == '/')
 	{
-		if (split_command(cmd, final) != true)
+		if (command_split(cmd, final) != true)
 			return ;
 		handle_command(server, user, cmd);
-		free_command(cmd);
+		command_free(cmd);
 	}
 	else
 	{
