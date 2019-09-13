@@ -6,25 +6,25 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:28 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/12 16:08:16 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/13 17:37:34 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "client.h"
 
-void	extract_from_circle(char *final, t_circular *circ)
+void extract_and_update(t_circular *circ, char *final)
 {
 	int count;
 
 	count = 0;
 	while (count < circ->len)
 	{
-//		if (*(unsigned int*)&circ->buf[circ->head] == CRLF_HEX)
-//			break ;
-		if (circ->buf[circ->head] == '\r')
+		if (circ->buf[circ->head] == 0xd && circ->buf[circ->head + 1] == 0xa)
 		{
-			circ->head++;
-			continue ;
+			circ->head = (circ->head + 1) % MAX_INPUT_LEN;
+			circ->head = (circ->head + 1) % MAX_INPUT_LEN;
+			circ->len = (count + 2);
+			break ;
 		}
 		final[count] = circ->buf[circ->head];
 		circ->head = (circ->head + 1) % MAX_INPUT_LEN;
@@ -33,17 +33,12 @@ void	extract_from_circle(char *final, t_circular *circ)
 	final[count] = '\0';
 }
 
-bool	search_for_crlf(t_circular *circ, int size)
+bool	search_for_crlf(char *buf, int head, int size)
 {
-	int	head;
-
-	head = circ->head;
 	while (size)
 	{
-		if (*(unsigned int*)&circ->buf[head] == CRLF_HEX)
-		{
+		if (buf[head] == 0xd && buf[head + 1] == 0xa)
 			return (true);
-		}
 		head = (head + 1) % MAX_INPUT_LEN;
 		size--;
 	}

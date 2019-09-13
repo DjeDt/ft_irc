@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 14:43:26 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/12 09:53:56 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/13 17:21:28 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static void	send_response(t_users *user)
 	int		len;
 	char	buf[MAX_INPUT_LEN + 3] = {0};
 
-	len = snprintf(buf, MAX_INPUT_LEN + 3, "You are now known as '%s'.%s", user->nick.nick, CRLF);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, "You are now known as '%s'.\r\n", user->nick.nick);
 	circular_send(user->socket, buf, len);
 }
 
@@ -62,7 +62,7 @@ static void	notify_channel(t_users *user, char *old_nick)
 
 	if (user->chan != NULL)
 	{
-		len = snprintf(buf, MAX_INPUT_LEN + 3, "'%s' is now known as '%s'.%s", old_nick, user->nick.nick, CRLF);
+		len = snprintf(buf, MAX_INPUT_LEN + 3, "'%s' is now known as '%s'.\r\n", old_nick, user->nick.nick);
 		tmp = ((t_channel*)user->chan)->users;
 		while (tmp != NULL)
 		{

@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 14:24:19 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/12 15:34:42 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/13 17:16:23 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@
 # define ERROR			-1
 # define SUCCESS		0
 
-# define CRLF           "\r\n"
-# define CRLF_LEN       3
-# define CRLF_HEX       0x0a0d
+# define CRLF           "\n"
+# define CRLF_LEN       2
+# define CRLF_HEX       0x0a
 
 # define DEFAULT_PORT	"1234"
 # define LOCALHOST		"127.0.0.1"
@@ -66,6 +66,7 @@ typedef struct			s_client
 	int					fd_max;
 	fd_set				read;
 	fd_set				write;
+	fd_set				master;
 }						t_client;
 
 typedef struct			s_circular
@@ -97,8 +98,9 @@ void					interpreter(t_interface *inter, t_list_user *user);
 bool                    circular_get(t_interface *inter, t_list_user *user);
 void                    circular_send(t_interface *inter, t_list_user *user);
 void                    circular_push(t_circular *circ, char *data, int size);
-bool                    search_for_crlf(t_circular *circ, int size);
-void					extract_from_circle(char *final, t_circular *circ);
+
+bool					search_for_crlf(char *buf, int head, int size);
+void					extract_and_update(t_circular *circ, char *final);
 
 /* command */
 void					wrapper_connect(t_interface *inter, t_list_user *user, char **command);

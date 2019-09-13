@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:04:28 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/12 15:43:40 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/13 17:40:58 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,17 +27,13 @@ bool	init_interface(t_interface *inter)
 	inter->bot = subwin(stdscr, BOX_INPUT_LEN, COLS, LINES - BOX_INPUT_LEN, 0);
 
 	if (!inter->top || !inter->bot)
-	{
-		inter->status = false;
 		return (false);
-	}
 
 	scrollok(inter->top, TRUE);
 	keypad(inter->bot, TRUE);
 
 	// draw interface
 	box(inter->top, ACS_VLINE, ACS_HLINE);
-//	wborder(inter->top, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 	box(inter->bot, ACS_VLINE, ACS_HLINE);
 
 
@@ -47,8 +43,9 @@ bool	init_interface(t_interface *inter)
 
 	// refresh term
 	wnoutrefresh(inter->top);
-//	wnoutrefresh(inter->bot);
+	wnoutrefresh(inter->bot);
 	doupdate();
+	inter->status = true;
 	return (true);
 }
 
@@ -58,19 +55,19 @@ void	refresh_top_interface(t_interface *inter, char *input, ...)
 	char	data[MAX_INPUT_LEN + 3] = {0};
 
 	va_start(arglist, input);
-	vsnprintf(data, MAX_INPUT_LEN, input, arglist);
-	va_end(arglist);
-
+//	snprintf(data, MAX_INPUT_LEN + 3, input, arglist);
 	/* if (inter->status == false) */
 	/* { */
-	/* 	printf("%s", data); */
+	/* 	vprintf("%s\n", arglist); */
+	/* 	va_end(arglist); */
 	/* 	return ; */
 	/* } */
 
-	wprintw(inter->top, " %s", data);
+	vsnprintf(data, MAX_INPUT_LEN + 3, input, arglist);
+	va_end(arglist);
 
+	wprintw(inter->top, " %s\n", data);
 	box(inter->top, ACS_VLINE, ACS_HLINE);
-//	wborder(inter->top, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 
 	wmove(inter->bot, 1, inter->cursor);
 
@@ -81,11 +78,11 @@ void	refresh_top_interface(t_interface *inter, char *input, ...)
 
 void	refresh_bot_interface(t_interface *inter, char *input)
 {
-	/* if (inter->status == false) */
-	/* { */
-	/* 	printf("\r> %s", input); */
-	/* 	return ; */
-	/* } */
+	if (inter->status == false)
+	{
+		printf("\r> %s", input);
+		return ;
+	}
 	wclear(inter->bot);
 	box(inter->bot, ACS_VLINE, ACS_HLINE);
 	mvwprintw(inter->bot, 1, 1, "> %s", input);

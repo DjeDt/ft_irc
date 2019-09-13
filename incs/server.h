@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:19:18 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/12 12:44:52 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/13 17:36:13 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,10 @@
 ** Defines
 */
 # define DEFAULT_PORT	"1234"
-# define CRLF			"\r\n"
-# define CRLF_LEN		3
-# define CRLF_HEX		0x0a0d
+# define CRLF			"\n"
+# define CRLF_LEN		2
+//# define CRLF_HEX		0x0a0d
+# define CRLF_HEX		0x0a
 
 # define ERROR			-1
 # define SUCCESS		0
@@ -134,8 +135,8 @@ void					interpreter(t_server *server, t_users *user);
 bool					circular_get(t_users *user);
 void					circular_send(int socket, char *data, int size);
 void					circular_push(t_circular *circ, char *data, int size);
-bool					search_for_crlf(t_circular *circ, int size);
-void					extract_from_circular(char *final, t_circular *circ);
+bool					search_for_crlf(char *buf, int head, int size);
+void					extract_and_update(t_circular *circ, char *final);
 
 /* users */
 void					generate_guest_pseudo(char *pseudo, int id);

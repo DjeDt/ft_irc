@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:00:32 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/12 16:06:46 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/13 17:54:37 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,14 @@ static void	init_fd(t_list_user *user)
 {
 	FD_ZERO(&user->client.read);
 	FD_ZERO(&user->client.write);
-	FD_SET(STDIN_FILENO, &user->client.read);
-	if (user->connected == true)
-	{
-		FD_SET(user->socket, &user->client.read);
-		FD_SET(user->socket, &user->client.write);
-	}
+	FD_ZERO(&user->client.master);
+	FD_SET(STDIN_FILENO, &user->client.master);
+	user->client.fd_max = STDIN_FILENO;
+	/* if (user->connected == true) */
+	/* { */
+	/* 	FD_SET(user->socket, &user->client.read); */
+	/* 	FD_SET(user->socket, &user->client.write); */
+	/* } */
 }
 
 static void	reset_data(t_interface *inter, char *buf)
@@ -38,7 +40,10 @@ static void	read_from_user(t_interface *inter, t_list_user *user)
 {
 	wint_t key;
 
-	key = wgetch(inter->bot);
+	if (inter->status == true)
+		key = wgetch(inter->bot);
+	else
+		key = getc(stdin);
 	if (key == KEY_LEFT)
 		do_key_left(inter, user->input);
 	else if (key == KEY_RIGHT)
@@ -51,9 +56,12 @@ static void	read_from_user(t_interface *inter, t_list_user *user)
 		delete_char(inter, user->input);
 	else if (key == '\n')
 	{
-		strncat(user->input, CRLF, CRLF_LEN);
-		circular_send(inter, user);
-		reset_data(inter, user->input);
+		if (_strlen(user->input) > 0)
+		{
+			strcat(user->input, "\r\n");
+			circular_send(inter, user);
+			reset_data(inter, user->input);
+		}
 	}
 	else
 		insert_char(inter, user->input, key);
@@ -61,7 +69,7 @@ static void	read_from_user(t_interface *inter, t_list_user *user)
 
 static void	read_from_server(t_interface *inter, t_list_user *user)
 {
-	char	buf[MAX_INPUT_LEN + 3];
+	char buf[MAX_INPUT_LEN + 3];
 
 	if (circular_get(inter, user) != true)
 	{
@@ -70,23 +78,23 @@ static void	read_from_server(t_interface *inter, t_list_user *user)
 		refresh_top_interface(inter, "Disconnected from server :_:\n");
 		return ;
 	}
-
-	while (search_for_crlf(&user->circ, user->circ.len) == true)
+	while (search_for_crlf(user->circ.buf, user->circ.head, user->circ.len) == true)
 	{
-		extract_from_circle(buf, &user->circ);
-
-		user->circ.len -= (_strlen(buf) - CRLF_LEN);
-		user->circ.head += CRLF_LEN;
-
+		extract_and_update(&user->circ, buf);
 		refresh_top_interface(inter, "%s", buf);
 	}
+
 }
 
 void	running(t_interface *inter, t_list_user *user)
 {
+	init_fd(user);
 	while (user->running == true)
 	{
-		init_fd(user);
+		user->client.read = user->client.master;
+		user->client.master = user->client.master;
+		if (user->connected == true && user->socket != user->client.fd_max)
+			FD_SET(user->socket, &user->client.master);
 		if (select(user->socket + 1, &user->client.read, &user->client.write, NULL, NULL) < 0)
 			return ;
 		if (FD_ISSET(STDIN_FILENO, &user->client.read))

@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 14:34:53 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/12 14:27:07 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/12 21:10:17 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ bool				irc_connect(t_interface *inter, t_list_user *user, const char *s_ip, con
 		refresh_top_interface(inter, "can't connect to '%s' using ipv4\n", s_ip);
 		return (false);
 	}
-	refresh_top_interface(inter, "Connected to %s/%s !\n", s_ip, s_port);
+	refresh_top_interface(inter, "Connected to %s/%s !", s_ip, s_port);
 	user->connected = true;
 	return (true);
 }

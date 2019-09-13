@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:26:02 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/12 11:37:55 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/13 17:39:47 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,14 +61,14 @@ static void	handle_message(t_server *server, t_users *user, char *final)
 	memset(test, 0x0, MAX_INPUT_LEN + 3);
 	if (user->chan == NULL)
 	{
-		len = snprintf(test, MAX_INPUT_LEN + 3, "Join channel to send message%s", CRLF);
+		len = snprintf(test, MAX_INPUT_LEN + 3, "Join channel and then send message\r\n");
 		circular_send(user->socket, test, len);
 		return ;
 	}
 	usr_list = ((t_channel*)user->chan)->users;
 	if (usr_list == NULL)
 		return ;
-	len = snprintf(test, MAX_INPUT_LEN + 3, "[%s] %s : %s%s", ((t_channel*)user->chan)->name, user->nick.nick, final, CRLF);
+	len = snprintf(test, MAX_INPUT_LEN + 3, "[%s] %s : %s\r\n", ((t_channel*)user->chan)->name, user->nick.nick, final);
 	while (usr_list != NULL)
 	{
 		if (FD_ISSET(usr_list->user->socket, &server->info.write))
@@ -84,7 +84,7 @@ void	interpreter(t_server *server, t_users *user)
 
 	memset(cmd, 0x0, sizeof(char*) * 3);
 	memset(final, 0x0, MAX_INPUT_LEN + 3);
-	extract_from_circular(final, &user->circ);
+	extract_and_update(&user->circ, final);
 	if (final[0] == '/')
 	{
 		if (command_split(cmd, final) != true)

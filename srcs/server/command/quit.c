@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/31 09:04:16 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/10 16:56:46 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/13 17:21:44 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static void	notify_leave(t_users *user, char **command)
 
 	if (command[1] != NULL)
 	{
-		len = snprintf(buf, MAX_INPUT_LEN + 3, "[server] : '%s' quit: %s%s", user->nick.nick, command[1], CRLF);
+		len = snprintf(buf, MAX_INPUT_LEN + 3, "[server] : '%s' quit: %s\r\n", user->nick.nick, command[1]);
 		tmp = ((t_channel*)user->chan)->users;
 		while (tmp != NULL)
 		{
@@ -30,7 +30,7 @@ static void	notify_leave(t_users *user, char **command)
 	}
 	else
 	{
-		len = snprintf(buf, MAX_INPUT_LEN + 3, "Disconnected.%s", CRLF);
+		len = snprintf(buf, MAX_INPUT_LEN + 3, "Disconnected.\r\n");
 		circular_send(user->socket, buf, len);
 	}
 }

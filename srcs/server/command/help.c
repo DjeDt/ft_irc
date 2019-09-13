@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/05 13:49:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/10 16:51:58 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/13 17:21:10 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	irc_help(t_server *server, t_users *user, char **command)
 		"'/msg <usr>'           : send message to user\n"	\
 		"'/connect [ip <port>]' : connect to server\n"		\
 		"'/quit'                : quit irc\n"				\
-		"/kill'                 : shutdown connected server%s", CRLF);
+		"/kill'                 : shutdown connected server\r\n");
 
 	if (FD_ISSET(user->socket, &server->info.write))
 		circular_send(user->socket, buf, len);

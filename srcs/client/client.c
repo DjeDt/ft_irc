@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/27 21:31:12 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/12 15:39:34 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/13 17:40:35 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,12 @@ bool	init_data(t_interface *inter, t_list_user *user)
 
 	user->running = true;
 	user->connected = false;
-	inter->status = true;
+	inter->status = false;
 
-	if (init_interface(inter) == false)
+	init_interface(inter);
+	if (inter->status == false)
 		printf("Can't use ncurse. Using basic client instead\n");
+
 
 	return (true);
 }

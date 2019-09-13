@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:17:35 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/12 13:50:33 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/13 17:18:40 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	notify_channel(t_channel_user *chan_users, t_users *user)
 	t_channel_user	*tmp;
 
 	tmp = chan_users;
-	len = snprintf(buf, MAX_INPUT_LEN + 3, "[server] : '%s' has joined %s.%s", user->nick.nick, ((t_channel*)user->chan)->name, CRLF);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, "[server] : '%s' has joined %s.\r\n", user->nick.nick, ((t_channel*)user->chan)->name);
 	while (tmp != NULL)
 	{
 		if (user->socket != tmp->user->socket)
