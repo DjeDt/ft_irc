@@ -5,7 +5,6 @@ char	*ft_strndup(const char *src, size_t n)
 	size_t	count;
 	char	*ret;
 
-
 	count = 0;
 	if (ft_strlen(src) < (ssize_t)n)
 		n = ft_strlen(src);

@@ -82,7 +82,6 @@ void	interpreter(t_server *server, t_users *user)
 	char	final[MAX_INPUT_LEN + 3];
 
 	ft_memset(cmd, 0x0, sizeof(char*) * 3);
-	ft_memset(final, 0x0, MAX_INPUT_LEN + 3);
 	extract_and_update(&user->circ, final);
 	if (final[0] == '/')
 	{

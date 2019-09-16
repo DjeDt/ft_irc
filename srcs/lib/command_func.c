@@ -17,7 +17,7 @@ int		command_size(char *command)
 	int i;
 
 	i = 0;
-	while (command[i] && ft_isspace(command[i]) != 0)
+	while (command[i] != '\0' && ft_isspace(command[i]) == false)
 		i++;
 	return (i);
 }

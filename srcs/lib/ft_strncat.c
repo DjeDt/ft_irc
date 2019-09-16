@@ -9,7 +9,7 @@ char	*ft_strncat(char *s1, char *s2, int n)
 	str = s2;
 	while (*ret != '\0')
 		ret++;
-	while ((*str != '\0') && n)
+	while ((*str != '\0') && (n))
 	{
 		*ret++ = *str++;
 		n--;

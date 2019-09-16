@@ -12,22 +12,23 @@
 
 #include "client.h"
 
-void extract_and_update(t_circular *circ, char *final)
+void	extract_and_update(t_circular *circ, char *final)
 {
 	int count;
+	int next;
 
 	count = 0;
 	while (count < circ->len)
 	{
-		if (circ->buf[circ->head] == 0xd && circ->buf[circ->head + 1] == 0xa)
+		next = (circ->head + 1) % MAX_INPUT_LEN;
+		if (circ->buf[circ->head] == 0xd && circ->buf[next] == 0xa)
 		{
-			circ->head = (circ->head + 1) % MAX_INPUT_LEN;
-			circ->head = (circ->head + 1) % MAX_INPUT_LEN;
-			circ->len = (count + 2);
+			circ->head = (circ->head + 2) % MAX_INPUT_LEN;
+			circ->len -= (count + 2);
 			break ;
 		}
 		final[count] = circ->buf[circ->head];
-		circ->head = (circ->head + 1) % MAX_INPUT_LEN;
+		circ->head = next;
 		count++;
 	}
 	final[count] = '\0';
@@ -35,11 +36,14 @@ void extract_and_update(t_circular *circ, char *final)
 
 bool	search_for_crlf(char *buf, int head, int size)
 {
+	int next;
+
 	while (size)
 	{
-		if (buf[head] == 0xd && buf[head + 1] == 0xa)
+		next = (head + 1) % MAX_INPUT_LEN;
+		if (buf[head] == 0xd && buf[next] == 0xa)
 			return (true);
-		head = (head + 1) % MAX_INPUT_LEN;
+		head = next;
 		size--;
 	}
 	return (false);
@@ -55,7 +59,7 @@ void	circular_push(t_circular *circ, char *received, int size)
 	}
 }
 
-bool		circular_get(t_interface *inter, t_list_user *user)
+bool	circular_get(t_interface *inter, t_list_user *user)
 {
 	int		ret;
 	char	data[MAX_INPUT_LEN + 3];
@@ -74,7 +78,7 @@ bool		circular_get(t_interface *inter, t_list_user *user)
 
 void	circular_send(t_interface *inter, t_list_user *user)
 {
-	if (send(user->socket, user->input, inter->len, 0) < 0)
+	if (send(user->socket, user->input, inter->len + 2, 0) < 0)
 	{
 		refresh_top_interface(inter, "Can't send data to server.\n");
 		return ;

@@ -16,7 +16,7 @@ int			ft_atoi(const char *str)
 
 	nbr = 0;
 	n = 0;
-	i = -1;
+	i = 0;
 	while (delim(str[i]))
 		i++;
 	if (str[i] == '-')

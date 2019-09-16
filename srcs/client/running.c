@@ -24,6 +24,7 @@ static void	reset_data(t_interface *inter, char *buf)
 {
 	ft_memset(buf, 0x0, MAX_INPUT_LEN + 3);
 	inter->off = 0;
+	inter->len = 0;
 	inter->curmax = 0;
 	inter->cursor = 3;
 	wclear(inter->bot);
@@ -35,22 +36,27 @@ static void	interpreter(t_interface *inter, t_list_user *user)
 	int		len;
 	char	*command[3];
 
-	len = inter->len > CONNECT_LEN ? inter->len : CONNECT_LEN;
 	ft_memset(command, 0x0, sizeof(char*) * 3);
-	if (command_split(command, user->input) != true)
-		return ;
-	if (ft_strncmp(command[0], "/connect", len) == 0)
-		wrapper_connect(inter, user, command);
-	else
+	if (user->input[0] == '/')
 	{
-		if (user->connected == true)
+		if (command_split(command, user->input) != true)
+			return ;
+		len = ft_strlen(command[0]);
+		if (CONNECT_LEN > len)
+			len = CONNECT_LEN;
+		if (ft_strncmp(command[0], "/connect", len) == 0)
 		{
-			ft_strncat(user->input, "\r\n", 2);
-			circular_send(inter, user);
+			wrapper_connect(inter, user, command);
+			command_free(command);
+			return ;
 		}
 	}
+	if (user->connected == true)
+	{
+		ft_strncat(user->input, "\r\n", 2);
+		circular_send(inter, user);
+	}
 	command_free(command);
-	reset_data(inter, user->input);
 }
 
 static void	read_from_user(t_interface *inter, t_list_user *user)
@@ -74,7 +80,10 @@ static void	read_from_user(t_interface *inter, t_list_user *user)
 	else if (key == '\n')
 	{
 		if (inter->len > 0)
+		{
 			interpreter(inter, user);
+			reset_data(inter, user->input);
+		}
 	}
 	else
 		insert_char(inter, user->input, key);
@@ -84,6 +93,7 @@ static void	read_from_server(t_interface *inter, t_list_user *user)
 {
 	char buf[MAX_INPUT_LEN + 3];
 
+	memset(buf, 0x0, MAX_INPUT_LEN + 3);
 	if (circular_get(inter, user) != true)
 	{
 		FD_CLR(user->socket, &user->client.master);

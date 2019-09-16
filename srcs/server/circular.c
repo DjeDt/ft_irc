@@ -14,11 +14,14 @@
 
 bool    search_for_crlf(char *buf, int head, int size)
 {
+	int next;
+
 	while (size)
 	{
-		if (buf[head] == 0xd && buf[head + 1] == 0xa)
+		next = (head + 1) % MAX_INPUT_LEN;
+		if (buf[head] == 0xd && buf[next] == 0xa)
 			return (true);
-		head = (head + 1) % MAX_INPUT_LEN;
+		head = next;
 		size--;
 	}
 	return (false);
@@ -37,19 +40,20 @@ void	circular_push(t_circular *circ, char *received, int size)
 void extract_and_update(t_circular *circ, char *final)
 {
 	int count;
+	int next;
 
 	count = 0;
 	while (count < circ->len)
 	{
-		if (circ->buf[circ->head] == 0xd && circ->buf[circ->head + 1] == 0xa)
+		next = (circ->head + 1) % MAX_INPUT_LEN;
+		if (circ->buf[circ->head] == 0xd && circ->buf[next] == 0xa)
 		{
-			circ->head = (circ->head + 1) % MAX_INPUT_LEN;
-			circ->head = (circ->head + 1) % MAX_INPUT_LEN;
-			circ->len = (count + 2);
+			circ->head = (circ->head + 2) % MAX_INPUT_LEN;
+			circ->len -= (count + 2);
 			break ;
 		}
 		final[count] = circ->buf[circ->head];
-		circ->head = (circ->head + 1) % MAX_INPUT_LEN;
+		circ->head = next;
 		count++;
 	}
 	final[count] = '\0';
@@ -67,7 +71,7 @@ bool	circular_get(t_users *user)
 	}
 	printf("[LOG !] from %d : '%s'\n", user->socket, user->circ.received);
 	circular_push(&user->circ, user->circ.received, ret);
-	ft_memset(user->circ.received, 0x0, ret);
+	ft_memset(user->circ.received, 0x0, MAX_INPUT_LEN);
 	user->circ.len += ret;
 	return (true);
 }
