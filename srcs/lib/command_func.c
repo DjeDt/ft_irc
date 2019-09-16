@@ -10,14 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "server.h"
+#include "lib.h"
 
 int		command_size(char *command)
 {
 	int i;
 
 	i = 0;
-	while (command[i] && _isspace(command[i]) != 0)
+	while (command[i] && ft_isspace(command[i]) != 0)
 		i++;
 	return (i);
 }
@@ -45,19 +45,19 @@ bool	command_split(char **command, const char *final)
 	size = command_size(ptr);
 	if (size > 0)
 	{
-		if (!(command[0] = _strndup(ptr, size)))
+		if (!(command[0] = ft_strndup(ptr, size)))
 			return (false);
 		ptr = ptr + (size + 1);
 		size = command_size(ptr);
 		if (size > 0)
 		{
-			if (!(command[1] = _strndup(ptr, size)))
+			if (!(command[1] = ft_strndup(ptr, size)))
 				return (false);
 			ptr = ptr + (size + 1);
-			size = _strlen(ptr);
+			size = ft_strlen(ptr);
 			if (size > 0)
 			{
-				if (!(command[2] = _strndup(ptr, size)))
+				if (!(command[2] = ft_strndup(ptr, size)))
 					return (false);
 			}
 		}
