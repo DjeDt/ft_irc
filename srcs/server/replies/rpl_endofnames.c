@@ -16,6 +16,7 @@ void	rpl_endofnames(t_channel *chan, t_users *user, char *buf)
 {
 	int	len;
 
+	memset(buf, 0x0, MAX_INPUT_LEN + 3);
 	len = snprintf(buf, MAX_INPUT_LEN + 3, RPL_ENDOFNAMES, chan->name);
 	circular_send(user->socket, buf, len);
 }

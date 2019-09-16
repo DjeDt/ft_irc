@@ -44,6 +44,7 @@
 # define DEFAULT_PORT	"1234"
 # define LOCALHOST		"127.0.0.1"
 
+# define CONNECT_LEN	7
 # define CURSOR_START	3
 # define BOX_INPUT_LEN	3
 # define MAX_INPUT_LEN	512
@@ -59,6 +60,7 @@ typedef struct			s_interface
 	int					line;	// printable line for top
 	int					cursor;	// where is the visible cursor
 	int					curmax;	// max visible cursor
+	int					len;
 }						t_interface;
 
 typedef struct			s_client
@@ -93,7 +95,10 @@ typedef void (t_func) (t_interface *inter, t_list_user *user, char **command);
 ** Core
 */
 void					running(t_interface *inter, t_list_user *user);
-void					interpreter(t_interface *inter, t_list_user *user);
+
+int						command_size(char *command);
+void					command_free(char **command);
+bool					command_split(char **command, const char *final);
 
 bool                    circular_get(t_interface *inter, t_list_user *user);
 void                    circular_send(t_interface *inter, t_list_user *user);

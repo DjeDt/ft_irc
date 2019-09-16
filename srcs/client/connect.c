@@ -67,19 +67,19 @@ bool				irc_connect(t_interface *inter, t_list_user *user, const char *s_ip, con
 
 	if ((ip = is_valid_ip(s_ip, _strlen(s_ip))) == INADDR_NONE)
 	{
-		refresh_top_interface(inter, "can't connect to '%s'.\n", s_ip);
+		refresh_top_interface(inter, "can't connect to '%s'.", s_ip);
 		return (false);
 	}
 
 	if ((port = is_valid_port(s_port)) < 0)
 	{
-		refresh_top_interface(inter, "can't connect to %s/%s.\n", s_ip, s_port);
+		refresh_top_interface(inter, "can't connect to %s/%s.", s_ip, s_port);
 		return (false);
 	}
 
 	if (init_socket_ipv4(user, ip, port) != true)
 	{
-		refresh_top_interface(inter, "can't connect to '%s' using ipv4\n", s_ip);
+		refresh_top_interface(inter, "can't connect to '%s' using ipv4.", s_ip);
 		return (false);
 	}
 	refresh_top_interface(inter, "Connected to %s/%s !", s_ip, s_port);

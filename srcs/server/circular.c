@@ -80,5 +80,5 @@ void	circular_send(int socket, char *data, int size)
 		return ;
 	}
 	else
-		printf("Sent to %d len = %d|%ld : '%s'", socket, size, _strlen(data), data);
+		printf("Sent to %d : '%s'", socket, data);
 }

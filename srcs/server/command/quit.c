@@ -21,11 +21,15 @@ static void	notify_leave(t_users *user, char **command)
 	if (command[1] != NULL)
 	{
 		len = snprintf(buf, MAX_INPUT_LEN + 3, "[server] : '%s' quit: %s\r\n", user->nick.nick, command[1]);
-		tmp = ((t_channel*)user->chan)->users;
-		while (tmp != NULL)
+		if (user->chan != NULL)
 		{
-			circular_send(tmp->user->socket, buf, len);
-			tmp = tmp->next;
+			tmp = ((t_channel*)user->chan)->users;
+			while (tmp != NULL)
+			{
+				if (user->socket != tmp->user->socket)
+					circular_send(tmp->user->socket, buf, len);
+				tmp = tmp->next;
+			}
 		}
 	}
 	else
@@ -37,15 +41,20 @@ static void	notify_leave(t_users *user, char **command)
 
 void	irc_quit(t_server *server, t_users *user, char **command)
 {
-	if (server->users != NULL)
+	char trash[MAX_INPUT_LEN];
+
+	if (user != NULL)
 	{
-		if (user != NULL)
+		notify_leave(user, command);
+		while (true)
 		{
-			notify_leave(user, command);
-			channel_user_remove_full(&server->channel, user);
-			user_remove(&server->users, user->socket);
-			close(user->socket);
-			FD_CLR(user->socket, &server->info.master);
+			if (recv(user->socket, trash, MAX_INPUT_LEN, 0) < 1)
+				break ;
 		}
+		FD_CLR(user->socket, &server->info.master);
+		close(user->socket);
+		if (user->chan != NULL)
+			channel_user_remove_full(&server->channel, user);
+		user_remove(&server->users, user->socket);
 	}
 }

@@ -18,6 +18,7 @@ bool	init_interface(t_interface *inter)
 	inter->line = 1;
 	inter->cursor = 3;
 	inter->curmax = 0;
+	inter->len = 0;
 
     initscr();
 	noecho();

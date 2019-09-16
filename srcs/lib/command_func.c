@@ -12,6 +12,16 @@
 
 #include "server.h"
 
+int		command_size(char *command)
+{
+	int i;
+
+	i = 0;
+	while (command[i] && _isspace(command[i]) != 0)
+		i++;
+	return (i);
+}
+
 void	command_free(char **command)
 {
 	if (command[0] != NULL)
@@ -24,16 +34,6 @@ void	command_free(char **command)
 				free(command[2]);
 		}
 	}
-}
-
-int		command_size(char *command)
-{
-	int i;
-
-	i = 0;
-	while (command[i] && _isspace(command[i]) != 0)
-		i++;
-	return (i);
 }
 
 bool	command_split(char **command, const char *final)

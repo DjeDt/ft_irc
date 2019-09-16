@@ -51,7 +51,6 @@ static bool	handle_command(t_server *server, t_users *user, char **command)
 	return (false);
 }
 
-
 static void	handle_message(t_server *server, t_users *user, char *final)
 {
 	int				len;

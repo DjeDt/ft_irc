@@ -88,7 +88,7 @@ bool			channel_user_remove(t_channel_user **chan, t_users *user)
 		{
 			if (curr->user->socket == user->socket)
 			{
-				printf("[LOG -] Remove user '%s'\n", curr->user->nick.nick);
+				printf("[LOG -] Remove user '%s' from chan '%s\n", curr->user->nick.nick, ((t_channel*)curr->user->chan)->name);
 				if (prev == NULL)
 					(*chan) = curr->next;
 				else

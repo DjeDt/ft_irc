@@ -37,10 +37,6 @@
 ** Defines
 */
 # define DEFAULT_PORT	"1234"
-# define CRLF			"\n"
-# define CRLF_LEN		2
-//# define CRLF_HEX		0x0a0d
-# define CRLF_HEX		0x0a
 
 # define ERROR			-1
 # define SUCCESS		0
@@ -87,10 +83,8 @@ typedef struct				s_circular
 typedef struct				s_users
 {
 	int						socket;
-
 	t_nick					nick;
 	t_circular				circ;
-
 	void					*chan;
 	struct s_users			*next;
 }							t_users;

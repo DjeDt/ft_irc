@@ -124,7 +124,7 @@ void	user_remove(t_users **users, int id)
 		if (tmp->socket == id)
 		{
 			if (prev == NULL)
-				*users = tmp->next;
+				(*users) = tmp->next;
 			else
 				prev->next = tmp->next;
 			free(tmp);

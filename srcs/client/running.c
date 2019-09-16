@@ -18,7 +18,7 @@ static void	init_fd(t_list_user *user)
 	FD_ZERO(&user->client.write);
 	FD_ZERO(&user->client.master);
 	FD_SET(STDIN_FILENO, &user->client.master);
-	user->client.fd_max = STDIN_FILENO;
+//	user->client.fd_max = STDIN_FILENO;
 	/* if (user->connected == true) */
 	/* { */
 	/* 	FD_SET(user->socket, &user->client.read); */
@@ -34,6 +34,29 @@ static void	reset_data(t_interface *inter, char *buf)
 	inter->cursor = 3;
 	wclear(inter->bot);
 	refresh_bot_interface(inter, buf);
+}
+
+static void	interpreter(t_interface *inter, t_list_user *user)
+{
+	int		len;
+	char	*command[3];
+
+	len = inter->len > CONNECT_LEN ? inter->len : CONNECT_LEN;
+	memset(command, 0x0, sizeof(char*) * 3);
+	if (command_split(command, user->input) != true)
+		return ;
+	if (strncmp(command[0], "/connect", len) == 0)
+		wrapper_connect(inter, user, command);
+	else
+	{
+		if (user->connected == true)
+		{
+			strcat(user->input, "\r\n");
+			circular_send(inter, user);
+		}
+	}
+	command_free(command);
+	reset_data(inter, user->input);
 }
 
 static void	read_from_user(t_interface *inter, t_list_user *user)
@@ -56,12 +79,8 @@ static void	read_from_user(t_interface *inter, t_list_user *user)
 		delete_char(inter, user->input);
 	else if (key == '\n')
 	{
-		if (_strlen(user->input) > 0)
-		{
-			strcat(user->input, "\r\n");
-			circular_send(inter, user);
-			reset_data(inter, user->input);
-		}
+		if (inter->len > 0)
+			interpreter(inter, user);
 	}
 	else
 		insert_char(inter, user->input, key);
@@ -73,6 +92,7 @@ static void	read_from_server(t_interface *inter, t_list_user *user)
 
 	if (circular_get(inter, user) != true)
 	{
+		FD_CLR(user->socket, &user->client.master);
 		close(user->socket);
 		user->connected = false;
 		refresh_top_interface(inter, "Disconnected from server :_:\n");
@@ -92,17 +112,14 @@ void	running(t_interface *inter, t_list_user *user)
 	while (user->running == true)
 	{
 		user->client.read = user->client.master;
-		user->client.master = user->client.master;
-		if (user->connected == true && user->socket != user->client.fd_max)
+		user->client.write = user->client.master;
+		if (user->connected == true && !FD_ISSET(user->socket, &user->client.master))
 			FD_SET(user->socket, &user->client.master);
 		if (select(user->socket + 1, &user->client.read, &user->client.write, NULL, NULL) < 0)
 			return ;
 		if (FD_ISSET(STDIN_FILENO, &user->client.read))
 			read_from_user(inter, user);
-		if (user->connected == true)
-		{
-			if (FD_ISSET(user->socket, &user->client.read))
-				read_from_server(inter, user);
-		}
+		if (user->connected == true && FD_ISSET(user->socket, &user->client.read))
+			read_from_server(inter, user);
 	}
 }

@@ -67,7 +67,7 @@ static void	notify_channel(t_users *user, char *old_nick)
 		while (tmp != NULL)
 		{
 			if (tmp->user->socket != user->socket)
-				circular_send(user->socket, buf, len);
+				circular_send(tmp->user->socket, buf, len);
 			tmp = tmp->next;
 		}
 	}

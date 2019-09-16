@@ -60,6 +60,7 @@ bool	insert_char(t_interface *inter, char *input, int c)
 		inter->off++;
 		inter->curmax++;
 		inter->cursor++;
+		inter->len++;
 		refresh_bot_interface(inter, input);
 		return (true);
 	}
@@ -77,6 +78,7 @@ bool	delete_char(t_interface *inter, char *input)
 		inter->off--;
 		inter->curmax--;
 		inter->cursor--;
+		inter->len--;
 		memmove(input + inter->off, input + inter->off + 1, inter->curmax - inter->off);
 		input[inter->curmax] = '\0';
 		refresh_bot_interface(inter, input);

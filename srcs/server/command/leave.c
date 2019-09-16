@@ -23,7 +23,8 @@ static void	send_leave_notif(t_channel *chan, t_users *user)
 	tmp = chan->users;
 	while (tmp != NULL)
 	{
-		circular_send(user->socket, buf, len);
+		if (user->socket != tmp->user->socket)
+			circular_send(tmp->user->socket, buf, len);
 		tmp = tmp->next;
 	}
 }
