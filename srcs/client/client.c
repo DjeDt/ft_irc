@@ -17,16 +17,12 @@ bool	init_data(t_interface *inter, t_list_user *user)
 	ft_memset(inter, 0x0, sizeof(t_interface));
 	ft_memset(user, 0x0, sizeof(t_list_user));
 	ft_memset(&user->circ, 0x0, sizeof(t_circular));
-
 	user->running = true;
 	user->connected = false;
 	inter->status = false;
-
 	init_interface(inter);
 	if (inter->status == false)
 		printf("Can't use ncurse. Using basic client instead\n");
-
-
 	return (true);
 }
 

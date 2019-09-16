@@ -24,4 +24,8 @@ void		ft_flush(int socket);
 void		*ft_memmove(void *dst, const void *src, size_t len);
 int			ft_atoi(const char *str);
 
+int			command_size(char *command);
+void		command_free(char **command);
+bool		command_split(char **command, const char *final);
+
 #endif

@@ -42,20 +42,17 @@ bool	command_split(char **command, const char *final)
 	char	*ptr;
 
 	ptr = (char*)final;
-	size = command_size(ptr);
-	if (size > 0)
+	if ((size = command_size(ptr)) > 0)
 	{
 		if (!(command[0] = ft_strndup(ptr, size)))
 			return (false);
 		ptr = ptr + (size + 1);
-		size = command_size(ptr);
-		if (size > 0)
+		if ((size = command_size(ptr)) > 0)
 		{
 			if (!(command[1] = ft_strndup(ptr, size)))
 				return (false);
 			ptr = ptr + (size + 1);
-			size = ft_strlen(ptr);
-			if (size > 0)
+			if ((size = ft_strlen(ptr)) > 0)
 			{
 				if (!(command[2] = ft_strndup(ptr, size)))
 					return (false);

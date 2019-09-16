@@ -156,11 +156,6 @@ bool					channel_user_remove(t_channel_user **chan, t_users *user);
 void					channel_user_remove_all(t_channel_user **user_list);
 void					channel_user_remove_full(t_channel **chan, t_users *users);
 
-/* commands */
-void					command_free(char **command);
-int						command_size(char *command);
-bool					command_split(char **command, const char *final);
-
 void					irc_help(t_server *server, t_users *user, char **command);
 void					irc_nick(t_server *server, t_users *user, char **command);
 void					irc_list(t_server *server, t_users *user, char **command);

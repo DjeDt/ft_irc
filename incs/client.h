@@ -47,10 +47,13 @@
 # define LOCALHOST		"127.0.0.1"
 
 # define CONNECT_LEN	7
+# define LINE_START		1
 # define CURSOR_START	3
 # define BOX_INPUT_LEN	3
 # define MAX_INPUT_LEN	512
 # define MAX_NICK_LEN	16
+
+# define BASIC_PORT_STR "Connecting to '%s' using default port '%s'"
 
 /* Struct */
 typedef struct			s_interface
@@ -97,10 +100,7 @@ typedef void (t_func) (t_interface *inter, t_list_user *user, char **command);
 ** Core
 */
 void					running(t_interface *inter, t_list_user *user);
-
-int						command_size(char *command);
-void					command_free(char **command);
-bool					command_split(char **command, const char *final);
+void					interpreter(t_interface *inter, t_list_user *user);
 
 bool                    circular_get(t_interface *inter, t_list_user *user);
 void                    circular_send(t_interface *inter, t_list_user *user);
@@ -121,8 +121,6 @@ void					refresh_bot_interface(t_interface *inter, char *input);
 /* readline */
 bool					do_key_left(t_interface *inter, char *input);
 bool					do_key_right(t_interface *inter, char *input);
-bool					do_key_up(t_interface *inter, char *input);
-bool					do_key_down(t_interface *inter, char *input);
 bool					insert_char(t_interface *inter, char *input, int c);
 bool					delete_char(t_interface *inter, char *input);
 

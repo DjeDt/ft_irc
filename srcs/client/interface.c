@@ -12,37 +12,31 @@
 
 #include "client.h"
 
-bool	init_interface(t_interface *inter)
+static void	zeroed(t_interface *inter)
 {
 	inter->off = 0;
-	inter->line = 1;
-	inter->cursor = 3;
+	inter->line = LINE_START;
+	inter->cursor = CURSOR_START;
 	inter->curmax = 0;
 	inter->len = 0;
-
-    initscr();
+	initscr();
 	noecho();
 	cbreak();
+}
 
+bool		init_interface(t_interface *inter)
+{
+	zeroed(inter);
 	inter->top = subwin(stdscr, LINES - BOX_INPUT_LEN, COLS, 0, 0);
 	inter->bot = subwin(stdscr, BOX_INPUT_LEN, COLS, LINES - BOX_INPUT_LEN, 0);
-
 	if (!inter->top || !inter->bot)
 		return (false);
-
 	scrollok(inter->top, TRUE);
 	keypad(inter->bot, TRUE);
-
-	// draw interface
 	box(inter->top, ACS_VLINE, ACS_HLINE);
 	box(inter->bot, ACS_VLINE, ACS_HLINE);
-
-
-	// move the cursor to the input box
 	wprintw(inter->top, "\n");
 	mvwprintw(inter->bot, 1, 1, "> ");
-
-	// refresh term
 	wnoutrefresh(inter->top);
 	wnoutrefresh(inter->bot);
 	doupdate();
@@ -50,34 +44,28 @@ bool	init_interface(t_interface *inter)
 	return (true);
 }
 
-void	refresh_top_interface(t_interface *inter, char *input, ...)
+void		refresh_top_interface(t_interface *inter, char *input, ...)
 {
 	va_list	arglist;
-	char	data[MAX_INPUT_LEN + 3] = {0};
+	char	data[MAX_INPUT_LEN + 3];
 
+	ft_memset(data, 0x0, MAX_INPUT_LEN + 3);
 	va_start(arglist, input);
-//	snprintf(data, MAX_INPUT_LEN + 3, input, arglist);
-	/* if (inter->status == false) */
-	/* { */
-	/* 	vprintf("%s\n", arglist); */
-	/* 	va_end(arglist); */
-	/* 	return ; */
-	/* } */
-
 	vsnprintf(data, MAX_INPUT_LEN + 3, input, arglist);
 	va_end(arglist);
-
+	if (inter->status == false)
+	{
+		printf(" %s\n", data);
+	}
 	wprintw(inter->top, " %s\n", data);
 	box(inter->top, ACS_VLINE, ACS_HLINE);
-
 	wmove(inter->bot, 1, inter->cursor);
-
 	wnoutrefresh(inter->top);
 	wnoutrefresh(inter->bot);
 	doupdate();
 }
 
-void	refresh_bot_interface(t_interface *inter, char *input)
+void		refresh_bot_interface(t_interface *inter, char *input)
 {
 	if (inter->status == false)
 	{

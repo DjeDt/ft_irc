@@ -90,6 +90,7 @@ client_src = 							\
 	$(clientdir)/connect.c				\
 	$(clientdir)/interface.c			\
 	$(clientdir)/running.c				\
+	$(clientdir)/interpreter.c			\
 	$(clientdir)/circular.c				\
 	$(clientdir)/key.c					\
 \
