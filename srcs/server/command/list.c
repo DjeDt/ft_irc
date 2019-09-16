@@ -19,14 +19,14 @@ void	irc_list(t_server *server, t_users *user, char **command)
 
 	(void)command;
 	tmp = server->channel;
-	memset(buf, 0x0, MAX_INPUT_LEN + 3);
+	ft_memset(buf, 0x0, MAX_INPUT_LEN + 3);
 	rpl_liststart(user, buf);
 	while (tmp != NULL)
 	{
-		memset(buf, 0x0, MAX_INPUT_LEN + 3);
+		ft_memset(buf, 0x0, MAX_INPUT_LEN + 3);
 		rpl_list(tmp, user, buf);
 		tmp = tmp->next;
 	}
-	memset(buf, 0x0, MAX_INPUT_LEN + 3);
+	ft_memset(buf, 0x0, MAX_INPUT_LEN + 3);
 	rpl_endoflist(user, buf);
 }

@@ -16,10 +16,10 @@ void	generate_guest_pseudo(char *pseudo, int id)
 {
 	char	tmp[10];
 
-	_memset(tmp, 0x0, 10);
-	_itoa(tmp, id);
-	_memcpy(pseudo, "Guest_", 6);
-	_memcpy(&pseudo[6], tmp, 9);
+	ft_memset(tmp, 0x0, 10);
+	ft_itoa(tmp, id);
+	ft_memcpy(pseudo, "Guest_", 6);
+	ft_memcpy(&pseudo[6], tmp, 9);
 }
 
 t_users	*user_create(int socket)
@@ -31,15 +31,15 @@ t_users	*user_create(int socket)
 
 	new->socket = socket;
 
-	memset(&new->nick, 0x0, sizeof(t_nick));
+	ft_memset(&new->nick, 0x0, sizeof(t_nick));
 
 	generate_guest_pseudo(new->nick.nick, socket);
-	new->nick.nick_len = _strlen(new->nick.nick);
+	new->nick.nick_len = ft_strlen(new->nick.nick);
 
 	new->circ.len = 0;
 	new->circ.head = 0;
 	new->circ.tail = 0;
-	memset(new->circ.buf, 0x0, MAX_INPUT_LEN);
+	ft_memset(new->circ.buf, 0x0, MAX_INPUT_LEN);
 
 	new->chan = NULL;
 	new->next = NULL;
@@ -101,10 +101,10 @@ t_users		*user_search_by_name(t_users *users, const char *name)
 	if (users != NULL)
 	{
 		tmp = users;
-		len = _strlen(name);
+		len = ft_strlen(name);
 		while (tmp != NULL)
 		{
-			if (_memcmp(name, tmp->nick.nick, len) == 0)
+			if (ft_memcmp(name, tmp->nick.nick, len) == 0)
 				return (tmp);
 			tmp = tmp->next;
 		}

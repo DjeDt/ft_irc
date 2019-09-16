@@ -18,17 +18,11 @@ static void	init_fd(t_list_user *user)
 	FD_ZERO(&user->client.write);
 	FD_ZERO(&user->client.master);
 	FD_SET(STDIN_FILENO, &user->client.master);
-//	user->client.fd_max = STDIN_FILENO;
-	/* if (user->connected == true) */
-	/* { */
-	/* 	FD_SET(user->socket, &user->client.read); */
-	/* 	FD_SET(user->socket, &user->client.write); */
-	/* } */
 }
 
 static void	reset_data(t_interface *inter, char *buf)
 {
-	_memset(buf, 0x0, MAX_INPUT_LEN + 3);
+	ft_memset(buf, 0x0, MAX_INPUT_LEN + 3);
 	inter->off = 0;
 	inter->curmax = 0;
 	inter->cursor = 3;
@@ -42,16 +36,16 @@ static void	interpreter(t_interface *inter, t_list_user *user)
 	char	*command[3];
 
 	len = inter->len > CONNECT_LEN ? inter->len : CONNECT_LEN;
-	memset(command, 0x0, sizeof(char*) * 3);
+	ft_memset(command, 0x0, sizeof(char*) * 3);
 	if (command_split(command, user->input) != true)
 		return ;
-	if (strncmp(command[0], "/connect", len) == 0)
+	if (ft_strncmp(command[0], "/connect", len) == 0)
 		wrapper_connect(inter, user, command);
 	else
 	{
 		if (user->connected == true)
 		{
-			strcat(user->input, "\r\n");
+			ft_strncat(user->input, "\r\n", 2);
 			circular_send(inter, user);
 		}
 	}

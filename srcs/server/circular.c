@@ -67,7 +67,7 @@ bool	circular_get(t_users *user)
 	}
 	printf("[LOG !] from %d : '%s'\n", user->socket, user->circ.received);
 	circular_push(&user->circ, user->circ.received, ret);
-	memset(user->circ.received, 0x0, ret);
+	ft_memset(user->circ.received, 0x0, ret);
 	user->circ.len += ret;
 	return (true);
 }

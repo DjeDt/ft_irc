@@ -69,7 +69,20 @@ server_src =							\
 	$(serverdir)/$(repliesdir)/rpl_list.c			\
 	$(serverdir)/$(repliesdir)/rpl_endoflist.c		\
 \
-	$(libdir)/lib.c									\
+	$(libdir)/ft_isspace.c				\
+	$(libdir)/ft_strlen.c				\
+	$(libdir)/ft_arrlen.c				\
+	$(libdir)/ft_memset.c				\
+	$(libdir)/ft_memcpy.c				\
+	$(libdir)/ft_memcmp.c				\
+	$(libdir)/ft_memmove.c				\
+	$(libdir)/ft_strchr.c				\
+	$(libdir)/ft_itoa.c					\
+	$(libdir)/ft_strndup.c				\
+	$(libdir)/ft_flush.c				\
+	$(libdir)/ft_strncmp.c				\
+	$(libdir)/ft_strncat.c				\
+	$(libdir)/ft_atoi.c					\
 	$(libdir)/command_func.c
 
 client_src = 							\
@@ -80,7 +93,20 @@ client_src = 							\
 	$(clientdir)/circular.c				\
 	$(clientdir)/key.c					\
 \
-	$(libdir)/lib.c						\
+	$(libdir)/ft_isspace.c				\
+	$(libdir)/ft_strlen.c				\
+	$(libdir)/ft_arrlen.c				\
+	$(libdir)/ft_memset.c				\
+	$(libdir)/ft_memcpy.c				\
+	$(libdir)/ft_memcmp.c				\
+	$(libdir)/ft_memmove.c				\
+	$(libdir)/ft_strchr.c				\
+	$(libdir)/ft_itoa.c					\
+	$(libdir)/ft_strndup.c				\
+	$(libdir)/ft_strncmp.c				\
+	$(libdir)/ft_strncat.c				\
+	$(libdir)/ft_flush.c				\
+	$(libdir)/ft_atoi.c					\
 	$(libdir)/command_func.c
 
 server_obj = $(addprefix $(srcdir), $(server_src:%.c=%.o))

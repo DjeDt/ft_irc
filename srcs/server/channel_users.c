@@ -112,7 +112,7 @@ void			channel_user_remove_all(t_channel_user **user_list)
 	while (tmp != NULL)
 	{
 		tmp2 = tmp->next;
-		memset(tmp, 0x0, sizeof(t_channel_user));
+		ft_memset(tmp, 0x0, sizeof(t_channel_user));
 		free(tmp);
 		tmp = tmp2;
 	}

@@ -20,12 +20,12 @@ t_channel	*channel_create(char *name)
 	if (!(new_chan = malloc(sizeof(t_channel))))
 		return (NULL);
 
- 	len = _strlen(name);
+ 	len = ft_strlen(name);
 	if (len > MAX_CHAN_LEN)
 		len = MAX_CHAN_LEN;
 
-	memset(new_chan->name, 0x0, MAX_CHAN_LEN + 1);
-	_memcpy(new_chan->name, name, len);
+	ft_memset(new_chan->name, 0x0, MAX_CHAN_LEN + 1);
+	ft_memcpy(new_chan->name, name, len);
 
 	new_chan->num = 0;
 	new_chan->name_len = len;
@@ -63,10 +63,10 @@ t_channel	*channel_search(t_channel **chan, char *name)
 	t_channel	*tmp;
 
 	tmp = (*chan);
-	len = _strlen(name);
+	len = ft_strlen(name);
 	while (tmp != NULL)
 	{
-		if (strncmp(tmp->name, name, len > tmp->name_len ? len : tmp->name_len) == 0)
+		if (ft_strncmp(tmp->name, name, len > tmp->name_len ? len : tmp->name_len) == 0)
 			return (tmp);
 		tmp = tmp->next;
 	}
@@ -81,10 +81,10 @@ void	channel_delete(t_channel **channel, char *name)
 
 	prev = NULL;
 	tmp = (*channel);
-	len = _strlen(name);
+	len = ft_strlen(name);
 	while (tmp != NULL)
 	{
-		if (strncmp(tmp->name, name, len > tmp->name_len ? len : tmp->name_len) == 0)
+		if (ft_strncmp(tmp->name, name, len > tmp->name_len ? len : tmp->name_len) == 0)
 		{
 			printf("[LOG -] Remove channel '%s'\n", tmp->name);
 			if (prev == NULL)

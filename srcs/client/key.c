@@ -55,7 +55,7 @@ bool	insert_char(t_interface *inter, char *input, int c)
 	if (inter->off < MAX_INPUT_LEN)
 	{
 		if (inter->off < inter->curmax)
-			memmove(input + (inter->off + 1), input + inter->off, _strlen(input + inter->off));
+			ft_memmove(input + (inter->off + 1), input + inter->off, ft_strlen(input + inter->off));
 		input[inter->off] = c;
 		inter->off++;
 		inter->curmax++;
@@ -79,7 +79,7 @@ bool	delete_char(t_interface *inter, char *input)
 		inter->curmax--;
 		inter->cursor--;
 		inter->len--;
-		memmove(input + inter->off, input + inter->off + 1, inter->curmax - inter->off);
+		ft_memmove(input + inter->off, input + inter->off + 1, inter->curmax - inter->off);
 		input[inter->curmax] = '\0';
 		refresh_bot_interface(inter, input);
 		return (true);

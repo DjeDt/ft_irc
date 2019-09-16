@@ -21,7 +21,7 @@ static void	modify_channel_topic(t_channel *chan, t_users *user, char *new_topic
 {
 	int	size;
 
-	size = _strlen(new_topic);
+	size = ft_strlen(new_topic);
 	if (size > MAX_TOPIC_LEN)
 	{
 		err_topictoolong(user, new_topic);
@@ -30,8 +30,8 @@ static void	modify_channel_topic(t_channel *chan, t_users *user, char *new_topic
 	if (chan->topic != NULL)
 		free(chan->topic);
 	chan->topic = malloc(size + 1);
-	memset(chan->topic, 0x0, size + 1);
-	memcpy(chan->topic, new_topic, size);
+	ft_memset(chan->topic, 0x0, size + 1);
+	ft_memcpy(chan->topic, new_topic, size);
 }
 
 void	irc_topic(t_server *server, t_users *user, char **command)

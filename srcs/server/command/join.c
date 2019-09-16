@@ -57,7 +57,7 @@ static void	notify_user(t_channel *chan, t_users *user)
 	tmp = chan->users;
 	while (tmp != NULL)
 	{
-		memset(buf, 0x0, MAX_INPUT_LEN + 3);
+		ft_memset(buf, 0x0, MAX_INPUT_LEN + 3);
 		rpl_namreply(chan, user, tmp->user->nick.nick, buf);
 		tmp = tmp->next;
 	}

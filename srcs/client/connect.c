@@ -24,7 +24,7 @@ static int			is_valid_port(const char *port)
 			return (-1);
 		count++;
 	}
-	ret = atoi(port);
+	ret = ft_atoi(port);
 	return (ret);
 }
 
@@ -32,7 +32,7 @@ static in_addr_t	is_valid_ip(const char *ip, int len)
 {
 	in_addr_t	ret;
 
-	if (strncmp(ip, "localhost", len > 9 ? len : 9) == 0)
+	if (ft_strncmp(ip, "localhost", len > 9 ? len : 9) == 0)
 		ret = inet_addr(LOCALHOST);
 	else
 		ret = inet_addr(ip);
@@ -65,7 +65,7 @@ bool				irc_connect(t_interface *inter, t_list_user *user, const char *s_ip, con
 	int			port;
 	in_addr_t	ip;
 
-	if ((ip = is_valid_ip(s_ip, _strlen(s_ip))) == INADDR_NONE)
+	if ((ip = is_valid_ip(s_ip, ft_strlen(s_ip))) == INADDR_NONE)
 	{
 		refresh_top_interface(inter, "can't connect to '%s'.", s_ip);
 		return (false);

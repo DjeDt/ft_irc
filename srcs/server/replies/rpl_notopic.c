@@ -17,7 +17,6 @@ void	rpl_notopic(t_channel *channel, t_users *user)
 	int		len;
 	char	buf[MAX_INPUT_LEN + 3];
 
-	memset(buf, 0x0, sizeof(buf));
 	len = snprintf(buf, MAX_INPUT_LEN + 3, RPL_NOTOPIC, channel->name);
 	circular_send(user->socket, buf, len);
 }

@@ -72,7 +72,7 @@ static bool	bind_socket_ipv6(t_server *server)
 
 static bool	init_socket(t_server *server, const char *port)
 {
-	server->port = atoi(port);
+	server->port = ft_atoi(port);
 	if (server->port < 1)
 	{
 		printf("Error: '%s' port is invalid. Abort\n", port);
@@ -93,7 +93,7 @@ static bool	init_socket(t_server *server, const char *port)
 
 bool	initialize(t_server *server, const char *port)
 {
-	_memset(server, 0x0, sizeof(t_server));
+	ft_memset(server, 0x0, sizeof(t_server));
 	if (init_socket(server, port) != true)
 		return (false);
 	return (true);

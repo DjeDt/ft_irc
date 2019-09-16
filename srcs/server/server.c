@@ -16,7 +16,7 @@ static void	zeroed(t_server *server)
 {
 	server->port = 0;
 	server->sock = 0;
-	memset(&server->info, 0x0, sizeof(t_fd));
+	ft_memset(&server->info, 0x0, sizeof(t_fd));
 	server->users = NULL;
 	server->channel = NULL;
 }

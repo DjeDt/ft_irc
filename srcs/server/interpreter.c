@@ -34,12 +34,12 @@ static bool	handle_command(t_server *server, t_users *user, char **command)
 	int		func_num;
 
 	count = 0;
-	len = _strlen(command[0]);
+	len = ft_strlen(command[0]);
 	func_num = sizeof(g_func_ptr) / sizeof(g_func_ptr[0]);
 	while (count < func_num)
 	{
 		cmp_len = len > g_func_ptr[count].name_len ? len : g_func_ptr[count].name_len;
-		if (_memcmp(g_func_ptr[count].name, command[0], cmp_len) == 0)
+		if (ft_strncmp(g_func_ptr[count].name, command[0], cmp_len) == 0)
 		{
 			((t_func*)g_func_ptr[count].func)(server, user, command);
 			return (true);
@@ -57,7 +57,7 @@ static void	handle_message(t_server *server, t_users *user, char *final)
 	char			test[MAX_INPUT_LEN + 3];
 	t_channel_user	*usr_list;
 
-	memset(test, 0x0, MAX_INPUT_LEN + 3);
+	ft_memset(test, 0x0, MAX_INPUT_LEN + 3);
 	if (user->chan == NULL)
 	{
 		len = snprintf(test, MAX_INPUT_LEN + 3, "Join channel and then send message\r\n");
@@ -81,8 +81,8 @@ void	interpreter(t_server *server, t_users *user)
 	char	*cmd[3];
 	char	final[MAX_INPUT_LEN + 3];
 
-	memset(cmd, 0x0, sizeof(char*) * 3);
-	memset(final, 0x0, MAX_INPUT_LEN + 3);
+	ft_memset(cmd, 0x0, sizeof(char*) * 3);
+	ft_memset(final, 0x0, MAX_INPUT_LEN + 3);
 	extract_and_update(&user->circ, final);
 	if (final[0] == '/')
 	{

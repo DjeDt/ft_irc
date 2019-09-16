@@ -32,6 +32,7 @@
 # include <arpa/inet.h>
 
 # include "replies.h"
+# include "lib.h"
 
 /*
 ** Defines
@@ -170,20 +171,6 @@ void					irc_msg(t_server *server, t_users *user, char **command);
 void					irc_topic(t_server *server, t_users *user, char **command);
 void					irc_quit(t_server *server, t_users *user, char **command);
 void					irc_kill(t_server *server, t_users *user, char **command);
-
-/* lib */
-void					get_date(char *buf);
-ssize_t					_strlen(const char *str);
-int						arrlen(char **arr);
-char					*_strchr(const char *str, char c);
-void					*_memset(void *data, char c, size_t size);
-void					*_memcpy(void *dst, void *src, size_t n);
-void					logger(const char *log, FILE *fd);
-char					**_strtok(const char *str, const char *delim);
-int						_memcmp(const void *s1, const void *s2, size_t n);
-void					_itoa(char *str, int n);
-int						_isspace(char c);
-char					*_strndup(const char *src, size_t n);
 
 /* replies */
 void					err_unknow_command(t_users *user, char *command);

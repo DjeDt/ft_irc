@@ -21,7 +21,7 @@ static bool	is_available(t_users *users_list, t_users *user, char *nick, int siz
 	{
 		if (user->socket != tmp->socket)
 		{
-			if (strncmp(tmp->nick.nick, nick, size > tmp->nick.nick_len ? size : tmp->nick.nick_len) == 0)
+			if (ft_strncmp(tmp->nick.nick, nick, size > tmp->nick.nick_len ? size : tmp->nick.nick_len) == 0)
 				return (false);
 		}
 		tmp = tmp->next;
@@ -80,13 +80,13 @@ void	irc_nick(t_server *server, t_users *user, char **command)
 
 	if (command[1] != NULL)
 	{
-		size = _strlen(command[1]);
+		size = ft_strlen(command[1]);
 		if (check_nick(server->users, user, command[1], size) != true)
 			return ;
-		_memset(old_nick, 0x0, MAX_NICK_LEN + 1);
-		_memcpy(old_nick, command[1], size);
-		_memset(user->nick.nick, 0x0, MAX_NICK_LEN);
-		_memcpy(user->nick.nick, command[1], size);
+		ft_memset(old_nick, 0x0, MAX_NICK_LEN + 1);
+		ft_memcpy(old_nick, command[1], size);
+		ft_memset(user->nick.nick, 0x0, MAX_NICK_LEN);
+		ft_memcpy(user->nick.nick, command[1], size);
 		send_response(user);
 		notify_channel(user, old_nick);
 		return ;
