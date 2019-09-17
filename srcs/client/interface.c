@@ -19,18 +19,18 @@ static void	zeroed(t_interface *inter)
 	inter->cursor = CURSOR_START;
 	inter->curmax = 0;
 	inter->len = 0;
-	initscr();
-	noecho();
-	cbreak();
 }
 
 bool		init_interface(t_interface *inter)
 {
 	zeroed(inter);
+	initscr();
 	inter->top = subwin(stdscr, LINES - BOX_INPUT_LEN, COLS, 0, 0);
 	inter->bot = subwin(stdscr, BOX_INPUT_LEN, COLS, LINES - BOX_INPUT_LEN, 0);
 	if (!inter->top || !inter->bot)
 		return (false);
+	noecho();
+	cbreak();
 	scrollok(inter->top, TRUE);
 	keypad(inter->bot, TRUE);
 	box(inter->top, ACS_VLINE, ACS_HLINE);
@@ -42,6 +42,13 @@ bool		init_interface(t_interface *inter)
 	doupdate();
 	inter->status = true;
 	return (true);
+}
+
+void		stop_interface(t_interface *inter)
+{
+	delwin(inter->top);
+	delwin(inter->bot);
+	endwin();
 }
 
 void		refresh_top_interface(t_interface *inter, char *input, ...)
@@ -56,6 +63,7 @@ void		refresh_top_interface(t_interface *inter, char *input, ...)
 	if (inter->status == false)
 	{
 		printf(" %s\n", data);
+		return ;
 	}
 	wprintw(inter->top, " %s\n", data);
 	box(inter->top, ACS_VLINE, ACS_HLINE);

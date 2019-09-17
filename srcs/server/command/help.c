@@ -19,7 +19,7 @@ void	irc_help(t_server *server, t_users *user, char **command)
 
 	(void)server;
 	(void)command;
-	len = snprintf(buf, MAX_INPUT_LEN + 3,					\
+	len = snprintf(buf, MAX_INPUT_LEN + 3, \
 		"/help                : print this help\n"			\
 		"/nick <name>         : change username\n"			\
 		"/list                : list channel\n"				\
@@ -31,7 +31,6 @@ void	irc_help(t_server *server, t_users *user, char **command)
 		"/connect [ip <port>] : connect to server\n"		\
 		"/quit                : quit irc\n"					\
 		"/kill                : shutdown connected server\r\n");
-
 	if (FD_ISSET(user->socket, &server->info.write))
 		circular_send(user->socket, buf, len);
 }

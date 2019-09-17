@@ -5,36 +5,54 @@ static void	err_topictoolong(t_users *user, char *topic)
 	int		len;
 	char	buf[MAX_INPUT_LEN + 3];
 
-	len = snprintf(buf, MAX_INPUT_LEN + 3, "[server]: <%s> :Topic too long.\r\n", topic);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, TOPIC_TOO_LONG, topic);
 	circular_send(user->socket, buf, len);
 }
 
 static void	send_channel_topic(t_channel *chan, t_users *user)
 {
-	if (chan->topic == NULL)
+	if (chan->topic[0] == '\0')
 		rpl_notopic(chan, user);
 	else
 		rpl_topic(chan, user);
 }
 
-static void	modify_channel_topic(t_channel *chan, t_users *user, char *new_topic)
+static void	notify_topic_change(t_channel *chan, t_users *user, char *old_top)
 {
-	int	size;
+	int				len;
+	char			buf[MAX_INPUT_LEN + 3];
+	t_channel_user	*tmp;
 
-	size = ft_strlen(new_topic);
-	if (size > MAX_TOPIC_LEN)
+	tmp = chan->users;
+	len = snprintf(buf, MAX_INPUT_LEN + 3, \
+		"%s changed topic from '%s' to '%s'\r\n", \
+		user->nick.nick, old_top, chan->topic);
+	while (tmp != NULL)
 	{
-		err_topictoolong(user, new_topic);
-		return ;
+		circular_send(tmp->user->socket, buf, len);
+		tmp = tmp->next;
 	}
-	if (chan->topic != NULL)
-		free(chan->topic);
-	chan->topic = malloc(size + 1);
-	ft_memset(chan->topic, 0x0, size + 1);
-	ft_memcpy(chan->topic, new_topic, size);
 }
 
-void	irc_topic(t_server *server, t_users *user, char **command)
+static void	modify_channel_topic(t_channel *chan, t_users *user, char *new_top)
+{
+	int		size;
+	char	old_top[MAX_TOPIC_LEN + 1];
+
+	size = ft_strlen(new_top);
+	if (size > MAX_TOPIC_LEN)
+	{
+		err_topictoolong(user, new_top);
+		return ;
+	}
+	ft_memset(old_top, 0x0, MAX_TOPIC_LEN + 1);
+	ft_memcpy(old_top, chan->topic, ft_strlen(chan->topic));
+	ft_memset(chan->topic, 0x0, MAX_TOPIC_LEN);
+	ft_memcpy(chan->topic, new_top, size);
+	notify_topic_change(chan, user, old_top);
+}
+
+void		irc_topic(t_server *server, t_users *user, char **command)
 {
 	t_channel *chan;
 

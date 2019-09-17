@@ -15,7 +15,7 @@ CLIENT	= client
 
 CC		= gcc
 CFLAGS	= -Wall -Werror -Wextra -I$(incdir)
-EFLAGS	= -g3 -fsanitize=address
+EFLAGS	= #-g3 -fsanitize=address
 
 incdir	= ./incs/
 srcdir	= ./srcs/
@@ -33,8 +33,10 @@ server_src =							\
 	$(serverdir)/initialize.c			\
 	$(serverdir)/runnin.c				\
 	$(serverdir)/users.c				\
+	$(serverdir)/users_search.c			\
 	$(serverdir)/channel.c				\
 	$(serverdir)/channel_users.c		\
+	$(serverdir)/channel_users_remove.c	\
 	$(serverdir)/interpreter.c			\
 	$(serverdir)/circular.c				\
 \

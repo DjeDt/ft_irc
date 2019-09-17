@@ -31,11 +31,12 @@ static bool	check_name(char *name)
 static void	notify_channel(t_channel_user *chan_users, t_users *user)
 {
 	int				len;
-	char			buf[MAX_INPUT_LEN + 3] = {0};
+	char			buf[MAX_INPUT_LEN + 3];
 	t_channel_user	*tmp;
 
 	tmp = chan_users;
-	len = snprintf(buf, MAX_INPUT_LEN + 3, "[server] : '%s' has joined %s.\r\n", user->nick.nick, ((t_channel*)user->chan)->name);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, JOIN_NOTIF, \
+		user->nick.nick, ((t_channel*)user->chan)->name);
 	while (tmp != NULL)
 	{
 		if (user->socket != tmp->user->socket)
@@ -49,11 +50,10 @@ static void	notify_user(t_channel *chan, t_users *user)
 	char			buf[MAX_INPUT_LEN + 3];
 	t_channel_user	*tmp;
 
-	if (chan->topic != NULL)
+	if (chan->topic[0] != '\0')
 		rpl_topic(chan, user);
 	else
 		rpl_notopic(chan, user);
-
 	tmp = chan->users;
 	while (tmp != NULL)
 	{
@@ -64,36 +64,33 @@ static void	notify_user(t_channel *chan, t_users *user)
 	rpl_endofnames(chan, user, buf);
 }
 
-static void	accept_user(t_channel *channel, t_users *user)
+static void manage_user_join (t_server *server, t_users *user, char *chan_name)
 {
-	if (user->chan == NULL)
+	t_channel *chan;
+
+	chan = channel_search(&server->channel, chan_name);
+	if (chan != NULL)
 	{
-		channel->num += 1;
-		user->chan = channel;
-		channel_user_add(&channel->users, user);
-		notify_user(channel, user);
-		notify_channel(channel->users, user);
+		chan->num += 1;
+		user->chan = chan;
+		channel_user_add(&chan->users, user);
+		notify_user(chan, user);
+		notify_channel(chan->users, user);
+	}
+	else
+	{
+		chan = channel_add(&server->channel, chan_name);
+		if (chan == NULL)
+			return ;
+		chan->num += 1;
+		user->chan = chan;
+		channel_user_add(&chan->users, user);
+		notify_user(chan, user);
 	}
 }
 
-static void	init_channel(t_server *server, t_users *user, char *chan_name)
+void		irc_join(t_server *server, t_users *user, char **command)
 {
-	t_channel		*chan;
-
-	chan = channel_add(&server->channel, chan_name);
-	if (chan == NULL)
-		return ;
-
-	chan->num += 1;
-	user->chan = chan;
-	channel_user_add(&chan->users, user);
-	notify_user(chan, user);
-}
-
-void	irc_join(t_server *server, t_users *user, char **command)
-{
-	t_channel	*channel;
-
 	if (command[1] != NULL)
 	{
 		if (check_name(command[1]) == false)
@@ -101,18 +98,12 @@ void	irc_join(t_server *server, t_users *user, char **command)
 			err_erroneuschanname(user, command[1]);
 			return ;
 		}
-
 		if (user->chan != NULL)
 		{
 			err_toomanychannels(user, command[1]);
 			return ;
 		}
-
-		channel = channel_search(&server->channel, command[1]);
-		if (channel == NULL)
-			init_channel(server, user, command[1]);
-		else
-			accept_user(channel, user);
+		manage_user_join(server, user, command[1]);
 		return ;
 	}
 	err_needmoreparams(user, command[0]);

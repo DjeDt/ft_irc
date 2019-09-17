@@ -12,7 +12,7 @@ int			ft_isspace(char c);
 ssize_t		ft_strlen(const char *str);
 char		*ft_strchr(const char *s, char c);
 char		*ft_strncat(char *s1, char *s2, int n);
-int			ft_strncmp( const char * s1, const char * s2, size_t n );
+int			ft_strncmp(const char *s1, const char *s2, size_t n);
 char		*ft_strndup(const char *src, size_t n);
 int			ft_isspace(char c);
 int			ft_arrlen(char **arr);
@@ -23,7 +23,6 @@ void		ft_itoa(char *str, int n);
 void		ft_flush(int socket);
 void		*ft_memmove(void *dst, const void *src, size_t len);
 int			ft_atoi(const char *str);
-
 int			command_size(char *command);
 void		command_free(char **command);
 bool		command_split(char **command, const char *final);

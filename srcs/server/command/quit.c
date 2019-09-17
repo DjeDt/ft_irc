@@ -12,49 +12,37 @@
 
 #include "server.h"
 
-static void	notify_leave(t_users *user, char **command)
+static void	notify_leave(t_channel *chan, char **command, char *nick)
 {
 	int				len;
 	char			buf[MAX_INPUT_LEN + 3];
 	t_channel_user	*tmp;
 
 	if (command[1] != NULL)
-	{
-		len = snprintf(buf, MAX_INPUT_LEN + 3, "[server] : '%s' quit: %s\r\n", user->nick.nick, command[1]);
-		if (user->chan != NULL)
-		{
-			tmp = ((t_channel*)user->chan)->users;
-			while (tmp != NULL)
-			{
-				if (user->socket != tmp->user->socket)
-					circular_send(tmp->user->socket, buf, len);
-				tmp = tmp->next;
-			}
-		}
-	}
+		len = snprintf(buf, MAX_INPUT_LEN + 3, QUIT_NOTIF, nick, command[1]);
 	else
+		len = snprintf(buf, MAX_INPUT_LEN + 3, QUIT_NOTIF, nick, "quit");
+	tmp = chan->users;
+	while (tmp != NULL)
 	{
-		len = snprintf(buf, MAX_INPUT_LEN + 3, "Disconnected.\r\n");
-		circular_send(user->socket, buf, len);
+		circular_send(tmp->user->socket, buf, len);
+		tmp = tmp->next;
 	}
 }
 
-void	irc_quit(t_server *server, t_users *user, char **command)
+void		irc_quit(t_server *server, t_users *user, char **command)
 {
-	char trash[MAX_INPUT_LEN];
+	t_channel	*chan;
+	char		usr_nick[MAX_NICK_LEN + 1];
 
-	if (user != NULL)
-	{
-		notify_leave(user, command);
-		while (true)
-		{
-			if (recv(user->socket, trash, MAX_INPUT_LEN, 0) < 1)
-				break ;
-		}
-		FD_CLR(user->socket, &server->info.master);
-		close(user->socket);
-		if (user->chan != NULL)
-			channel_user_remove_full(&server->channel, user);
-		user_remove(&server->users, user->socket);
-	}
+	chan = user->chan;
+	ft_memset(usr_nick, 0x0, MAX_NICK_LEN + 1);
+	ft_memcpy(usr_nick, user->nick.nick, user->nick.nick_len);
+	ft_flush(user->socket);
+	FD_CLR(user->socket, &server->info.master);
+	close(user->socket);
+	if (user->chan != NULL)
+		channel_user_remove_full(&server->channel, user);
+	user_remove(&server->users, user->socket);
+	notify_leave(chan, command, usr_nick);
 }

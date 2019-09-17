@@ -19,7 +19,7 @@ static void	send_leave_notif(t_channel *chan, t_users *user)
 	t_channel_user	*tmp;
 
 	printf("[LOG] '%s' leaved channel '%s'\n", user->nick.nick, chan->name);
-	len = snprintf(buf, MAX_INPUT_LEN + 3, "[server] : '%s' leaved channel.\r\n", user->nick.nick);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, LEAVE_NOTIF, user->nick.nick);
 	tmp = chan->users;
 	while (tmp != NULL)
 	{
@@ -29,7 +29,8 @@ static void	send_leave_notif(t_channel *chan, t_users *user)
 	}
 }
 
-static void	_remove_user_from_channel(t_server *server, t_channel *chan, t_users *user, const char *chan_name)
+static void	leave_remove_user_from_channel \
+	(t_server *server, t_channel *chan, t_users *user, const char *chan_name)
 {
 	int		len;
 	char	buf[MAX_INPUT_LEN + 3];
@@ -38,7 +39,7 @@ static void	_remove_user_from_channel(t_server *server, t_channel *chan, t_users
 		return ;
 	chan->num -= 1;
 	user->chan = NULL;
-	len = snprintf(buf, MAX_INPUT_LEN + 3, "[server]: Disconnected from '%s'.\r\n", chan_name);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, LEAVE_CHAN, chan_name);
 	circular_send(user->socket, buf, len);
 	if (chan->num <= 0)
 	{
@@ -48,7 +49,7 @@ static void	_remove_user_from_channel(t_server *server, t_channel *chan, t_users
 	send_leave_notif(chan, user);
 }
 
-void	irc_leave(t_server *server, t_users *user, char **command)
+void		irc_leave(t_server *server, t_users *user, char **command)
 {
 	t_channel	*chan;
 
@@ -70,7 +71,7 @@ void	irc_leave(t_server *server, t_users *user, char **command)
 			err_notonchannel(user, command[1]);
 			return ;
 		}
-		_remove_user_from_channel(server, chan, user, command[1]);
+		leave_remove_user_from_channel(server, chan, user, command[1]);
 		return ;
 	}
 	err_needmoreparams(user, command[0]);

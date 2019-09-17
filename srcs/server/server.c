@@ -42,10 +42,8 @@ static bool	launcher(t_server *server, char *port)
 {
 	if (is_valid_argument(port) != true || initialize(server, port) != true)
 		return (false);
-
 	if (running(server) != true)
 		return (false);
-
 	return (true);
 }
 

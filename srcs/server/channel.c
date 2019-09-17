@@ -19,21 +19,16 @@ t_channel	*channel_create(char *name)
 
 	if (!(new_chan = malloc(sizeof(t_channel))))
 		return (NULL);
-
- 	len = ft_strlen(name);
+	len = ft_strlen(name);
 	if (len > MAX_CHAN_LEN)
 		len = MAX_CHAN_LEN;
-
+	ft_memset(new_chan->topic, 0x0, MAX_TOPIC_LEN + 1);
 	ft_memset(new_chan->name, 0x0, MAX_CHAN_LEN + 1);
 	ft_memcpy(new_chan->name, name, len);
-
 	new_chan->num = 0;
 	new_chan->name_len = len;
-
-	new_chan->topic = NULL;
 	new_chan->users = NULL;
 	new_chan->next = NULL;
-
 	printf("[LOG +] Channel created '%s'\n", new_chan->name);
 	return (new_chan);
 }
@@ -66,14 +61,15 @@ t_channel	*channel_search(t_channel **chan, char *name)
 	len = ft_strlen(name);
 	while (tmp != NULL)
 	{
-		if (ft_strncmp(tmp->name, name, len > tmp->name_len ? len : tmp->name_len) == 0)
+		if (ft_strncmp(tmp->name, name, \
+				len > tmp->name_len ? len : tmp->name_len) == 0)
 			return (tmp);
 		tmp = tmp->next;
 	}
 	return (NULL);
 }
 
-void	channel_delete(t_channel **channel, char *name)
+void		channel_delete(t_channel **channel, char *name)
 {
 	int			len;
 	t_channel	*tmp;
@@ -84,13 +80,15 @@ void	channel_delete(t_channel **channel, char *name)
 	len = ft_strlen(name);
 	while (tmp != NULL)
 	{
-		if (ft_strncmp(tmp->name, name, len > tmp->name_len ? len : tmp->name_len) == 0)
+		if (ft_strncmp(tmp->name, name, \
+				len > tmp->name_len ? len : tmp->name_len) == 0)
 		{
 			printf("[LOG -] Remove channel '%s'\n", tmp->name);
 			if (prev == NULL)
 				(*channel) = tmp->next;
 			else
 				prev->next = tmp->next;
+			channel_user_remove_all(&tmp->users);
 			free(tmp);
 			return ;
 		}

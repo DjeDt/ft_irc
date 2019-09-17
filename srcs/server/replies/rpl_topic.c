@@ -12,11 +12,11 @@
 
 #include "server.h"
 
-void	rpl_topic(t_channel *channel, t_users *user)
+void	rpl_topic(t_channel *chan, t_users *user)
 {
 	int		len;
 	char	buf[MAX_INPUT_LEN + 3];
 
-	len = snprintf(buf, MAX_INPUT_LEN + 3, RPL_TOPIC, channel->name, channel->topic);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, RPL_TOPIC, chan->name, chan->topic);
 	circular_send(user->socket, buf, len);
 }

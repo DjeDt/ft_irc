@@ -12,7 +12,6 @@
 
 #include "server.h"
 
-// close the server
 void	irc_kill(t_server *server, t_users *user, char **command)
 {
 	(void)server;

@@ -12,10 +12,10 @@
 
 #include "server.h"
 
-void	rpl_list(t_channel *channel, t_users *user, char *buf)
+void	rpl_list(t_channel *chan, t_users *user, char *buf)
 {
 	int len;
 
-	len = snprintf(buf, MAX_INPUT_LEN + 3, RPL_LIST, channel->name, channel->num);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, RPL_LIST, chan->name, chan->num);
 	circular_send(user->socket, buf, len);
 }

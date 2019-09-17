@@ -12,7 +12,7 @@
 
 #include "server.h"
 
-t_command g_func_ptr[] =
+t_command g_func[] =
 {
 	{ "/help", 5, irc_help },
 	{ "/nick", 5, irc_nick },
@@ -35,13 +35,13 @@ static bool	handle_command(t_server *server, t_users *user, char **command)
 
 	count = 0;
 	len = ft_strlen(command[0]);
-	func_num = sizeof(g_func_ptr) / sizeof(g_func_ptr[0]);
+	func_num = sizeof(g_func) / sizeof(g_func[0]);
 	while (count < func_num)
 	{
-		cmp_len = len > g_func_ptr[count].name_len ? len : g_func_ptr[count].name_len;
-		if (ft_strncmp(g_func_ptr[count].name, command[0], cmp_len) == 0)
+		cmp_len = len > g_func[count].name_len ? len : g_func[count].name_len;
+		if (ft_strncmp(g_func[count].name, command[0], cmp_len) == 0)
 		{
-			((t_func*)g_func_ptr[count].func)(server, user, command);
+			((t_func*)g_func[count].func)(server, user, command);
 			return (true);
 		}
 		count++;
@@ -60,14 +60,15 @@ static void	handle_message(t_server *server, t_users *user, char *final)
 	ft_memset(test, 0x0, MAX_INPUT_LEN + 3);
 	if (user->chan == NULL)
 	{
-		len = snprintf(test, MAX_INPUT_LEN + 3, "Join channel and then send message\r\n");
+		len = snprintf(test, MAX_INPUT_LEN + 3, "Please join channel.\r\n");
 		circular_send(user->socket, test, len);
 		return ;
 	}
 	usr_list = ((t_channel*)user->chan)->users;
 	if (usr_list == NULL)
 		return ;
-	len = snprintf(test, MAX_INPUT_LEN + 3, "[%s] %s : %s\r\n", ((t_channel*)user->chan)->name, user->nick.nick, final);
+	len = snprintf(test, MAX_INPUT_LEN + 3, "[%s] %s : %s\r\n", \
+		((t_channel*)user->chan)->name, user->nick.nick, final);
 	while (usr_list != NULL)
 	{
 		if (FD_ISSET(usr_list->user->socket, &server->info.write))
@@ -76,7 +77,7 @@ static void	handle_message(t_server *server, t_users *user, char *final)
 	}
 }
 
-void	interpreter(t_server *server, t_users *user)
+void		interpreter(t_server *server, t_users *user)
 {
 	char	*cmd[3];
 	char	final[MAX_INPUT_LEN + 3];

@@ -48,22 +48,24 @@ bool	accept_connection(t_server *server)
 
 void	close_connection(t_server *server, t_users *user)
 {
-	char trash[MAX_INPUT_LEN];
+	t_channel *tmp;
 
 	if (user->socket == server->info.fd_max)
 		server->info.fd_max -= 1;
 	printf("[LOG -] Remove user '%s'\n", user->nick.nick);
-	while (true)
-	{
-		if (recv(user->socket, trash, MAX_INPUT_LEN, 0) < 1)
-			break ;
-	}
+	ft_flush(user->socket);
 	close(user->socket);
 	FD_CLR(user->socket, &server->info.master);
-	channel_user_remove_full(&server->channel, user);
+	if (user->chan != NULL)
+	{
+		tmp = (t_channel*)user->chan;
+		tmp->num -= 1;
+		channel_user_remove(&tmp->users, user);
+		if (tmp->num < 1)
+			channel_delete(&server->channel, tmp->name);
+	}
 	user_remove(&server->users, user->socket);
 }
-
 
 void	processing(t_server *server, int socket)
 {
@@ -82,7 +84,7 @@ void	processing(t_server *server, int socket)
 		close_connection(server, user);
 		return ;
 	}
-	while (search_for_crlf(user->circ.buf, user->circ.head, user->circ.len) == true ||
+	while (search_for_crlf(user->circ.buf, user->circ.head, user->circ.len) ||
 		user->circ.len >= MAX_INPUT_LEN)
 	{
 		interpreter(server, user);
@@ -99,7 +101,8 @@ bool	running(t_server *server)
 		socket = 0;
 		server->info.read = server->info.master;
 		server->info.write = server->info.master;
-		if (select(server->info.fd_max + 1, &server->info.read, &server->info.write, NULL, NULL) < 0)
+		if (select(server->info.fd_max + 1, \
+				&server->info.read, &server->info.write, NULL, NULL) < 0)
 			return (false);
 		while (socket <= server->info.fd_max)
 		{

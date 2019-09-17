@@ -35,18 +35,15 @@
 /*
 ** Defines
 */
-
 # define ERROR			-1
 # define SUCCESS		0
-
-# define CRLF           "\n"
-# define CRLF_LEN       2
-# define CRLF_HEX       0x0a
 
 # define DEFAULT_PORT	"1234"
 # define LOCALHOST		"127.0.0.1"
 
 # define CONNECT_LEN	7
+# define QUIT_LEN		5
+
 # define LINE_START		1
 # define CURSOR_START	3
 # define BOX_INPUT_LEN	3
@@ -61,10 +58,10 @@ typedef struct			s_interface
 	WINDOW				*top;
 	WINDOW				*bot;
 	bool				status;
-	int					off;	// cursor offset in str
-	int					line;	// printable line for top
-	int					cursor;	// where is the visible cursor
-	int					curmax;	// max visible cursor
+	int					off;
+	int					line;
+	int					cursor;
+	int					curmax;
 	int					len;
 }						t_interface;
 
@@ -94,7 +91,8 @@ typedef struct			s_list_user
 	t_client			client;
 }						t_list_user;
 
-typedef void (t_func) (t_interface *inter, t_list_user *user, char **command);
+typedef void	(t_func) \
+	(t_interface *inter, t_list_user *user, char **command);
 
 /*
 ** Core
@@ -102,21 +100,25 @@ typedef void (t_func) (t_interface *inter, t_list_user *user, char **command);
 void					running(t_interface *inter, t_list_user *user);
 void					interpreter(t_interface *inter, t_list_user *user);
 
-bool                    circular_get(t_interface *inter, t_list_user *user);
-void                    circular_send(t_interface *inter, t_list_user *user);
-void                    circular_push(t_circular *circ, char *data, int size);
+bool					circular_get(t_interface *inter, t_list_user *user);
+void					circular_send(t_interface *inter, t_list_user *user);
+void					circular_push(t_circular *circ, char *data, int size);
 
 bool					search_for_crlf(char *buf, int head, int size);
 void					extract_and_update(t_circular *circ, char *final);
 
 /* command */
-void					wrapper_connect(t_interface *inter, t_list_user *user, char **command);
-bool					irc_connect(t_interface *inter, t_list_user *user, const char *s_ip, const char *s_port);
+void					wrapper_connect(t_interface *inter, \
+										t_list_user *user, char **command);
+bool					irc_connect(t_interface *inter, t_list_user *user,
+									const char *s_ip, const char *s_port);
 
 /* interface */
 bool					init_interface(t_interface *inter);
-void					refresh_top_interface(t_interface *inter, char *input, ...);
+void					refresh_top_interface(t_interface *inter, \
+												char *input, ...);
 void					refresh_bot_interface(t_interface *inter, char *input);
+void					stop_interface(t_interface *inter);
 
 /* readline */
 bool					do_key_left(t_interface *inter, char *input);

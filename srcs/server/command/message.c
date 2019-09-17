@@ -12,24 +12,24 @@
 
 #include "server.h"
 
-static void	setup_message_to_user(t_users *src, t_users *dst, const char *message)
+static void	setup_message_to_user(t_users *src, t_users *dst, const char *msg)
 {
 	int		len;
 	char	buf[MAX_INPUT_LEN + 3];
 
 	ft_memset(buf, 0x0, MAX_INPUT_LEN + 3);
-	len = snprintf(buf, MAX_INPUT_LEN + 3, "[msg] [%s] : %s\r\n", src->nick.nick, message);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, MESSAGE_STR, src->nick.nick, msg);
 	circular_send(dst->socket, buf, len);
 }
 
-static void	setup_message_to_channel(t_users *src, t_channel *dst, const char *message)
+static void	setup_message_to_chan(t_users *src, t_channel *dst, const char *msg)
 {
 	int				len;
 	char			buf[MAX_INPUT_LEN + 3];
 	t_channel_user	*tmp;
 
 	ft_memset(buf, 0x0, MAX_INPUT_LEN + 3);
-	len = snprintf(buf, MAX_INPUT_LEN + 3, "[msg] [%s] : %s\r\n", src->nick.nick, message);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, MESSAGE_STR, src->nick.nick, msg);
 	tmp = dst->users;
 	while (tmp != NULL)
 	{
@@ -38,7 +38,7 @@ static void	setup_message_to_channel(t_users *src, t_channel *dst, const char *m
 	}
 }
 
-void	irc_msg(t_server *server, t_users *user, char **command)
+void		irc_msg(t_server *server, t_users *user, char **command)
 {
 	void	*dst;
 	t_users	*src;
@@ -57,7 +57,7 @@ void	irc_msg(t_server *server, t_users *user, char **command)
 		dst = channel_search(&server->channel, command[1]);
 		if (dst != NULL)
 		{
-			setup_message_to_channel(src, (t_channel*)dst, command[2]);
+			setup_message_to_chan(src, (t_channel*)dst, command[2]);
 			return ;
 		}
 		err_nosuchnick(user, command[1]);

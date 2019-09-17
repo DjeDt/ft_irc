@@ -12,16 +12,17 @@
 
 #include "server.h"
 
-static bool	is_available(t_users *users_list, t_users *user, char *nick, int size)
+static bool	is_available(t_users *usr_list, t_users *user, char *nick, int size)
 {
 	t_users *tmp;
 
-	tmp = users_list;
+	tmp = usr_list;
 	while (tmp != NULL)
 	{
 		if (user->socket != tmp->socket)
 		{
-			if (ft_strncmp(tmp->nick.nick, nick, size > tmp->nick.nick_len ? size : tmp->nick.nick_len) == 0)
+			if (ft_strncmp(tmp->nick.nick, nick,  \
+				size > tmp->nick.nick_len ? size : tmp->nick.nick_len) == 0)
 				return (false);
 		}
 		tmp = tmp->next;
@@ -36,7 +37,6 @@ static bool	check_nick(t_users *users_list, t_users *user, char *nick, int size)
 		err_erroneusnickname(user, nick);
 		return (false);
 	}
-
 	if (is_available(users_list, user, nick, size) != true)
 	{
 		err_nicknameinuse(user, nick);
@@ -48,21 +48,22 @@ static bool	check_nick(t_users *users_list, t_users *user, char *nick, int size)
 static void	send_response(t_users *user)
 {
 	int		len;
-	char	buf[MAX_INPUT_LEN + 3] = {0};
+	char	buf[MAX_INPUT_LEN + 3];
 
-	len = snprintf(buf, MAX_INPUT_LEN + 3, "You are now known as '%s'.\r\n", user->nick.nick);
+	len = snprintf(buf, MAX_INPUT_LEN + 3, NICK_RESP, user->nick.nick);
 	circular_send(user->socket, buf, len);
 }
 
-static void	notify_channel(t_users *user, char *old_nick)
+static void	notify_channel(t_users *user, char *old)
 {
 	int				len;
-	char			buf[MAX_INPUT_LEN + 3] = {0};
+	char			buf[MAX_INPUT_LEN + 3];
 	t_channel_user	*tmp;
 
 	if (user->chan != NULL)
 	{
-		len = snprintf(buf, MAX_INPUT_LEN + 3, "'%s' is now known as '%s'.\r\n", old_nick, user->nick.nick);
+		len = snprintf(buf, MAX_INPUT_LEN + 3, NICK_NOTIF, old, \
+			user->nick.nick);
 		tmp = ((t_channel*)user->chan)->users;
 		while (tmp != NULL)
 		{
@@ -73,10 +74,10 @@ static void	notify_channel(t_users *user, char *old_nick)
 	}
 }
 
-void	irc_nick(t_server *server, t_users *user, char **command)
+void		irc_nick(t_server *server, t_users *user, char **command)
 {
 	int		size;
-	char	old_nick[MAX_NICK_LEN + 1] = {0};
+	char	old_nick[MAX_NICK_LEN + 1];
 
 	if (command[1] != NULL)
 	{
@@ -84,7 +85,7 @@ void	irc_nick(t_server *server, t_users *user, char **command)
 		if (check_nick(server->users, user, command[1], size) != true)
 			return ;
 		ft_memset(old_nick, 0x0, MAX_NICK_LEN + 1);
-		ft_memcpy(old_nick, command[1], size);
+		ft_memcpy(old_nick, user->nick.nick, user->nick.nick_len);
 		ft_memset(user->nick.nick, 0x0, MAX_NICK_LEN);
 		ft_memcpy(user->nick.nick, command[1], size);
 		send_response(user);

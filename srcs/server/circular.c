@@ -12,7 +12,7 @@
 
 #include "server.h"
 
-bool    search_for_crlf(char *buf, int head, int size)
+bool	search_for_crlf(char *buf, int head, int size)
 {
 	int next;
 
@@ -37,7 +37,7 @@ void	circular_push(t_circular *circ, char *received, int size)
 	}
 }
 
-void extract_and_update(t_circular *circ, char *final)
+void	extract_and_update(t_circular *circ, char *final)
 {
 	int count;
 	int next;
@@ -62,16 +62,15 @@ void extract_and_update(t_circular *circ, char *final)
 bool	circular_get(t_users *user)
 {
 	int		ret;
+	char	data[MAX_INPUT_LEN + 3];
 
-	ret = recv(user->socket, user->circ.received, MAX_INPUT_LEN - user->circ.len, 0);
+	ret = recv(user->socket, data, MAX_INPUT_LEN - user->circ.len, 0);
 	if (ret < 1)
 	{
 		printf("[LOG !] Can't receive data from [%d]\n", user->socket);
 		return (false);
 	}
-	printf("[LOG !] from %d : '%s'\n", user->socket, user->circ.received);
-	circular_push(&user->circ, user->circ.received, ret);
-	ft_memset(user->circ.received, 0x0, MAX_INPUT_LEN);
+	circular_push(&user->circ, data, ret);
 	user->circ.len += ret;
 	return (true);
 }

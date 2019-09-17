@@ -1,35 +1,43 @@
 #include "client.h"
 
-static bool	manage_client_command(t_interface *inter, t_list_user *user)
+static void	manage_local_command(t_interface *inter, t_list_user *user, char **command)
 {
-	int		len;
-	bool	ret;
-	char	*command[3];
+	int len;
 
-	ret = false;
-	ft_memset(command, 0x0, sizeof(char*) * 3);
-	if (command_split(command, user->input) != true)
-		return (false);
 	len = ft_strlen(command[0]);
-	if (CONNECT_LEN > len)
-		len = CONNECT_LEN;
-	if (ft_strncmp(command[0], "/connect", len) == 0)
+	if (ft_strncmp(command[0], "/connect", len > CONNECT_LEN ? len : CONNECT_LEN) == 0)
 	{
 		wrapper_connect(inter, user, command);
-		ret = true;
+		return ;
 	}
-	command_free(command);
-	return (ret);
+	else if (ft_strncmp(command[0], "/quit", len > QUIT_LEN ? len : QUIT_LEN) == 0)
+	{
+		user->connected = false;
+		FD_CLR(user->socket, &user->client.master);
+		close(user->socket);
+		ft_strncat(user->input, "\r\n", 2);
+		circular_send(inter, user);
+		stop_interface(inter);
+		exit(SUCCESS);
+	}
+	ft_strncat(user->input, "\r\n", 2);
+	circular_send(inter, user);
 }
 
 void		interpreter(t_interface *inter, t_list_user *user)
 {
+	char	*command[3];
+
 	if (user->input[0] == '/')
 	{
-		if (manage_client_command(inter, user) == true)
+		memset(command, 0x0, sizeof(char*) * 3);
+		if (command_split(command, user->input) == false)
 			return ;
+		manage_local_command(inter, user, command);
+		command_free(command);
+		return ;
 	}
-	if (user->connected == true)
+	else if (user->connected == true)
 	{
 		ft_strncat(user->input, "\r\n", 2);
 		circular_send(inter, user);

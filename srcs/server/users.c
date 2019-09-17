@@ -14,7 +14,7 @@
 
 void	generate_guest_pseudo(char *pseudo, int id)
 {
-	char	tmp[10];
+	char tmp[10];
 
 	ft_memset(tmp, 0x0, 10);
 	ft_itoa(tmp, id);
@@ -28,19 +28,14 @@ t_users	*user_create(int socket)
 
 	if ((new = malloc(sizeof(t_users))) == NULL)
 		return (NULL);
-
 	new->socket = socket;
-
 	ft_memset(&new->nick, 0x0, sizeof(t_nick));
-
 	generate_guest_pseudo(new->nick.nick, socket);
 	new->nick.nick_len = ft_strlen(new->nick.nick);
-
 	new->circ.len = 0;
 	new->circ.head = 0;
 	new->circ.tail = 0;
 	ft_memset(new->circ.buf, 0x0, MAX_INPUT_LEN);
-
 	new->chan = NULL;
 	new->next = NULL;
 	return (new);
@@ -74,42 +69,6 @@ void	user_add(t_users **users, int socket)
 			tmp = tmp->next;
 		tmp->next = user_create(socket);
 	}
-}
-
-t_users		*user_search_by_id(t_users *users, int id)
-{
-	t_users *tmp;
-
-	if (users != NULL)
-	{
-		tmp = users;
-		while (tmp != NULL)
-		{
-			if (tmp->socket == id)
-				return (tmp);
-			tmp = tmp->next;
-		}
-	}
-	return (NULL);
-}
-
-t_users		*user_search_by_name(t_users *users, const char *name)
-{
-	int			len;
-	t_users	*tmp;
-
-	if (users != NULL)
-	{
-		tmp = users;
-		len = ft_strlen(name);
-		while (tmp != NULL)
-		{
-			if (ft_memcmp(name, tmp->nick.nick, len) == 0)
-				return (tmp);
-			tmp = tmp->next;
-		}
-	}
-	return (NULL);
 }
 
 void	user_remove(t_users **users, int id)
