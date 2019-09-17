@@ -151,6 +151,7 @@ void						user_add(t_users **users, int socket);
 void						user_remove(t_users **users, int id);
 t_users						*user_search_by_id(t_users *users, int id);
 t_users						*user_search_by_name(t_users *usr, const char *n);
+void						send_welcome(t_users *user);
 
 /*
 ** channels
@@ -193,6 +194,7 @@ void						err_nicknameinuse(t_users *user, char *nick);
 void						err_erroneusnickname(t_users *user, char *nick);
 void						err_erroneuschanname(t_users *user, char *name);
 void						err_nosuchnick(t_users *user, char *nick);
+void						err_erroneuschar(t_users *user);
 
 void						rpl_topic(t_channel *channel, t_users *user);
 void						rpl_notopic(t_channel *channel, t_users *user);

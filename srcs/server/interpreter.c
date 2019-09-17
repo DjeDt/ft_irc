@@ -58,12 +58,6 @@ static void	handle_message(t_server *server, t_users *user, char *final)
 	t_channel_user	*usr_list;
 
 	ft_memset(test, 0x0, MAX_INPUT_LEN + 3);
-	if (user->chan == NULL)
-	{
-		len = snprintf(test, MAX_INPUT_LEN + 3, "Please join channel.\r\n");
-		circular_send(user->socket, test, len);
-		return ;
-	}
 	usr_list = ((t_channel*)user->chan)->users;
 	if (usr_list == NULL)
 		return ;
@@ -77,6 +71,22 @@ static void	handle_message(t_server *server, t_users *user, char *final)
 	}
 }
 
+bool		check_command(char *command, int size)
+{
+	int count;
+
+	count = 0;
+	while (count < size)
+	{
+		if (command[count] == '\t' || command[count] == '\n' || \
+			command[count] == '\v' || command[count] == '\f' || \
+			command[count] == '\r')
+			return (false);
+		count++;
+	}
+	return (true);
+}
+
 void		interpreter(t_server *server, t_users *user)
 {
 	char	*cmd[3];
@@ -84,6 +94,11 @@ void		interpreter(t_server *server, t_users *user)
 
 	ft_memset(cmd, 0x0, sizeof(char*) * 3);
 	extract_and_update(&user->circ, final);
+	if (check_command(final, ft_strlen(final)) == false)
+	{
+		err_erroneuschar(user);
+		return ;
+	}
 	if (final[0] == '/')
 	{
 		if (command_split(cmd, final) != true)
@@ -91,7 +106,7 @@ void		interpreter(t_server *server, t_users *user)
 		handle_command(server, user, cmd);
 		command_free(cmd);
 	}
-	else
+	else if (user->chan != NULL)
 	{
 		if (FD_ISSET(user->socket, &server->info.write))
 			handle_message(server, user, final);

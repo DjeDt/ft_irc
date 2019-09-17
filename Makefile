@@ -15,7 +15,7 @@ CLIENT	= client
 
 CC		= gcc
 CFLAGS	= -Wall -Werror -Wextra -I$(incdir)
-EFLAGS	= #-g3 -fsanitize=address
+EFLAGS	= -g3 -fsanitize=address
 
 incdir	= ./incs/
 srcdir	= ./srcs/
@@ -39,6 +39,7 @@ server_src =							\
 	$(serverdir)/channel_users_remove.c	\
 	$(serverdir)/interpreter.c			\
 	$(serverdir)/circular.c				\
+	$(serverdir)/welcome.c				\
 \
 	$(serverdir)/$(cmddir)/help.c		\
 	$(serverdir)/$(cmddir)/list.c		\
@@ -60,6 +61,7 @@ server_src =							\
 	$(serverdir)/$(repliesdir)/nicknameinuse.c		\
 	$(serverdir)/$(repliesdir)/erroneusnickname.c	\
 	$(serverdir)/$(repliesdir)/erroneuschanname.c	\
+	$(serverdir)/$(repliesdir)/erroneuschar.c		\
 	$(serverdir)/$(repliesdir)/nosuchnick.c			\
 	$(serverdir)/$(repliesdir)/rpl_topic.c			\
 	$(serverdir)/$(repliesdir)/rpl_notopic.c		\

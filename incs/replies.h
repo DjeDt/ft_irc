@@ -87,13 +87,14 @@
 /*
 ** Custom replies
 */
-# define JOIN_NOTIF				"[server] : '%s' has joined %s.\r\n"
-# define LEAVE_NOTIF			"[server] : '%s' leaved channel.\r\n"
-# define LEAVE_CHAN				"[server]: Disconnected from '%s'.\r\n"
-# define MESSAGE_STR			"[msg] [%s] : %s\r\n"
-# define NICK_RESP				"You are now known as '%s'.\r\n"
-# define NICK_NOTIF				"'%s' is now known as '%s'.\r\n"
-# define QUIT_NOTIF				"[server] : '%s' quit: %s\r\n"
-# define TOPIC_TOO_LONG			"[server]: <%s> :Topic too long.\r\n"
+# define ERR_ERRONEUSCHAR		"[server] :Input contain forbidden character.\r\n"
+# define JOIN_NOTIF				"[server] :'%s' has joined %s.\r\n"
+# define LEAVE_NOTIF			"[server] :'%s' leaved channel.\r\n"
+# define LEAVE_CHAN				"[server] :Disconnected from '%s'.\r\n"
+# define MESSAGE_STR			"[msg] [%s] :%s\r\n"
+# define NICK_RESP				"[server] :You are now known as '%s'.\r\n"
+# define NICK_NOTIF				"[server] :'%s' is now known as '%s'.\r\n"
+# define QUIT_NOTIF				"[server] :'%s' quit: %s\r\n"
+# define TOPIC_TOO_LONG			"[server] :<%s> :Topic too long.\r\n"
 
 #endif

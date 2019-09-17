@@ -21,6 +21,7 @@ void	init_client_list(t_fd *info, int socket)
 	info->fd_max = socket;
 }
 
+
 bool	accept_connection(t_server *server)
 {
 	socklen_t			len;
@@ -42,6 +43,7 @@ bool	accept_connection(t_server *server)
 	if (user->socket > server->info.fd_max)
 		server->info.fd_max = user->socket;
 	user_push(&server->users, user);
+	send_welcome(user);
 	printf("[LOG +] new user : '%s'\n", user->nick.nick);
 	return (true);
 }
