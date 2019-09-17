@@ -93,7 +93,7 @@ void		running(t_interface *inter, t_list_user *user)
 		if (FD_ISSET(STDIN_FILENO, &user->client.read))
 			read_from_user(inter, user);
 		if (user->connected == true && \
-			FD_ISSET(user->socket, &user->client.read) == true)
+			FD_ISSET(user->socket, &user->client.read))
 			read_from_server(inter, user);
 	}
 }
