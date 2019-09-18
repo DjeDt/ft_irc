@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:28 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/13 17:28:48 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/18 12:53:32 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,9 @@ void	extract_and_update(t_circular *circ, char *final)
 bool	circular_get(t_users *user)
 {
 	int		ret;
-	char	data[MAX_INPUT_LEN + 3];
+	char	data[MAX_INPUT_LEN + CRLF];
 
-	ret = recv(user->socket, data, MAX_INPUT_LEN - user->circ.len, 0);
+	ret = recv(user->socket, data, (MAX_INPUT_LEN + CRLF) - user->circ.len, 0);
 	if (ret < 1)
 	{
 		printf("[LOG !] Can't receive data from [%d]\n", user->socket);

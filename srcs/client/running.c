@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:00:32 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/13 17:54:37 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/18 13:55:17 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	init_fd(t_list_user *user)
 
 static void	reset_data(t_interface *inter, char *buf)
 {
-	ft_memset(buf, 0x0, MAX_INPUT_LEN + 3);
+	ft_memset(buf, 0x0, MAX_INPUT_LEN + CRLF);
 	inter->off = 0;
 	inter->len = 0;
 	inter->curmax = 0;
@@ -59,9 +59,9 @@ static void	read_from_user(t_interface *inter, t_list_user *user)
 
 static void	read_from_server(t_interface *inter, t_list_user *user)
 {
-	char buf[MAX_INPUT_LEN + 3];
+	char buf[MAX_INPUT_LEN + CRLF];
 
-	memset(buf, 0x0, MAX_INPUT_LEN + 3);
+	memset(buf, 0x0, MAX_INPUT_LEN + CRLF);
 	if (circular_get(inter, user) != true)
 	{
 		FD_CLR(user->socket, &user->client.master);

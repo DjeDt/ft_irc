@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:28 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/13 17:37:34 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/18 13:56:33 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,10 @@ void	circular_push(t_circular *circ, char *received, int size)
 bool	circular_get(t_interface *inter, t_list_user *user)
 {
 	int		ret;
-	char	data[MAX_INPUT_LEN + 3];
+	char	data[MAX_INPUT_LEN + CRLF];
 
-	ft_memset(data, 0x0, MAX_INPUT_LEN + 3);
-	ret = recv(user->socket, data, MAX_INPUT_LEN - user->circ.len, 0);
+	ft_memset(data, 0x0, MAX_INPUT_LEN + CRLF);
+	ret = recv(user->socket, data, (MAX_INPUT_LEN + CRLF) - user->circ.len, 0);
 	if (ret < 1)
 	{
 		refresh_top_interface(inter, "Can't receive data from server\n");

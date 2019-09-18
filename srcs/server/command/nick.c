@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 14:43:26 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/13 17:21:28 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/18 13:33:29 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,21 +48,21 @@ static bool	check_nick(t_users *users_list, t_users *user, char *nick, int size)
 static void	send_response(t_users *user)
 {
 	int		len;
-	char	buf[MAX_INPUT_LEN + 3];
+	char	buf[MAX_INPUT_LEN + CRLF];
 
-	len = snprintf(buf, MAX_INPUT_LEN + 3, NICK_RESP, user->nick.nick);
+	len = snprintf(buf, MAX_INPUT_LEN + CRLF, NICK_RESP, user->nick.nick);
 	circular_send(user->socket, buf, len);
 }
 
 static void	notify_channel(t_users *user, char *old)
 {
 	int				len;
-	char			buf[MAX_INPUT_LEN + 3];
+	char			buf[MAX_INPUT_LEN + CRLF];
 	t_channel_user	*tmp;
 
 	if (user->chan != NULL)
 	{
-		len = snprintf(buf, MAX_INPUT_LEN + 3, NICK_NOTIF, old, \
+		len = snprintf(buf, MAX_INPUT_LEN + CRLF, NICK_NOTIF, old, \
 			user->nick.nick);
 		tmp = ((t_channel*)user->chan)->users;
 		while (tmp != NULL)

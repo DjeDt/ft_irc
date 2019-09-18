@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/13 17:39:34 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/18 13:14:17 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ bool	accept_connection(t_server *server)
 	if (user->socket > server->info.fd_max)
 		server->info.fd_max = user->socket;
 	user_push(&server->users, user);
-	send_welcome(user);
 	printf("[LOG +] new user : '%s'\n", user->nick.nick);
+	rpl_welcome(user);
 	return (true);
 }
 

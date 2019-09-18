@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:19:18 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/13 17:36:13 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/18 13:31:10 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,12 @@
 # define IPV4_TYPE			4
 # define IPV6_TYPE			6
 
+# define CRLF				2
 # define MAX_QUEUE			5
 # define MAX_NICK_LEN		16
 # define MAX_CHAN_LEN		200
 # define MAX_TOPIC_LEN		128
-# define MAX_INPUT_LEN		512
+# define MAX_INPUT_LEN		510
 
 /*
 ** Typedef
@@ -80,7 +81,7 @@ typedef struct				s_circular
 	int						head;
 	int						tail;
 	int						len;
-	char					buf[MAX_INPUT_LEN + 3];
+	char					buf[MAX_INPUT_LEN + CRLF];
 }							t_circular;
 
 typedef struct				s_users
@@ -151,7 +152,6 @@ void						user_add(t_users **users, int socket);
 void						user_remove(t_users **users, int id);
 t_users						*user_search_by_id(t_users *users, int id);
 t_users						*user_search_by_name(t_users *usr, const char *n);
-void						send_welcome(t_users *user);
 
 /*
 ** channels
@@ -195,6 +195,7 @@ void						err_erroneusnickname(t_users *user, char *nick);
 void						err_erroneuschanname(t_users *user, char *name);
 void						err_nosuchnick(t_users *user, char *nick);
 void						err_erroneuschar(t_users *user);
+void						err_topictoolong(t_users *user, char *topic);
 
 void						rpl_topic(t_channel *channel, t_users *user);
 void						rpl_notopic(t_channel *channel, t_users *user);
@@ -209,5 +210,6 @@ void						rpl_endofnames(t_channel *chan, \
 void						rpl_liststart(t_users *user, char *buf);
 void						rpl_list(t_channel *chan, t_users *usr, char *buf);
 void						rpl_endoflist(t_users *user, char *buf);
+void						rpl_welcome(t_users *user);
 
 #endif

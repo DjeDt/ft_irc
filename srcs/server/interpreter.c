@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:26:02 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/13 17:39:47 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/18 13:05:18 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,19 +54,18 @@ static bool	handle_command(t_server *server, t_users *user, char **command)
 static void	handle_message(t_server *server, t_users *user, char *final)
 {
 	int				len;
-	char			test[MAX_INPUT_LEN + 3];
+	char			to_send[MAX_INPUT_LEN + CRLF];
 	t_channel_user	*usr_list;
 
-	ft_memset(test, 0x0, MAX_INPUT_LEN + 3);
+	ft_memset(to_send, 0x0, MAX_INPUT_LEN + CRLF);
 	usr_list = ((t_channel*)user->chan)->users;
 	if (usr_list == NULL)
 		return ;
-	len = snprintf(test, MAX_INPUT_LEN + 3, "[%s] %s : %s\r\n", \
-		((t_channel*)user->chan)->name, user->nick.nick, final);
+	len = snprintf(to_send, MAX_INPUT_LEN + CRLF, "[%s] %s : %s\r\n", ((t_channel*)user->chan)->name, user->nick.nick, final);
 	while (usr_list != NULL)
 	{
 		if (FD_ISSET(usr_list->user->socket, &server->info.write))
-			circular_send(usr_list->user->socket, test, len);
+			circular_send(usr_list->user->socket, to_send, len);
 		usr_list = usr_list->next;
 	}
 }
@@ -90,18 +89,18 @@ bool		check_command(char *command, int size)
 void		interpreter(t_server *server, t_users *user)
 {
 	char	*cmd[3];
-	char	final[MAX_INPUT_LEN + 3];
+	char	extracted[MAX_INPUT_LEN];
 
 	ft_memset(cmd, 0x0, sizeof(char*) * 3);
-	extract_and_update(&user->circ, final);
-	if (check_command(final, ft_strlen(final)) == false)
+	extract_and_update(&user->circ, extracted);
+	if (check_command(extracted, ft_strlen(extracted)) == false)
 	{
 		err_erroneuschar(user);
 		return ;
 	}
-	if (final[0] == '/')
+	if (extracted[0] == '/')
 	{
-		if (command_split(cmd, final) != true)
+		if (command_split(cmd, extracted) != true)
 			return ;
 		handle_command(server, user, cmd);
 		command_free(cmd);
@@ -109,6 +108,6 @@ void		interpreter(t_server *server, t_users *user)
 	else if (user->chan != NULL)
 	{
 		if (FD_ISSET(user->socket, &server->info.write))
-			handle_message(server, user, final);
+			handle_message(server, user, extracted);
 	}
 }

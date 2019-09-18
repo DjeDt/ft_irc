@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:17:35 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/13 17:18:40 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/18 13:54:14 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,11 @@ static bool	check_name(char *name)
 static void	notify_channel(t_channel_user *chan_users, t_users *user)
 {
 	int				len;
-	char			buf[MAX_INPUT_LEN + 3];
+	char			buf[MAX_INPUT_LEN + CRLF];
 	t_channel_user	*tmp;
 
 	tmp = chan_users;
-	len = snprintf(buf, MAX_INPUT_LEN + 3, JOIN_NOTIF, \
+	len = snprintf(buf, MAX_INPUT_LEN + CRLF, JOIN_NOTIF, \
 		user->nick.nick, ((t_channel*)user->chan)->name);
 	while (tmp != NULL)
 	{
@@ -47,7 +47,7 @@ static void	notify_channel(t_channel_user *chan_users, t_users *user)
 
 static void	notify_user(t_channel *chan, t_users *user)
 {
-	char			buf[MAX_INPUT_LEN + 3];
+	char			buf[MAX_INPUT_LEN + CRLF];
 	t_channel_user	*tmp;
 
 	if (chan->topic[0] != '\0')
@@ -57,7 +57,7 @@ static void	notify_user(t_channel *chan, t_users *user)
 	tmp = chan->users;
 	while (tmp != NULL)
 	{
-		ft_memset(buf, 0x0, MAX_INPUT_LEN + 3);
+		ft_memset(buf, 0x0, MAX_INPUT_LEN + CRLF);
 		rpl_namreply(chan, user, tmp->user->nick.nick, buf);
 		tmp = tmp->next;
 	}

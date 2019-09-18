@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 14:17:33 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/13 17:18:52 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/18 13:12:02 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,5 +96,6 @@
 # define NICK_NOTIF				"[server] :'%s' is now known as '%s'.\r\n"
 # define QUIT_NOTIF				"[server] :'%s' quit: %s\r\n"
 # define TOPIC_TOO_LONG			"[server] :<%s> :Topic too long.\r\n"
+# define RPL_WELCOME			"Welcome '%s' ! Use '/help' for help !\r\n"
 
 #endif

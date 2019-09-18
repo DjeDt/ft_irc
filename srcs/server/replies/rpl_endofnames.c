@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/10 16:59:51 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/10 16:59:54 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/18 13:27:06 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	rpl_endofnames(t_channel *chan, t_users *user, char *buf)
 {
 	int	len;
 
-	ft_memset(buf, 0x0, MAX_INPUT_LEN + 3);
-	len = snprintf(buf, MAX_INPUT_LEN + 3, RPL_ENDOFNAMES, chan->name);
+	ft_memset(buf, 0x0, MAX_INPUT_LEN + CRLF);
+	len = snprintf(buf, MAX_INPUT_LEN + CRLF, RPL_ENDOFNAMES, chan->name);
 	circular_send(user->socket, buf, len);
 }

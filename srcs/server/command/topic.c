@@ -6,20 +6,11 @@
 /*   By: Dje <ddinaut@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/18 09:09:48 by Dje               #+#    #+#             */
-/*   Updated: 2019/09/18 09:09:50 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/18 13:30:08 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
-
-static void	err_topictoolong(t_users *user, char *topic)
-{
-	int		len;
-	char	buf[MAX_INPUT_LEN + 3];
-
-	len = snprintf(buf, MAX_INPUT_LEN + 3, TOPIC_TOO_LONG, topic);
-	circular_send(user->socket, buf, len);
-}
 
 static void	send_channel_topic(t_channel *chan, t_users *user)
 {
@@ -32,11 +23,11 @@ static void	send_channel_topic(t_channel *chan, t_users *user)
 static void	notify_topic_change(t_channel *chan, t_users *user, char *old_top)
 {
 	int				len;
-	char			buf[MAX_INPUT_LEN + 3];
+	char			buf[MAX_INPUT_LEN + CRLF];
 	t_channel_user	*tmp;
 
 	tmp = chan->users;
-	len = snprintf(buf, MAX_INPUT_LEN + 3, \
+	len = snprintf(buf, MAX_INPUT_LEN + CRLF, \
 		"%s changed topic from '%s' to '%s'\r\n", \
 		user->nick.nick, old_top, chan->topic);
 	while (tmp != NULL)

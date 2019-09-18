@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/31 09:04:16 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/13 17:21:44 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/18 13:33:13 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 static void	notify_leave(t_channel *chan, char **command, char *nick)
 {
 	int				len;
-	char			buf[MAX_INPUT_LEN + 3];
+	char			buf[MAX_INPUT_LEN + CRLF];
 	t_channel_user	*tmp;
 
 	if (command[1] != NULL)
-		len = snprintf(buf, MAX_INPUT_LEN + 3, QUIT_NOTIF, nick, command[1]);
+		len = snprintf(buf, MAX_INPUT_LEN + CRLF, QUIT_NOTIF, nick, command[1]);
 	else
-		len = snprintf(buf, MAX_INPUT_LEN + 3, QUIT_NOTIF, nick, "quit");
+		len = snprintf(buf, MAX_INPUT_LEN + CRLF, QUIT_NOTIF, nick, "quit");
 	tmp = chan->users;
 	while (tmp != NULL)
 	{

@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:41:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/13 17:20:21 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/18 13:37:30 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 static void	send_leave_notif(t_channel *chan, t_users *user)
 {
 	int				len;
-	char			buf[MAX_INPUT_LEN + 3];
+	char			buf[MAX_INPUT_LEN + CRLF];
 	t_channel_user	*tmp;
 
 	printf("[LOG] '%s' leaved channel '%s'\n", user->nick.nick, chan->name);
-	len = snprintf(buf, MAX_INPUT_LEN + 3, LEAVE_NOTIF, user->nick.nick);
+	len = snprintf(buf, MAX_INPUT_LEN + CRLF, LEAVE_NOTIF, user->nick.nick);
 	tmp = chan->users;
 	while (tmp != NULL)
 	{
@@ -33,14 +33,16 @@ static void	leave_remove_user_from_channel \
 	(t_server *server, t_channel *chan, t_users *user, const char *chan_name)
 {
 	int		len;
-	char	buf[MAX_INPUT_LEN + 3];
+	char	buf[MAX_INPUT_LEN + CRLF];
 
 	if (channel_user_remove(&chan->users, user) != true)
 		return ;
+
 	chan->num -= 1;
 	user->chan = NULL;
-	len = snprintf(buf, MAX_INPUT_LEN + 3, LEAVE_CHAN, chan_name);
+	len = snprintf(buf, MAX_INPUT_LEN + CRLF, LEAVE_CHAN, chan_name);
 	circular_send(user->socket, buf, len);
+
 	if (chan->num <= 0)
 	{
 		channel_delete(&server->channel, chan->name);

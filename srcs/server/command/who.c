@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:46:44 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 21:46:22 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/18 13:28:46 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	gather_all_user_in_chan(t_channel *chan, t_users *user)
 {
-	char			buf[MAX_INPUT_LEN + 3];
+	char			buf[MAX_INPUT_LEN + CRLF];
 	t_channel_user	*tmp;
 
 	tmp = chan->users;

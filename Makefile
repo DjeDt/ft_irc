@@ -6,7 +6,7 @@
 #    By: pguillie <pguillie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/22 18:46:54 by pguillie          #+#    #+#              #
-#    Updated: 2019/09/12 11:31:38 by ddinaut          ###   ########.fr        #
+#    Updated: 2019/09/18 15:32:19 by ddinaut          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -39,7 +39,6 @@ server_src =							\
 	$(serverdir)/channel_users_remove.c	\
 	$(serverdir)/interpreter.c			\
 	$(serverdir)/circular.c				\
-	$(serverdir)/welcome.c				\
 \
 	$(serverdir)/$(cmddir)/help.c		\
 	$(serverdir)/$(cmddir)/list.c		\
@@ -63,6 +62,7 @@ server_src =							\
 	$(serverdir)/$(repliesdir)/erroneuschanname.c	\
 	$(serverdir)/$(repliesdir)/erroneuschar.c		\
 	$(serverdir)/$(repliesdir)/nosuchnick.c			\
+	$(serverdir)/$(repliesdir)/topictoolong.c		\
 	$(serverdir)/$(repliesdir)/rpl_topic.c			\
 	$(serverdir)/$(repliesdir)/rpl_notopic.c		\
 	$(serverdir)/$(repliesdir)/rpl_whoreply.c		\
@@ -72,6 +72,7 @@ server_src =							\
 	$(serverdir)/$(repliesdir)/rpl_liststart.c		\
 	$(serverdir)/$(repliesdir)/rpl_list.c			\
 	$(serverdir)/$(repliesdir)/rpl_endoflist.c		\
+	$(serverdir)/$(repliesdir)/rpl_welcome.c		\
 \
 	$(libdir)/ft_isspace.c				\
 	$(libdir)/ft_strlen.c				\

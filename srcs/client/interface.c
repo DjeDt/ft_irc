@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:04:28 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/13 17:40:58 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/18 13:55:55 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,11 @@ void		stop_interface(t_interface *inter)
 void		refresh_top_interface(t_interface *inter, char *input, ...)
 {
 	va_list	arglist;
-	char	data[MAX_INPUT_LEN + 3];
+	char	data[MAX_INPUT_LEN + CRLF];
 
-	ft_memset(data, 0x0, MAX_INPUT_LEN + 3);
+	ft_memset(data, 0x0, MAX_INPUT_LEN + CRLF);
 	va_start(arglist, input);
-	vsnprintf(data, MAX_INPUT_LEN + 3, input, arglist);
+	vsnprintf(data, MAX_INPUT_LEN + CRLF, input, arglist);
 	va_end(arglist);
 	if (inter->status == false)
 	{

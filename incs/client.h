@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 14:24:19 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/13 17:16:23 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/18 13:57:13 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,11 @@
 # define CONNECT_LEN	7
 # define QUIT_LEN		5
 
+# define CRLF			2
 # define LINE_START		1
 # define CURSOR_START	3
 # define BOX_INPUT_LEN	3
-# define MAX_INPUT_LEN	512
+# define MAX_INPUT_LEN	510
 # define MAX_NICK_LEN	16
 
 # define BASIC_PORT_STR "Connecting to '%s' using default port '%s'"
@@ -78,7 +79,7 @@ typedef struct			s_circular
 	int					head;
 	int					tail;
 	int					len;
-	char				buf[MAX_INPUT_LEN + 3];
+	char				buf[MAX_INPUT_LEN + CRLF];
 }						t_circular;
 
 typedef struct			s_list_user
@@ -86,7 +87,7 @@ typedef struct			s_list_user
 	int					socket;
 	bool				running;
 	bool				connected;
-	char				input[MAX_INPUT_LEN + 3];
+	char				input[MAX_INPUT_LEN + CRLF];
 	t_circular			circ;
 	t_client			client;
 }						t_list_user;
