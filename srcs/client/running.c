@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:00:32 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/18 13:55:17 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/18 17:11:00 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ static void	read_from_user(t_interface *inter, t_list_user *user)
 	{
 		if (inter->len > 0)
 		{
+			inter->len += CRLF;
 			interpreter(inter, user);
 			reset_data(inter, user->input);
 		}

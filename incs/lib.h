@@ -8,6 +8,10 @@
 # include <sys/types.h>
 # include <sys/socket.h>
 
+# define SECRET_KEY		"Super_Secret_Key"
+# define KEY_LEN		0x10
+# define N				0x100
+
 int			ft_isspace(char c);
 ssize_t		ft_strlen(const char *str);
 char		*ft_strchr(const char *s, char c);
@@ -26,5 +30,6 @@ int			ft_atoi(const char *str);
 int			command_size(char *command);
 void		command_free(char **command);
 bool		command_split(char **command, const char *final);
+void		rc4(char *key, char *plain, unsigned char *cypher);
 
 #endif

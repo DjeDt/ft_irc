@@ -6,7 +6,7 @@
 #    By: pguillie <pguillie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/22 18:46:54 by pguillie          #+#    #+#              #
-#    Updated: 2019/09/18 15:32:19 by ddinaut          ###   ########.fr        #
+#    Updated: 2019/09/18 19:09:07 by ddinaut          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -88,6 +88,7 @@ server_src =							\
 	$(libdir)/ft_strncmp.c				\
 	$(libdir)/ft_strncat.c				\
 	$(libdir)/ft_atoi.c					\
+	$(libdir)/rc4.c						\
 	$(libdir)/command_func.c
 
 client_src = 							\
@@ -113,6 +114,7 @@ client_src = 							\
 	$(libdir)/ft_strncat.c				\
 	$(libdir)/ft_flush.c				\
 	$(libdir)/ft_atoi.c					\
+	$(libdir)/rc4.c						\
 	$(libdir)/command_func.c
 
 server_obj = $(addprefix $(srcdir), $(server_src:%.c=%.o))
