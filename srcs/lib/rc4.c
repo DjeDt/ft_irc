@@ -6,7 +6,7 @@
 /*   By: Dje <ddinaut@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/18 14:06:15 by Dje               #+#    #+#             */
-/*   Updated: 2019/09/18 16:59:31 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/19 18:10:17 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,12 @@ static void	generate(unsigned char *S, char *plain, int size, unsigned char *cyp
 	int j;
 	int cyph;
 	int count;
+	int flag;
 
 	i = 0;
 	j = 0;
 	count = 0;
+	flag = false;
 	while (count < size)
 	{
 		i = (i + 1) % N;
@@ -60,17 +62,27 @@ static void	generate(unsigned char *S, char *plain, int size, unsigned char *cyp
 		swap(&S[i], &S[j]);
 		cyph = S[(S[i] + S[j]) % N];
 		cypher[count] = cyph ^ plain[count];
+
+		if (cypher[count] == '\r')
+			flag = true;
+		if (cypher[count] == '\n' && flag == true)
+		{
+			i = 0;
+			j = 0;
+			flag = false;
+		}
 		count++;
+
 	}
 	cypher[count] = '\0';
 }
 
 void	rc4(char *key, char *plain, unsigned char *cypher)
 {
-	int				len;
+	int				size;
 	unsigned char	S[N];
 
 	permutation(key, S);
-	len = ft_strlen(plain);
-	generate(S, plain, len, cypher);
+	size = ft_strlen(plain);
+	generate(S, plain, size, cypher);
 }

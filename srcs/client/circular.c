@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:28 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/18 17:16:55 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/19 18:11:30 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,19 @@ bool	circular_get(t_interface *inter, t_list_user *user)
 		refresh_top_interface(inter, "Can't receive data from server\n");
 		return (false);
 	}
+
+    wprintw(inter->top, " encrypted : ");
+	for (int i = 0 ; i < ret ; i++)
+		wprintw(inter->top, "%x ", (uint8_t)data[i]);
+	wprintw(inter->top, "\n");
+
 	rc4(SECRET_KEY, data, decrypted);
-	refresh_top_interface(inter, "decrypted data");
+
+	wprintw(inter->top, "decrypted : ");
+	for (int i = 0 ; i < ret ; i++)
+		wprintw(inter->top, "%x ", decrypted[i]);
+	wprintw(inter->top, "\n");
+
 	circular_push(&user->circ, (char*)decrypted, ret);
 	user->circ.len += ret;
 	return (true);
@@ -85,7 +96,6 @@ void	circular_send(t_interface *inter, t_list_user *user)
 	unsigned char encrypted[MAX_INPUT_LEN + CRLF];
 
 	rc4(SECRET_KEY, user->input, encrypted);
-	refresh_top_interface(inter, "encrypted data before send");
 	if (send(user->socket, encrypted, inter->len, 0) < 0)
 	{
 		refresh_top_interface(inter, "Can't send data to server.\n");
