@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:28 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/19 18:11:30 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/22 16:21:40 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ void	extract_and_update(t_circular *circ, char *final)
 		next = (circ->head + 1) % MAX_INPUT_LEN;
 		if (circ->buf[circ->head] == 0xd && circ->buf[next] == 0xa)
 		{
-			circ->head = (circ->head + 2) % MAX_INPUT_LEN;
-			circ->len -= (count + 2);
+			circ->head = (circ->head + CRLF) % MAX_INPUT_LEN;
+			circ->len -= (count + CRLF);
 			break ;
 		}
 		final[count] = circ->buf[circ->head];
@@ -62,7 +62,7 @@ void	circular_push(t_circular *circ, char *received, int size)
 bool	circular_get(t_interface *inter, t_list_user *user)
 {
 	int				ret;
-	char			data[MAX_INPUT_LEN + CRLF];
+	unsigned char	data[MAX_INPUT_LEN + CRLF];
 	unsigned char	decrypted[MAX_INPUT_LEN + CRLF];
 
 	ft_memset(data, 0x0, sizeof(data));
@@ -73,19 +73,7 @@ bool	circular_get(t_interface *inter, t_list_user *user)
 		refresh_top_interface(inter, "Can't receive data from server\n");
 		return (false);
 	}
-
-    wprintw(inter->top, " encrypted : ");
-	for (int i = 0 ; i < ret ; i++)
-		wprintw(inter->top, "%x ", (uint8_t)data[i]);
-	wprintw(inter->top, "\n");
-
-	rc4(SECRET_KEY, data, decrypted);
-
-	wprintw(inter->top, "decrypted : ");
-	for (int i = 0 ; i < ret ; i++)
-		wprintw(inter->top, "%x ", decrypted[i]);
-	wprintw(inter->top, "\n");
-
+	rc4(SECRET_KEY, data, decrypted, ret);
 	circular_push(&user->circ, (char*)decrypted, ret);
 	user->circ.len += ret;
 	return (true);
@@ -93,9 +81,9 @@ bool	circular_get(t_interface *inter, t_list_user *user)
 
 void	circular_send(t_interface *inter, t_list_user *user)
 {
-	unsigned char encrypted[MAX_INPUT_LEN + CRLF];
+	uint8_t encrypted[MAX_INPUT_LEN + CRLF];
 
-	rc4(SECRET_KEY, user->input, encrypted);
+	rc4(SECRET_KEY, (unsigned char*)user->input, encrypted, inter->len);
 	if (send(user->socket, encrypted, inter->len, 0) < 0)
 	{
 		refresh_top_interface(inter, "Can't send data to server.\n");

@@ -6,7 +6,7 @@
 /*   By: Dje <ddinaut@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/18 14:06:15 by Dje               #+#    #+#             */
-/*   Updated: 2019/09/19 18:10:17 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/22 16:46:58 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ static void	permutation(char *key, unsigned char *S)
 		S[i] = i;
 		i++;
 	}
-
 	i = 0;
 	while (i < N)
 	{
@@ -43,46 +42,49 @@ static void	permutation(char *key, unsigned char *S)
 	}
 }
 
-static void	generate(unsigned char *S, char *plain, int size, unsigned char *cypher)
+#define I		0
+#define J		1
+#define COUNT	2
+#define CYPH	3
+
+static void	reset(int *tab, unsigned char *S, char *key, bool flag)
 {
-	int i;
-	int j;
-	int cyph;
-	int count;
-	int flag;
-
-	i = 0;
-	j = 0;
-	count = 0;
+	tab[I] = 0;
+	tab[J] = 0;
 	flag = false;
-	while (count < size)
-	{
-		i = (i + 1) % N;
-		j = (j + S[i]) % N;
-		swap(&S[i], &S[j]);
-		cyph = S[(S[i] + S[j]) % N];
-		cypher[count] = cyph ^ plain[count];
-
-		if (cypher[count] == '\r')
-			flag = true;
-		if (cypher[count] == '\n' && flag == true)
-		{
-			i = 0;
-			j = 0;
-			flag = false;
-		}
-		count++;
-
-	}
-	cypher[count] = '\0';
+	permutation(key, S);
 }
 
-void	rc4(char *key, char *plain, unsigned char *cypher)
+static void	generate(unsigned char *S, char *key, unsigned char *plain, int size, unsigned char *cypher)
 {
-	int				size;
+	bool flag;
+	int	tab[4];
+
+	tab[I] = 0;
+	tab[J] = 0;
+	tab[COUNT] = 0;
+	tab[CYPH] = 0;
+	flag = false;
+	while (tab[COUNT] <= size)
+	{
+		tab[I] = (tab[I] + 1) % N;
+		tab[J] = (tab[J] + S[tab[I]]) % N;
+		swap(&S[tab[I]], &S[tab[J]]);
+		tab[CYPH] = S[(S[tab[I]] + S[tab[J]]) % N];
+		cypher[tab[COUNT]] = tab[CYPH] ^ plain[tab[COUNT]];
+		if (cypher[tab[COUNT]] == '\r')
+			flag = true;
+		if (cypher[tab[COUNT]] == '\n' && flag == true)
+			reset(tab, S, key, flag);
+		tab[COUNT]++;
+	}
+	cypher[tab[COUNT]] = '\0';
+}
+
+void	rc4(char *key, unsigned char *plain, unsigned char *cypher, int size)
+{
 	unsigned char	S[N];
 
 	permutation(key, S);
-	size = ft_strlen(plain);
-	generate(S, plain, size, cypher);
+	generate(S, key, plain, size, cypher);
 }

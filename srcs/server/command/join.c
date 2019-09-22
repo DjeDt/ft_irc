@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:17:35 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/18 17:20:27 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/22 15:58:50 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ static void	notify_user(t_channel *chan, t_users *user)
 		rpl_namreply(chan, user, tmp->user->nick.nick, buf);
 		tmp = tmp->next;
 	}
+	ft_memset(buf, 0x0, MAX_INPUT_LEN + CRLF);
 	rpl_endofnames(chan, user, buf);
 }
 

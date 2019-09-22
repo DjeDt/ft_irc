@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:00:32 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/18 17:11:00 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/22 16:00:34 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ static void	reset_data(t_interface *inter, char *buf)
 	inter->cursor = 3;
 	wclear(inter->bot);
 	refresh_bot_interface(inter, buf);
+	doupdate();
 }
 
 static void	read_from_user(t_interface *inter, t_list_user *user)
@@ -85,15 +86,13 @@ void		running(t_interface *inter, t_list_user *user)
 	{
 		user->client.read = user->client.master;
 		user->client.write = user->client.master;
-		if (user->connected == true && \
-			!FD_ISSET(user->socket, &user->client.master))
+		if (user->connected == true && !FD_ISSET(user->socket, &user->client.master))
 			FD_SET(user->socket, &user->client.master);
-		if (select(user->socket + 1, &user->client.read, \
-					&user->client.write, NULL, NULL) < 0)
+		if (select(user->socket + 1, &user->client.read, &user->client.write, NULL, NULL) < 0)
 			return ;
 		if (FD_ISSET(STDIN_FILENO, &user->client.read))
 			read_from_user(inter, user);
-		if (user->connected == true && \
+		else if (user->connected == true &&			\
 			FD_ISSET(user->socket, &user->client.read))
 			read_from_server(inter, user);
 	}

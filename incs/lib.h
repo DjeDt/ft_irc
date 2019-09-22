@@ -30,6 +30,6 @@ int			ft_atoi(const char *str);
 int			command_size(char *command);
 void		command_free(char **command);
 bool		command_split(char **command, const char *final);
-void		rc4(char *key, char *plain, unsigned char *cypher);
+void		rc4(char *key, unsigned char *plain, unsigned char *cypher, int size);
 
 #endif
