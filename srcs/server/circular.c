@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:28 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/22 16:21:26 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/30 16:15:36 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ bool	circular_get(t_users *user)
 		printf("[LOG !] Can't receive data from [%d]\n", user->socket);
 		return (false);
 	}
-	rc4(SECRET_KEY, data, decrypted, ret);
+	rc4_decrypt(SECRET_KEY, data, decrypted, ret);
 	circular_push(&user->circ, (char*)decrypted, ret);
 	user->circ.len += ret;
 	return (true);
@@ -83,7 +83,7 @@ void	circular_send(int socket, char *data, int size)
 {
 	unsigned char encrypted[MAX_INPUT_LEN + CRLF];
 
-	rc4(SECRET_KEY, (unsigned char*)data, encrypted, size);
+	rc4_encrypt(SECRET_KEY, (unsigned char*)data, encrypted, size);
 	if (send(socket, encrypted, size, 0) < 0)
 	{
 		printf("[LOG !] Can't send data to %d\n", socket);

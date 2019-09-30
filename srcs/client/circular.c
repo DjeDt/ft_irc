@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:28 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/22 16:21:40 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/30 16:15:56 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ bool	circular_get(t_interface *inter, t_list_user *user)
 		refresh_top_interface(inter, "Can't receive data from server\n");
 		return (false);
 	}
-	rc4(SECRET_KEY, data, decrypted, ret);
+	rc4_decrypt(SECRET_KEY, data, decrypted, ret);
 	circular_push(&user->circ, (char*)decrypted, ret);
 	user->circ.len += ret;
 	return (true);
@@ -83,7 +83,7 @@ void	circular_send(t_interface *inter, t_list_user *user)
 {
 	uint8_t encrypted[MAX_INPUT_LEN + CRLF];
 
-	rc4(SECRET_KEY, (unsigned char*)user->input, encrypted, inter->len);
+	rc4_encrypt(SECRET_KEY, (unsigned char*)user->input, encrypted, inter->len);
 	if (send(user->socket, encrypted, inter->len, 0) < 0)
 	{
 		refresh_top_interface(inter, "Can't send data to server.\n");

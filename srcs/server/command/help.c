@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/05 13:49:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/18 13:53:55 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/30 16:12:26 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,16 @@ void	irc_help(t_server *server, t_users *user, char **command)
 	(void)server;
 	(void)command;
 	len = snprintf(buf, MAX_INPUT_LEN + CRLF, \
-		"/help                : print this help\n"			\
-		"/nick <name>         : change username\n"			\
-		"/list                : list channel\n"				\
-		"/join <#chan>        : join channel\n"				\
-		"/leave <#chan>       : leave channel\n"			\
-		"/topic <topic>       : show/set topic\n"			\
-		"/who                 : list connected user\n"		\
-		"/msg <usr>           : send message to user\n"		\
-		"/connect [ip <port>] : connect to server\n"		\
-		"/quit                : quit irc\n"					\
+		"/help                : print this help\r\n"		\
+		"/nick <name>         : change username\r\n"		\
+		"/list                : list channel\r\n"			\
+		"/join <#chan>        : join channel\r\n"			\
+		"/leave <#chan>       : leave channel\r\n"			\
+		"/topic <topic>       : show/set topic\r\n"			\
+		"/who                 : list connected user\r\n"	\
+		"/msg <usr>           : send message to user\r\n"	\
+		"/connect [ip <port>] : connect to server\r\n"		\
+		"/quit                : quit irc\r\n"				\
 		"/kill                : shutdown connected server\r\n");
 	if (FD_ISSET(user->socket, &server->info.write))
 		circular_send(user->socket, buf, len);

@@ -6,7 +6,7 @@
 /*   By: Dje <ddinaut@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 14:53:16 by Dje               #+#    #+#             */
-/*   Updated: 2019/09/30 15:16:06 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/30 16:36:32 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,11 @@ int					ft_atoi(const char *str);
 int					command_size(char *command);
 void				command_free(char **command);
 bool				command_split(char **command, const char *final);
-void				rc4(char *key, unsigned char *plain, \
-						unsigned char *cypher, int size);
+void				ft_swap(unsigned char *x, unsigned char *y);
+void				rc4_permutation(char *key, unsigned char *cypher);
+void				rc4_decrypt(char *key, unsigned char *encrypted, \
+						unsigned char *decrypted, int size);
+void				rc4_encrypt(char *key, unsigned char *plain, \
+						unsigned char *encrypted, int size);
 
 #endif
