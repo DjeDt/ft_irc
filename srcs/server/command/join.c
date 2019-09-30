@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:17:35 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/22 15:58:50 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/30 14:51:35 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	notify_channel(t_channel_user *chan_users, t_users *user)
 	t_channel_user	*tmp;
 
 	tmp = chan_users;
-	len = snprintf(buf, MAX_INPUT_LEN + CRLF, JOIN_NOTIF,	\
+	len = snprintf(buf, MAX_INPUT_LEN + CRLF, JOIN_NOTIF, \
 		user->nick.nick, ((t_channel*)user->chan)->name);
 	while (tmp != NULL)
 	{
@@ -65,7 +65,7 @@ static void	notify_user(t_channel *chan, t_users *user)
 	rpl_endofnames(chan, user, buf);
 }
 
-static void manage_user_join(t_server *server, t_users *user, char *chan_name)
+static void	manage_user_join(t_server *server, t_users *user, char *chan_name)
 {
 	t_channel *chan;
 

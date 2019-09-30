@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 14:17:33 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/18 13:12:02 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/30 14:52:54 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@
 /*
 ** Custom replies
 */
-# define ERR_ERRONEUSCHAR		"[server] :Input contain forbidden character.\r\n"
+# define ERR_ERRONEUSCHAR		"[server] :Input got forbidden character.\r\n"
 # define JOIN_NOTIF				"[server] :'%s' has joined %s.\r\n"
 # define LEAVE_NOTIF			"[server] :'%s' leaved channel.\r\n"
 # define LEAVE_CHAN				"[server] :Disconnected from '%s'.\r\n"

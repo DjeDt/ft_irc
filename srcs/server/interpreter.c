@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:26:02 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/18 13:05:18 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/30 14:48:27 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ static void	handle_message(t_server *server, t_users *user, char *final)
 	usr_list = ((t_channel*)user->chan)->users;
 	if (usr_list == NULL)
 		return ;
-	len = snprintf(to_send, MAX_INPUT_LEN + CRLF, "[%s] %s : %s\r\n", ((t_channel*)user->chan)->name, user->nick.nick, final);
+	len = snprintf(to_send, MAX_INPUT_LEN + CRLF, "[%s] %s : %s\r\n", \
+		((t_channel*)user->chan)->name, user->nick.nick, final);
 	while (usr_list != NULL)
 	{
 		if (FD_ISSET(usr_list->user->socket, &server->info.write))

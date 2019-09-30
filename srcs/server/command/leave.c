@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:41:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/18 13:37:30 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/30 14:51:02 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,10 @@ static void	leave_remove_user_from_channel \
 
 	if (channel_user_remove(&chan->users, user) != true)
 		return ;
-
 	chan->num -= 1;
 	user->chan = NULL;
 	len = snprintf(buf, MAX_INPUT_LEN + CRLF, LEAVE_CHAN, chan_name);
 	circular_send(user->socket, buf, len);
-
 	if (chan->num <= 0)
 	{
 		channel_delete(&server->channel, chan->name);

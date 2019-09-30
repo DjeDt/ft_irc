@@ -6,7 +6,7 @@
 /*   By: Dje <ddinaut@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/18 14:06:15 by Dje               #+#    #+#             */
-/*   Updated: 2019/09/22 16:46:58 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/30 15:14:48 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	swap(unsigned char *x, unsigned char *y)
 	(*y) = tmp;
 }
 
-static void	permutation(char *key, unsigned char *S)
+static void	permutation(char *key, unsigned char *cypher)
 {
 	int i;
 	int j;
@@ -30,61 +30,59 @@ static void	permutation(char *key, unsigned char *S)
 	j = 0;
 	while (i < N)
 	{
-		S[i] = i;
+		cypher[i] = i;
 		i++;
 	}
 	i = 0;
 	while (i < N)
 	{
-		j = (j + S[i] + key[i % KEY_LEN]) % N;
-		swap(&S[i], &S[j]);
+		j = (j + cypher[i] + key[i % KEY_LEN]) % N;
+		swap(&cypher[i], &cypher[j]);
 		i++;
 	}
 }
 
-#define I		0
-#define J		1
-#define COUNT	2
-#define CYPH	3
-
-static void	reset(int *tab, unsigned char *S, char *key, bool flag)
+static void	reset(t_r4 *r4, int *i, int *j)
 {
-	tab[I] = 0;
-	tab[J] = 0;
-	flag = false;
-	permutation(key, S);
+	*i = 0;
+	*j = 0;
+	r4->flag = false;
+	permutation(r4->key, r4->cypher);
 }
 
-static void	generate(unsigned char *S, char *key, unsigned char *plain, int size, unsigned char *cypher)
+static void	generate(t_r4 r4, unsigned char *plain, unsigned char *encrypted)
 {
-	bool flag;
-	int	tab[4];
+	int i;
+	int j;
+	int count;
 
-	tab[I] = 0;
-	tab[J] = 0;
-	tab[COUNT] = 0;
-	tab[CYPH] = 0;
-	flag = false;
-	while (tab[COUNT] <= size)
+	i = 0;
+	j = 0;
+	count = 0;
+	r4.flag = false;
+	while (count < r4.size)
 	{
-		tab[I] = (tab[I] + 1) % N;
-		tab[J] = (tab[J] + S[tab[I]]) % N;
-		swap(&S[tab[I]], &S[tab[J]]);
-		tab[CYPH] = S[(S[tab[I]] + S[tab[J]]) % N];
-		cypher[tab[COUNT]] = tab[CYPH] ^ plain[tab[COUNT]];
-		if (cypher[tab[COUNT]] == '\r')
-			flag = true;
-		if (cypher[tab[COUNT]] == '\n' && flag == true)
-			reset(tab, S, key, flag);
-		tab[COUNT]++;
+		i = (i + 1) % N;
+		j = (j + r4.cypher[i]) % N;
+		swap(&r4.cypher[i], &r4.cypher[j]);
+		r4.cyph = r4.cypher[(r4.cypher[i] + r4.cypher[j]) % N];
+		encrypted[count] = r4.cyph ^ plain[count];
+		if (encrypted[count] == '\r')
+			r4.flag = true;
+		if (encrypted[count] == '\n' && r4.flag == true)
+			reset(&r4, &i, &j);
+		count++;
 	}
-	cypher[tab[COUNT]] = '\0';
+	encrypted[count] = '\0';
 }
 
-void	rc4(char *key, unsigned char *plain, unsigned char *cypher, int size)
+void		rc4(char *key, unsigned char *plain, \
+					unsigned char *encrypted, int size)
 {
-	unsigned char	S[N];
+	t_r4 r4;
 
-	permutation(key, S);
-	generate(S, key, plain, size, cypher);
+	r4.size = size;
+	r4.key = key;
+	permutation(r4.key, r4.cypher);
+	generate(r4, plain, encrypted);
 }

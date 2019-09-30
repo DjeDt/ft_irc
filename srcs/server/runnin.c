@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/18 13:14:17 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/30 14:48:46 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void	init_client_list(t_fd *info, int socket)
 	FD_SET(socket, &info->master);
 	info->fd_max = socket;
 }
-
 
 bool	accept_connection(t_server *server)
 {

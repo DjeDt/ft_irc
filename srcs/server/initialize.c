@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/04 10:20:46 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 23:01:48 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/09/30 14:48:11 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,6 @@ static bool	prepare_data(t_server *server, void *addr, int type)
 		((struct sockaddr_in6*)addr)->sin6_family = AF_INET6;
 		((struct sockaddr_in6*)addr)->sin6_addr = in6addr_any;
 		((struct sockaddr_in6*)addr)->sin6_port = htons(server->port);
-	}
-	int enable = 1;
-	if (setsockopt(server->sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
-	{
-		perror("setsockopt");
-		return (false);
 	}
 	return (true);
 }

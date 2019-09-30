@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:00:32 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/22 16:00:34 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/30 14:50:38 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,13 +86,15 @@ void		running(t_interface *inter, t_list_user *user)
 	{
 		user->client.read = user->client.master;
 		user->client.write = user->client.master;
-		if (user->connected == true && !FD_ISSET(user->socket, &user->client.master))
+		if (user->connected == true && \
+			!FD_ISSET(user->socket, &user->client.master))
 			FD_SET(user->socket, &user->client.master);
-		if (select(user->socket + 1, &user->client.read, &user->client.write, NULL, NULL) < 0)
+		if (select(user->socket + 1, &user->client.read, \
+				&user->client.write, NULL, NULL) < 0)
 			return ;
 		if (FD_ISSET(STDIN_FILENO, &user->client.read))
 			read_from_user(inter, user);
-		else if (user->connected == true &&			\
+		else if (user->connected == true && \
 			FD_ISSET(user->socket, &user->client.read))
 			read_from_server(inter, user);
 	}
