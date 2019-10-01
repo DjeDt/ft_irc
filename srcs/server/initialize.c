@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/04 10:20:46 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/30 14:48:11 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/01 14:37:15 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,5 +97,6 @@ bool		initialize(t_server *server, const char *port)
 	ft_memset(server, 0x0, sizeof(t_server));
 	if (init_socket(server, port) != true)
 		return (false);
+	init_kill_pass(server);
 	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 14:17:33 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/30 14:52:54 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/01 11:34:14 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@
 /*
 ** Custom replies
 */
+
+# define ERR_TOOMANYARGUMENTS	"[server] :'%s' too many arguments.\r\n"
 # define ERR_ERRONEUSCHAR		"[server] :Input got forbidden character.\r\n"
 # define JOIN_NOTIF				"[server] :'%s' has joined %s.\r\n"
 # define LEAVE_NOTIF			"[server] :'%s' leaved channel.\r\n"

@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 14:43:26 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/18 13:33:29 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/01 11:36:30 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,11 @@ void		irc_nick(t_server *server, t_users *user, char **command)
 
 	if (command[1] != NULL)
 	{
+		if (command[2] != NULL)
+		{
+			err_toomanyarguments(user, command[1]);
+			return ;
+		}
 		size = ft_strlen(command[1]);
 		if (check_nick(server->users, user, command[1], size) != true)
 			return ;

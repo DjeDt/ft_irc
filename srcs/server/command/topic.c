@@ -6,7 +6,7 @@
 /*   By: Dje <ddinaut@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/18 09:09:48 by Dje               #+#    #+#             */
-/*   Updated: 2019/09/18 13:30:08 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/01 14:36:05 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,16 @@ void		irc_topic(t_server *server, t_users *user, char **command)
 			return ;
 		}
 		if (command[2] == NULL)
+		{
 			send_channel_topic(chan, user);
-		else
-			modify_channel_topic(chan, user, command[2]);
+			return ;
+		}
+		if (user->chan != chan)
+		{
+			err_notonchannel(user, chan->name);
+			return ;
+		}
+		modify_channel_topic(chan, user, command[2]);
 		return ;
 	}
 	err_needmoreparams(user, command[0]);

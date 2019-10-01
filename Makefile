@@ -6,7 +6,7 @@
 #    By: pguillie <pguillie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/22 18:46:54 by pguillie          #+#    #+#              #
-#    Updated: 2019/10/01 12:56:19 by ddinaut          ###   ########.fr        #
+#    Updated: 2019/10/01 16:46:03 by ddinaut          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -15,7 +15,7 @@ CLIENT	= client
 
 CC		= gcc
 CFLAGS	= -Wall -Werror -Wextra -I$(incdir)
-EFLAGS	= -g3 -fsanitize=address
+EFLAGS	= #-g3 -fsanitize=address
 
 incdir	= ./incs/
 srcdir	= ./srcs/
@@ -30,6 +30,7 @@ repliesdir	= replies/
 
 server_src =							\
 	$(serverdir)/server.c				\
+	$(serverdir)/init_kill.c			\
 	$(serverdir)/initialize.c			\
 	$(serverdir)/runnin.c				\
 	$(serverdir)/users.c				\
@@ -61,6 +62,7 @@ server_src =							\
 	$(serverdir)/$(repliesdir)/erroneusnickname.c	\
 	$(serverdir)/$(repliesdir)/erroneuschanname.c	\
 	$(serverdir)/$(repliesdir)/erroneuschar.c		\
+	$(serverdir)/$(repliesdir)/toomanyarguments.c	\
 	$(serverdir)/$(repliesdir)/nosuchnick.c			\
 	$(serverdir)/$(repliesdir)/topictoolong.c		\
 	$(serverdir)/$(repliesdir)/rpl_topic.c			\

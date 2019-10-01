@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:17:35 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/30 14:51:35 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/01 11:39:46 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,11 @@ void		irc_join(t_server *server, t_users *user, char **command)
 {
 	if (command[1] != NULL)
 	{
+		if (command[2] != NULL)
+		{
+			err_toomanyarguments(user, command[1]);
+			return ;
+		}
 		if (check_name(command[1]) == false)
 		{
 			err_erroneuschanname(user, command[1]);

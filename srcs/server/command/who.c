@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:46:44 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/18 13:28:46 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/01 11:55:48 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,11 @@ void		irc_who(t_server *server, t_users *user, char **command)
 
 	if (command[1] != NULL)
 	{
+		if (command[2] != NULL)
+		{
+			err_toomanyarguments(user, command[0]);
+			return ;
+		}
 		chan = channel_search(&server->channel, command[1]);
 		if (chan == NULL)
 		{

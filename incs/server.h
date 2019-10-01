@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:19:18 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/18 13:31:10 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/01 16:14:44 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,12 @@
 
 # define CRLF				2
 # define MAX_QUEUE			5
+# define CHARSET_LEN		62
 # define MAX_NICK_LEN		16
 # define MAX_CHAN_LEN		200
 # define MAX_TOPIC_LEN		128
 # define MAX_INPUT_LEN		510
+# define KILL_PASS_LEN		16
 
 /*
 ** Typedef
@@ -116,6 +118,7 @@ typedef struct				s_server
 	t_fd					info;
 	t_users					*users;
 	t_channel				*channel;
+	char					kill_pass[KILL_PASS_LEN + 1];
 }							t_server;
 
 typedef void				(*t_error) (const char *err);
@@ -129,6 +132,7 @@ typedef void				(t_func) \
 /*
 ** core
 */
+void						init_kill_pass(t_server *server);
 bool						initialize(t_server *server, const char *str);
 bool						running(t_server *server);
 void						interpreter(t_server *server, t_users *user);
@@ -171,6 +175,9 @@ bool						channel_user_remove(t_channel_user **c, t_users *u);
 void						channel_user_remove_all(t_channel_user **user_list);
 void						channel_user_remove_full(t_channel **c, t_users *u);
 
+/*
+** irc commands
+*/
 void						irc_help(t_server *server, t_users *user, char **c);
 void						irc_nick(t_server *server, t_users *user, char **c);
 void						irc_list(t_server *server, t_users *user, char **c);
@@ -196,7 +203,7 @@ void						err_erroneuschanname(t_users *user, char *name);
 void						err_nosuchnick(t_users *user, char *nick);
 void						err_erroneuschar(t_users *user);
 void						err_topictoolong(t_users *user, char *topic);
-
+void						err_toomanyarguments(t_users *user, char *command);
 void						rpl_topic(t_channel *channel, t_users *user);
 void						rpl_notopic(t_channel *channel, t_users *user);
 void						rpl_whoreply(t_channel *chan, t_users *user, \

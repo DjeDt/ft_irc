@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/29 17:41:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/30 14:51:02 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/01 16:02:45 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,28 +49,41 @@ static void	leave_remove_user_from_channel \
 	send_leave_notif(chan, user);
 }
 
+static bool	check_param(t_users *user, t_channel *chan, char *command)
+{
+	if (user->chan == NULL)
+	{
+		err_notonchannel(user, command);
+		return (false);
+	}
+	if (chan == NULL)
+	{
+		err_nosuchchannel(user, command);
+		return (false);
+	}
+	if (user->chan != chan)
+	{
+		err_notonchannel(user, command);
+		return (false);
+	}
+	return (true);
+}
+
 void		irc_leave(t_server *server, t_users *user, char **command)
 {
 	t_channel	*chan;
 
+	chan = NULL;
 	if (command[1] != NULL)
 	{
-		if (user->chan == NULL)
+		if (command[2] != NULL)
 		{
-			err_notonchannel(user, command[1]);
+			err_toomanyarguments(user, command[0]);
 			return ;
 		}
 		chan = channel_search(&server->channel, command[1]);
-		if (chan == NULL)
-		{
-			err_nosuchchannel(user, command[1]);
+		if (check_param(user, chan, command[1]) != true)
 			return ;
-		}
-		if (user->chan != chan)
-		{
-			err_notonchannel(user, command[1]);
-			return ;
-		}
 		leave_remove_user_from_channel(server, chan, user, command[1]);
 		return ;
 	}
