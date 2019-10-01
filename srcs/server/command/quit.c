@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/31 09:04:16 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/18 13:33:13 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/01 10:56:45 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void		irc_quit(t_server *server, t_users *user, char **command)
 	chan = user->chan;
 	ft_memset(usr_nick, 0x0, MAX_NICK_LEN + 1);
 	ft_memcpy(usr_nick, user->nick.nick, user->nick.nick_len);
-	ft_flush(user->socket);
 	FD_CLR(user->socket, &server->info.master);
 	close(user->socket);
 	if (user->chan != NULL)

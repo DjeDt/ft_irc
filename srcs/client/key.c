@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:01:51 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/12 15:43:04 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/10/01 10:57:36 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,13 @@ bool	do_key_right(t_interface *inter, char *input)
 
 bool	insert_char(t_interface *inter, char *input, int c)
 {
-	if (inter->off < MAX_INPUT_LEN)
+	int len;
+
+	if (inter->off < MAX_INPUT_LEN && inter->len < MAX_INPUT_LEN)
 	{
+		len = ft_strlen(input + inter->off);
 		if (inter->off < inter->curmax)
-			ft_memmove(input + (inter->off + 1), input + inter->off, \
-						ft_strlen(input + inter->off));
+			ft_memmove(input + (inter->off + 1), input + inter->off, len);
 		input[inter->off] = c;
 		inter->off++;
 		inter->curmax++;
@@ -60,7 +62,7 @@ bool	insert_char(t_interface *inter, char *input, int c)
 
 bool	delete_char(t_interface *inter, char *input)
 {
-	if (inter->off > 0)
+	if (inter->off > 0 && inter->len > 0)
 	{
 		inter->off--;
 		inter->curmax--;
@@ -68,7 +70,7 @@ bool	delete_char(t_interface *inter, char *input)
 		inter->len--;
 		ft_memmove(input + inter->off, input + inter->off + 1, \
 			inter->curmax - inter->off);
-		input[inter->curmax] = '\0';
+		input[inter->off] = '\0';
 		refresh_bot_interface(inter, input);
 		return (true);
 	}

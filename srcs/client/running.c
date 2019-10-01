@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:00:32 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/30 14:50:38 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/01 10:02:19 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,9 @@ static void	reset_data(t_interface *inter, char *buf)
 	inter->off = 0;
 	inter->len = 0;
 	inter->curmax = 0;
-	inter->cursor = 3;
+	inter->cursor = CURSOR_START;
 	wclear(inter->bot);
 	refresh_bot_interface(inter, buf);
-	doupdate();
 }
 
 static void	read_from_user(t_interface *inter, t_list_user *user)
@@ -48,7 +47,7 @@ static void	read_from_user(t_interface *inter, t_list_user *user)
 		delete_char(inter, user->input);
 	else if (key == '\n')
 	{
-		if (inter->len > 0)
+		if (inter->len > 0 && inter->len < MAX_INPUT_LEN)
 		{
 			inter->len += CRLF;
 			interpreter(inter, user);

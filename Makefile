@@ -6,7 +6,7 @@
 #    By: pguillie <pguillie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/22 18:46:54 by pguillie          #+#    #+#              #
-#    Updated: 2019/09/30 18:35:49 by ddinaut          ###   ########.fr        #
+#    Updated: 2019/10/01 12:56:19 by ddinaut          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -15,7 +15,7 @@ CLIENT	= client
 
 CC		= gcc
 CFLAGS	= -Wall -Werror -Wextra -I$(incdir)
-EFLAGS	= #-g3 -fsanitize=address
+EFLAGS	= -g3 -fsanitize=address
 
 incdir	= ./incs/
 srcdir	= ./srcs/
@@ -84,7 +84,6 @@ server_src =							\
 	$(libdir)/ft_strchr.c				\
 	$(libdir)/ft_itoa.c					\
 	$(libdir)/ft_strndup.c				\
-	$(libdir)/ft_flush.c				\
 	$(libdir)/ft_strncmp.c				\
 	$(libdir)/ft_strncat.c				\
 	$(libdir)/ft_atoi.c					\
@@ -114,7 +113,6 @@ client_src = 							\
 	$(libdir)/ft_strndup.c				\
 	$(libdir)/ft_strncmp.c				\
 	$(libdir)/ft_strncat.c				\
-	$(libdir)/ft_flush.c				\
 	$(libdir)/ft_atoi.c					\
 	$(libdir)/ft_swap.c					\
 	$(libdir)/rc4_permutation.c			\

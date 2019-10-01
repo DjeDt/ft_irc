@@ -6,7 +6,7 @@
 /*   By: Dje <ddinaut@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 14:53:16 by Dje               #+#    #+#             */
-/*   Updated: 2019/09/30 16:36:32 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/01 10:56:30 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ void				*ft_memset(void *data, char c, size_t size);
 void				*ft_memcpy(void *dst, const void *src, size_t n);
 int					ft_memcmp(const void *s1, const void *s2, size_t n);
 void				ft_itoa(char *str, int n);
-void				ft_flush(int socket);
 void				*ft_memmove(void *dst, const void *src, size_t len);
 int					ft_atoi(const char *str);
 int					command_size(char *command);

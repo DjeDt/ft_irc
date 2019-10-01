@@ -6,7 +6,7 @@
 /*   By: Dje <ddinaut@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/18 09:11:58 by Dje               #+#    #+#             */
-/*   Updated: 2019/09/30 14:49:22 by Dje              ###   ########.fr       */
+/*   Updated: 2019/09/30 17:32:51 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,16 @@ static void	manage_local_command(t_interface *inter, t_list_user *user, \
 		wrapper_connect(inter, user, command);
 		return ;
 	}
-	ft_strncat(user->input, "\r\n", CRLF);
 	if (ft_strncmp(command[0], "/quit", \
 			len > QUIT_LEN ? len : QUIT_LEN) == 0)
 	{
 		circular_send(inter, user);
-		user->connected = false;
 		FD_CLR(user->socket, &user->client.master);
 		close(user->socket);
 		stop_interface(inter);
 		exit(SUCCESS);
 	}
+	ft_strncat(user->input, "\r\n", CRLF);
 	circular_send(inter, user);
 }
 

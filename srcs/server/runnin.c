@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/30 14:48:46 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/01 10:15:54 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ void	close_connection(t_server *server, t_users *user)
 	if (user->socket == server->info.fd_max)
 		server->info.fd_max -= 1;
 	printf("[LOG -] Remove user '%s'\n", user->nick.nick);
-	ft_flush(user->socket);
 	close(user->socket);
 	FD_CLR(user->socket, &server->info.master);
 	if (user->chan != NULL)
@@ -86,7 +85,7 @@ void	processing(t_server *server, int socket)
 		return ;
 	}
 	while (search_for_crlf(user->circ.buf, user->circ.head, user->circ.len) ||
-		user->circ.len >= MAX_INPUT_LEN)
+		user->circ.len == MAX_INPUT_LEN)
 	{
 		interpreter(server, user);
 	}
