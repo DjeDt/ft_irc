@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:19:18 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/10/01 16:14:44 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/02 15:11:12 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ typedef struct				s_users
 {
 	int						socket;
 	t_nick					nick;
-	t_circular				circ;
+	t_circular				read;
 	void					*chan;
 	struct s_users			*next;
 }							t_users;

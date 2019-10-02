@@ -6,13 +6,13 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:00:32 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/10/01 10:02:19 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/02 14:01:44 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "client.h"
 
-static void	init_fd(t_list_user *user)
+static void	init_fd(t_user *user)
 {
 	FD_ZERO(&user->client.read);
 	FD_ZERO(&user->client.write);
@@ -31,10 +31,12 @@ static void	reset_data(t_interface *inter, char *buf)
 	refresh_bot_interface(inter, buf);
 }
 
-static void	read_from_user(t_interface *inter, t_list_user *user)
+static void	read_from_user(t_interface *inter, t_user *user)
 {
 	wint_t key;
 
+
+	// use circ write instead of buffer
 	if (inter->status == true)
 		key = wgetch(inter->bot);
 	else
@@ -58,7 +60,7 @@ static void	read_from_user(t_interface *inter, t_list_user *user)
 		insert_char(inter, user->input, key);
 }
 
-static void	read_from_server(t_interface *inter, t_list_user *user)
+static void	read_from_server(t_interface *inter, t_user *user)
 {
 	char buf[MAX_INPUT_LEN + CRLF];
 
@@ -71,14 +73,14 @@ static void	read_from_server(t_interface *inter, t_list_user *user)
 		refresh_top_interface(inter, "Disconnected from server :_:\n");
 		return ;
 	}
-	while (search_for_crlf(user->circ.buf, user->circ.head, user->circ.len))
+	while (search_for_crlf(user->read.buf, user->read.head, user->read.len))
 	{
-		extract_and_update(&user->circ, buf);
+		extract_and_update(&user->read, buf);
 		refresh_top_interface(inter, "%s", buf);
 	}
 }
 
-void		running(t_interface *inter, t_list_user *user)
+void		running(t_interface *inter, t_user *user)
 {
 	init_fd(user);
 	while (user->running == true)

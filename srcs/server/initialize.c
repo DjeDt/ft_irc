@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/04 10:20:46 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/10/01 14:37:15 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/02 14:09:38 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,9 @@ static bool	bind_socket_ipv4(t_server *server)
 {
 	struct sockaddr_in adr;
 
+	// test ipv6
+//	return (false);
+
 	if (prepare_data(server, &adr, IPV4_TYPE) != true)
 		return (false);
 	if (bind(server->sock, (struct sockaddr*)&adr, sizeof(struct sockaddr)) < 0)
@@ -62,28 +65,30 @@ static bool	bind_socket_ipv6(t_server *server)
 
 	if (prepare_data(server, &adr, IPV6_TYPE) != true)
 		return (false);
-	if (bind(server->sock, (struct sockaddr*)&adr, sizeof(struct sockaddr)) < 0)
+	if (bind(server->sock, (struct sockaddr*)&adr, sizeof(struct sockaddr_in6)) < 0)
 	{
 		printf("[LOG !] Can't bind socket to address using ipv6\n");
 		return (false);
 	}
 	printf("[LOG !] Socket correctly setup using ipv6\n");
-	return (false);
+	return (true);
 }
 
 static bool	init_socket(t_server *server, const char *port)
 {
 	server->port = ft_atoi(port);
-	if (server->port < 1)
+	if (server->port < 1 || server->port >= INT_MAX)
 	{
 		printf("Error: '%s' port is invalid. Abort\n", port);
 		return (false);
 	}
+
 	if (bind_socket_ipv4(server) != true)
 	{
 		if (bind_socket_ipv6(server) != true)
 			return (false);
 	}
+
 	if (listen(server->sock, MAX_QUEUE) < 0)
 	{
 		printf("[LOG !] Can't listen socket !\n");

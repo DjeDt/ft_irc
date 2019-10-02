@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/21 15:37:45 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/03 22:12:54 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/10/02 14:13:49 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ t_users	*user_create(int socket)
 	ft_memset(&new->nick, 0x0, sizeof(t_nick));
 	generate_guest_pseudo(new->nick.nick, socket);
 	new->nick.nick_len = ft_strlen(new->nick.nick);
-	new->circ.len = 0;
-	new->circ.head = 0;
-	new->circ.tail = 0;
-	ft_memset(new->circ.buf, 0x0, MAX_INPUT_LEN);
+	new->read.len = 0;
+	new->read.head = 0;
+	new->read.tail = 0;
+	ft_memset(new->read.buf, 0x0, MAX_INPUT_LEN);
 	new->chan = NULL;
 	new->next = NULL;
 	return (new);

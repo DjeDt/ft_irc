@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:06:24 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/10/01 10:15:54 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/02 14:13:31 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,8 @@ void	processing(t_server *server, int socket)
 		close_connection(server, user);
 		return ;
 	}
-	while (search_for_crlf(user->circ.buf, user->circ.head, user->circ.len) ||
-		user->circ.len == MAX_INPUT_LEN)
+	while (search_for_crlf(user->read.buf, user->read.head, user->read.len) ||
+		user->read.len == MAX_INPUT_LEN)
 	{
 		interpreter(server, user);
 	}

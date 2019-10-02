@@ -6,17 +6,17 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/27 21:31:12 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/10/01 10:18:34 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/02 14:04:58 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "client.h"
 
-bool	init_data(t_interface *inter, t_list_user *user)
+bool	init_data(t_interface *inter, t_user *user)
 {
 	ft_memset(inter, 0x0, sizeof(t_interface));
-	ft_memset(user, 0x0, sizeof(t_list_user));
-	ft_memset(&user->circ, 0x0, sizeof(t_circular));
+	ft_memset(user, 0x0, sizeof(t_user));
+	ft_memset(&user->read, 0x0, sizeof(t_circular));
 	user->running = true;
 	user->connected = false;
 	inter->status = false;
@@ -28,7 +28,7 @@ bool	init_data(t_interface *inter, t_list_user *user)
 
 int		main(int ac, char **av)
 {
-	t_list_user	user;
+	t_user	user;
 	t_interface	inter;
 
 	if (init_data(&inter, &user) != true)

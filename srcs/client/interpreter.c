@@ -6,13 +6,13 @@
 /*   By: Dje <ddinaut@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/18 09:11:58 by Dje               #+#    #+#             */
-/*   Updated: 2019/09/30 17:32:51 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/02 08:03:39 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "client.h"
 
-static void	manage_local_command(t_interface *inter, t_list_user *user, \
+static void	manage_local_command(t_interface *inter, t_user *user, \
 									char **command)
 {
 	int len;
@@ -37,7 +37,7 @@ static void	manage_local_command(t_interface *inter, t_list_user *user, \
 	circular_send(inter, user);
 }
 
-void		interpreter(t_interface *inter, t_list_user *user)
+void		interpreter(t_interface *inter, t_user *user)
 {
 	char	*command[3];
 

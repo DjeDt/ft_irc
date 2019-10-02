@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:26:02 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/30 14:48:27 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/02 15:10:53 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ void		interpreter(t_server *server, t_users *user)
 	char	extracted[MAX_INPUT_LEN];
 
 	ft_memset(cmd, 0x0, sizeof(char*) * 3);
-	extract_and_update(&user->circ, extracted);
+	extract_and_update(&user->read, extracted);
 	if (check_command(extracted, ft_strlen(extracted)) == false)
 	{
 		err_erroneuschar(user);
@@ -106,9 +106,6 @@ void		interpreter(t_server *server, t_users *user)
 		handle_command(server, user, cmd);
 		command_free(cmd);
 	}
-	else if (user->chan != NULL)
-	{
-		if (FD_ISSET(user->socket, &server->info.write))
-			handle_message(server, user, extracted);
-	}
+	else if (user->chan != NULL && FD_ISSET(user->socket, &server->info.write))
+		handle_message(server, user, extracted);
 }

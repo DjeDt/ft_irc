@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 14:24:19 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/18 13:57:13 by Dje              ###   ########.fr       */
+/*   Updated: 2019/10/02 14:04:45 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,9 @@
 # define MAX_INPUT_LEN	510
 # define MAX_NICK_LEN	16
 
+# define IPV4_TYPE		4
+# define IPV6_TYPE		6
+
 # define BASIC_PORT_STR "Connecting to '%s' using default port '%s'"
 
 /* Struct */
@@ -82,27 +85,27 @@ typedef struct			s_circular
 	char				buf[MAX_INPUT_LEN + CRLF];
 }						t_circular;
 
-typedef struct			s_list_user
+typedef struct			s_user
 {
 	int					socket;
 	bool				running;
 	bool				connected;
 	char				input[MAX_INPUT_LEN + CRLF];
-	t_circular			circ;
+	t_circular			read;
 	t_client			client;
-}						t_list_user;
+}						t_user;
 
 typedef void	(t_func) \
-	(t_interface *inter, t_list_user *user, char **command);
+	(t_interface *inter, t_user *user, char **command);
 
 /*
 ** Core
 */
-void					running(t_interface *inter, t_list_user *user);
-void					interpreter(t_interface *inter, t_list_user *user);
+void					running(t_interface *inter, t_user *user);
+void					interpreter(t_interface *inter, t_user *user);
 
-bool					circular_get(t_interface *inter, t_list_user *user);
-void					circular_send(t_interface *inter, t_list_user *user);
+bool					circular_get(t_interface *inter, t_user *user);
+void					circular_send(t_interface *inter, t_user *user);
 void					circular_push(t_circular *circ, char *data, int size);
 
 bool					search_for_crlf(char *buf, int head, int size);
@@ -110,8 +113,8 @@ void					extract_and_update(t_circular *circ, char *final);
 
 /* command */
 void					wrapper_connect(t_interface *inter, \
-										t_list_user *user, char **command);
-bool					irc_connect(t_interface *inter, t_list_user *user,
+										t_user *user, char **command);
+bool					irc_connect(t_interface *inter, t_user *user,
 									const char *s_ip, const char *s_port);
 
 /* interface */
