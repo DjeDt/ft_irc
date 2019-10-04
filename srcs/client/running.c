@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 15:00:32 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/10/02 14:01:44 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/10/04 09:34:02 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ static void	read_from_user(t_interface *inter, t_user *user)
 {
 	wint_t key;
 
-
-	// use circ write instead of buffer
 	if (inter->status == true)
 		key = wgetch(inter->bot);
 	else

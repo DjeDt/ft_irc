@@ -6,102 +6,58 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/04 10:20:46 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/10/02 14:09:38 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/10/04 19:43:10 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server.h"
 
-static bool	prepare_data(t_server *server, void *addr, int type)
+bool	create_server(t_server *server, struct addrinfo *base)
 {
-	if (type == IPV4_TYPE)
+	struct addrinfo *ptr;
+
+	ptr = base;
+	while (ptr != NULL)
 	{
-		server->sock = socket(PF_INET, SOCK_STREAM, 0);
+		server->sock = socket(ptr->ai_family, \
+								ptr->ai_socktype, ptr->ai_protocol);
 		if (server->sock < 0)
-		{
-			printf("[LOG !] Can't create socket using ipv4\n");
-			return (false);
-		}
-		((struct sockaddr_in*)addr)->sin_family = AF_INET;
-		((struct sockaddr_in*)addr)->sin_addr.s_addr = htonl(INADDR_ANY);
-		((struct sockaddr_in*)addr)->sin_port = htons(server->port);
+			continue ;
+		if (bind(server->sock, ptr->ai_addr, ptr->ai_addrlen) == 0)
+			break ;
+		close(server->sock);
+		ptr = ptr->ai_next;
 	}
-	else if (type == IPV6_TYPE)
+	freeaddrinfo(base);
+	if (ptr == NULL)
 	{
-		server->sock = socket(PF_INET6, SOCK_STREAM, 0);
-		if (server->sock < 0)
-		{
-			printf("[LOG !] Can't create socket using ipv6\n");
-			return (false);
-		}
-		((struct sockaddr_in6*)addr)->sin6_family = AF_INET6;
-		((struct sockaddr_in6*)addr)->sin6_addr = in6addr_any;
-		((struct sockaddr_in6*)addr)->sin6_port = htons(server->port);
+		printf("[Log !] Can't bind address. abort\n");
+		return (false);
 	}
 	return (true);
 }
 
-static bool	bind_socket_ipv4(t_server *server)
+bool	initialize(t_server *server, const char *port)
 {
-	struct sockaddr_in adr;
+	struct addrinfo	hints;
+	struct addrinfo	*base;
 
-	// test ipv6
-//	return (false);
-
-	if (prepare_data(server, &adr, IPV4_TYPE) != true)
-		return (false);
-	if (bind(server->sock, (struct sockaddr*)&adr, sizeof(struct sockaddr)) < 0)
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_flags = AI_PASSIVE;
+	hints.ai_protocol = IPPROTO_TCP;
+	if (getaddrinfo(NULL, port, &hints, &base) != 0)
 	{
-		printf("[LOG !] Can't bind socket to address using ipv4\n");
+		printf("[LOG !] Can't get address with %s.\n", port);
 		return (false);
 	}
-	printf("[LOG !] Socket correctly setup using ipv4\n");
-	return (true);
-}
-
-static bool	bind_socket_ipv6(t_server *server)
-{
-	struct sockaddr_in6 adr;
-
-	if (prepare_data(server, &adr, IPV6_TYPE) != true)
+	if (create_server(server, base) != true)
 		return (false);
-	if (bind(server->sock, (struct sockaddr*)&adr, sizeof(struct sockaddr_in6)) < 0)
-	{
-		printf("[LOG !] Can't bind socket to address using ipv6\n");
-		return (false);
-	}
-	printf("[LOG !] Socket correctly setup using ipv6\n");
-	return (true);
-}
-
-static bool	init_socket(t_server *server, const char *port)
-{
-	server->port = ft_atoi(port);
-	if (server->port < 1 || server->port >= INT_MAX)
-	{
-		printf("Error: '%s' port is invalid. Abort\n", port);
-		return (false);
-	}
-
-	if (bind_socket_ipv4(server) != true)
-	{
-		if (bind_socket_ipv6(server) != true)
-			return (false);
-	}
-
 	if (listen(server->sock, MAX_QUEUE) < 0)
 	{
 		printf("[LOG !] Can't listen socket !\n");
 		return (false);
 	}
-	return (true);
-}
-
-bool		initialize(t_server *server, const char *port)
-{
-	ft_memset(server, 0x0, sizeof(t_server));
-	if (init_socket(server, port) != true)
-		return (false);
 	init_kill_pass(server);
 	return (true);
 }

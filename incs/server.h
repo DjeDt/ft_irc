@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/20 13:19:18 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/10/02 15:11:12 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/10/04 17:24:02 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # include <unistd.h>
 # include <string.h>
 # include <errno.h>
-
+# include <netdb.h>
 # include <sys/types.h>
 # include <sys/socket.h>
 # include <sys/select.h>
@@ -113,7 +113,6 @@ typedef struct				s_channel
 
 typedef struct				s_server
 {
-	int						port;
 	int						sock;
 	t_fd					info;
 	t_users					*users;

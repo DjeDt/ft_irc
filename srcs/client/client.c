@@ -6,13 +6,13 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/27 21:31:12 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/10/02 14:04:58 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/10/04 19:43:41 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "client.h"
 
-bool	init_data(t_interface *inter, t_user *user)
+static void	init_data(t_interface *inter, t_user *user)
 {
 	ft_memset(inter, 0x0, sizeof(t_interface));
 	ft_memset(user, 0x0, sizeof(t_user));
@@ -23,19 +23,14 @@ bool	init_data(t_interface *inter, t_user *user)
 	init_interface(inter);
 	if (inter->status == false)
 		printf("Can't use ncurse. Using basic client instead\n");
-	return (true);
 }
 
-int		main(int ac, char **av)
+int			main(int ac, char **av)
 {
-	t_user	user;
+	t_user		user;
 	t_interface	inter;
 
-	if (init_data(&inter, &user) != true)
-	{
-		puts("Can't initialize interface, abort.");
-		return (ERROR);
-	}
+	init_data(&inter, &user);
 	if (ac == 2)
 		irc_connect(&inter, &user, av[1], DEFAULT_PORT);
 	else if (ac == 3)

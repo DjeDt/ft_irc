@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/04 10:20:59 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/09/10 19:11:42 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/10/04 17:25:06 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 static void	zeroed(t_server *server)
 {
-	server->port = 0;
 	server->sock = 0;
 	ft_memset(&server->info, 0x0, sizeof(t_fd));
+	ft_memset(server->kill_pass, 0x0, KILL_PASS_LEN + 1);
 	server->users = NULL;
 	server->channel = NULL;
 }
@@ -40,7 +40,9 @@ static bool	is_valid_argument(const char *str)
 
 static bool	launcher(t_server *server, char *port)
 {
-	if (is_valid_argument(port) != true || initialize(server, port) != true)
+	if (is_valid_argument(port) != true)
+		return (false);
+	if (initialize(server, port) != true)
 		return (false);
 	if (running(server) != true)
 		return (false);

@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 14:24:19 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/10/02 14:04:45 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/10/04 19:44:23 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include <unistd.h>
 # include <wchar.h>
 # include <errno.h>
-
+# include <netdb.h>
 # include <sys/types.h>
 # include <sys/socket.h>
 # include <sys/select.h>
@@ -56,7 +56,6 @@
 
 # define BASIC_PORT_STR "Connecting to '%s' using default port '%s'"
 
-/* Struct */
 typedef struct			s_interface
 {
 	WINDOW				*top;
@@ -115,7 +114,7 @@ void					extract_and_update(t_circular *circ, char *final);
 void					wrapper_connect(t_interface *inter, \
 										t_user *user, char **command);
 bool					irc_connect(t_interface *inter, t_user *user,
-									const char *s_ip, const char *s_port);
+									char *s_ip, char *s_port);
 
 /* interface */
 bool					init_interface(t_interface *inter);
