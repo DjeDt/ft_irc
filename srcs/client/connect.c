@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 14:34:53 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/10/04 19:45:26 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/10/04 19:55:25 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ bool		irc_connect(t_interface *inter, t_user *user, char *ip, char *port)
 	ft_memset(&hints, 0x0, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_flags = AI_PASSIVE;
+	hints.ai_flags = AI_DEFAULT;
 	hints.ai_protocol = IPPROTO_TCP;
 	if (getaddrinfo(ip, port, &hints, &base) != 0)
 		return (false);
