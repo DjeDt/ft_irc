@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 14:34:53 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/10/04 19:55:25 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/10/04 20:16:56 by ddinaut          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,13 +65,16 @@ void		wrapper_connect(t_interface *inter, t_user *user, char **cmd)
 		else if (cmd[2] == NULL)
 		{
 			refresh_top_interface(inter, BASIC_PORT_STR, cmd[1], DEFAULT_PORT);
-			ret = irc_connect(inter, user, cmd[1], DEFAULT_PORT);
+			if (irc_connect(inter, user, cmd[1], DEFAULT_PORT) == false)
+				refresh_top_interface(inter, "Can't connect to %s:%s.", \
+										cmd[1], cmd[2]);
 		}
 		else
-			ret = irc_connect(inter, user, cmd[1], cmd[2]);
-		if (ret == false)
-			refresh_top_interface(inter, "Can't connect to %s:%s.", \
-									cmd[1], cmd[2]);
+		{
+			if (irc_connect(inter, user, cmd[1], cmd[2]) == false)
+				refresh_top_interface(inter, "Can't connect to %s:%s.", \
+										cmd[1], cmd[2]);
+		}
 	}
 	else
 		refresh_top_interface(inter, "you are already connected.");

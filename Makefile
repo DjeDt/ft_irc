@@ -6,7 +6,7 @@
 #    By: pguillie <pguillie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/04/22 18:46:54 by pguillie          #+#    #+#              #
-#    Updated: 2019/10/01 16:46:03 by ddinaut          ###   ########.fr        #
+#    Updated: 2019/10/04 20:18:06 by ddinaut          ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
@@ -15,7 +15,7 @@ CLIENT	= client
 
 CC		= gcc
 CFLAGS	= -Wall -Werror -Wextra -I$(incdir)
-EFLAGS	= #-g3 -fsanitize=address
+EFLAGS	= -g3 -fsanitize=address
 
 incdir	= ./incs/
 srcdir	= ./srcs/

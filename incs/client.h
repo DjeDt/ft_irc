@@ -6,7 +6,7 @@
 /*   By: ddinaut <ddinaut@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 14:24:19 by ddinaut           #+#    #+#             */
-/*   Updated: 2019/10/04 19:44:23 by ddinaut          ###   ########.fr       */
+/*   Updated: 2019/10/05 14:05:34 by Dje              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 # define SUCCESS		0
 
 # define DEFAULT_PORT	"1234"
-# define LOCALHOST		"127.0.0.1"
+# define LOCALHOST		"localhost"
 
 # define CONNECT_LEN	7
 # define QUIT_LEN		5
